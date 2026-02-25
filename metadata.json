@@ -1,0 +1,10 @@
+{
+  "name": "카페싱크 - 단체 주문 매니저",
+  "short_name": "카페싱크",
+  "description": "카페에서 여러 명의 주문을 한눈에 모아보고 관리하는 스마트 주문 도우미",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F2F4F6",
+  "theme_color": "#3182F6",
+  "requestFramePermissions": []
+}
