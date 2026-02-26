@@ -478,7 +478,7 @@ function App() {
     setGroups(prev => prev.map(g => ({
       ...g,
       items: g.items.filter(p => !personIds.includes(p.id))
-    })));
+    })).filter(g => g.items.length > 0));
     showUndoToast(`${personIds.length}명을 삭제했습니다.`);
   };
 
@@ -651,7 +651,7 @@ function App() {
                 <OrderGroupSection
                   group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId}
                   updateOrder={updateOrder}
-                  removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
+                  removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))}
                   addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))}
                   addSharedMenuItem={(gid) => {
                     let initialSharedSubItems: OrderSubItem[] = [];
@@ -676,9 +676,12 @@ function App() {
         ) : (
           <div className="flex flex-col items-center justify-center min-h-[50vh] px-8 animate-in fade-in duration-500 w-full flex-1">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-toss-card mb-6 border border-toss-grey-100"><LayoutGrid size={40} className="text-toss-grey-200" /></div>
-            <h2 className="text-xl font-black text-toss-grey-800 mb-2">등록된 테이블이 없습니다</h2>
-            <p className="text-sm font-bold text-toss-grey-400 text-center mb-8">하단의 버튼을 눌러 테이블을 추가해보세요.<br />주문을 시작할 수 있습니다.</p>
-            <button onClick={addGroup} className="px-8 py-4 bg-toss-blue text-white rounded-[24px] font-black text-[15px] shadow-lg shadow-toss-blue/20 active:scale-95 transition-all flex items-center gap-2"><Plus size={20} strokeWidth={3} /> 테이블 추가하기</button>
+            <h2 className="text-xl font-black text-toss-grey-800 mb-3">간단하고 빠른 주문 수집!</h2>
+            <div className="text-[13px] font-bold text-toss-grey-500 text-center mb-8 space-y-2 bg-toss-grey-50 p-5 rounded-[24px]">
+              <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">1</span>하단의 <Plus size={14} strokeWidth={3} className="inline" /> 버튼을 눌러 테이블을 추가하세요.</p>
+              <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">2</span>사람을 추가하고 각자의 메뉴를 입력하세요.</p>
+              <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">3</span>주문 확인 창에서 모아보고 복사하거나 저장할 수 있습니다.</p>
+            </div>
           </div>
         )}
       </main>
@@ -724,7 +727,7 @@ function App() {
                         <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} className="w-full bg-toss-grey-100 rounded-xl px-4 py-3 text-[14px] font-black text-toss-grey-900 focus:outline-none focus:ring-2 focus:ring-toss-blue transition-all border-none placeholder:opacity-40" />
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => setManageStep('menu')} className="flex-1 py-3 rounded-xl font-black text-toss-grey-50 bg-toss-grey-100 active:scale-95 transition-all text-[13px]">뒤로</button>
+                        <button onClick={() => setManageStep('menu')} className="flex-1 py-3 rounded-xl font-black text-toss-grey-500 bg-toss-grey-100 active:scale-95 transition-all text-[13px]">뒤로</button>
                         <button onClick={renameGroup} className="flex-[2] py-3 rounded-xl font-black text-white bg-toss-blue active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 text-[13px]"><Check size={16} strokeWidth={3} /> 저장</button>
                       </div>
                     </div>
@@ -735,7 +738,7 @@ function App() {
                     <div className="w-full text-center mb-5"><h3 className="text-[16px] font-black text-toss-red">정말 삭제할까요?</h3></div>
                     <div className="space-y-2">
                       <button onClick={() => removeGroup(currentManagingGroup!.id)} className="w-full py-3.5 bg-toss-red text-white rounded-[16px] font-black text-[14px] active:scale-95 transition-all shadow-lg">네, 삭제하겠습니다</button>
-                      <button onClick={() => setManageStep('menu')} className="w-full py-3.5 bg-toss-grey-100 text-toss-grey-50 rounded-[16px] font-black text-[13px] active:scale-95 transition-all">취소</button>
+                      <button onClick={() => setManageStep('menu')} className="w-full py-3.5 bg-toss-grey-100 text-toss-grey-500 rounded-[16px] font-black text-[13px] active:scale-95 transition-all">취소</button>
                     </div>
                   </motion.div>
                 )}
@@ -760,7 +763,7 @@ function App() {
               onUpdateGroupName={updateGroupName}
               onSetNotEating={handleSetNotEating}
               onRemoveUndecided={handleRemoveUndecided}
-              onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
+              onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))}
               appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
             />
           </>
