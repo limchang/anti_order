@@ -777,7 +777,7 @@ function App() {
                     {manageStep === 'rename' && (
                       <motion.div key="rename" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                         <div className="text-center mb-2"><p className="text-[13px] font-bold text-toss-grey-400">새로운 이름을 입력해주세요.</p></div>
-                        <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} className="w-full bg-toss-grey-50 border border-toss-grey-100 rounded-2xl px-4 py-3.5 text-[14px] font-black text-toss-grey-900 focus:outline-none focus:ring-2 focus:ring-toss-blue transition-all placeholder:opacity-40" />
+                        <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} onFocus={e => { setTimeout(() => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 100); }} className="w-full bg-toss-grey-50 border border-toss-grey-100 rounded-2xl px-4 py-3.5 text-[14px] font-black text-toss-grey-900 focus:outline-none focus:ring-2 focus:ring-toss-blue transition-all placeholder:opacity-40" />
                         <div className="flex gap-2">
                           <button onClick={() => setManageStep('menu')} className="flex-1 py-3.5 rounded-2xl font-black text-toss-grey-500 bg-toss-grey-100 active:scale-95 transition-all text-[13px]">뒤로</button>
                           <button onClick={renameGroup} className="flex-[2] py-3.5 rounded-2xl font-black text-white bg-toss-blue active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 text-[13px]"><Check size={16} strokeWidth={3} /> 저장</button>
@@ -820,10 +820,11 @@ function App() {
           </>
         )}
       </AnimatePresence>
-      <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
+      <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setIsMainMenuOpen(true); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
       <MenuManagementModal
         isOpen={isMenuMgmtModalOpen}
         onClose={() => setIsMenuMgmtModalOpen(false)}
+        onBack={() => { setIsMenuMgmtModalOpen(false); setIsMainMenuOpen(true); }}
         drinkItems={drinkMenuItems}
         dessertItems={dessertMenuItems}
         checkedDrinkItems={appSettings.checkedDrinkItems}
@@ -832,8 +833,8 @@ function App() {
         onUpdateChecked={handleUpdateCheckedItems}
         onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)}
       />
-      <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
-      <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
+      <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
+      <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <MenuSelectionModal
         isOpen={menuModalState.isOpen}
         onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))}

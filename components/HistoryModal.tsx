@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderHistoryItem } from '../types';
-import { X, Trash2, RotateCcw, Calendar, Coffee, AlertCircle, ChevronDown, ChevronUp, StickyNote, PenLine, Plus, Users } from 'lucide-react';
+import { X, Trash2, RotateCcw, Coffee, ChevronDown, ChevronUp, StickyNote, PenLine, Plus, Users, ChevronLeft } from 'lucide-react';
 import { EmojiRenderer } from './EmojiRenderer.tsx';
 
 interface HistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   history: OrderHistoryItem[];
   onLoad: (item: OrderHistoryItem) => void;
   onLoadPeopleOnly?: (item: OrderHistoryItem) => void;
@@ -128,7 +129,7 @@ const HistoryItem: React.FC<{
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2">
         {loadingType ? (
-          <button onClick={() => { if (loadingType === 'all') onLoad(item); else onLoadPeopleOnly?.(item); onClose(); }} className="col-span-2 flex items-center justify-center gap-2 py-4 bg-toss-red text-white rounded-2xl hover:bg-toss-red/90 transition-all text-sm font-black shadow-lg shadow-toss-red/20 animate-in zoom-in-95 duration-200"><AlertCircle size={18} />현재 내역이 교체됩니다. 확인!</button>
+          <button onClick={() => { if (loadingType === 'all') onLoad(item); else onLoadPeopleOnly?.(item); onClose(); }} className="col-span-2 flex items-center justify-center gap-2 py-4 bg-toss-red text-white rounded-2xl hover:bg-toss-red/90 transition-all text-sm font-black shadow-lg shadow-toss-red/20 animate-in zoom-in-95 duration-200">⚠️ 현재 내역이 교체됩니다. 확인!</button>
         ) : (
           <>
             <button onClick={() => { setLoadingType('all'); setTimeout(() => setLoadingType(null), 3000); }} className="flex flex-col items-center justify-center gap-1 py-3.5 bg-toss-grey-900 text-white rounded-2xl hover:bg-black transition-all text-[12px] font-black shadow-toss-sm"><RotateCcw size={16} />전체 불러오기</button>
@@ -140,7 +141,7 @@ const HistoryItem: React.FC<{
   );
 };
 
-export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, history = [], onLoad, onLoadPeopleOnly, onDelete, onUpdate }) => {
+export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, onBack, history = [], onLoad, onLoadPeopleOnly, onDelete, onUpdate }) => {
   return (
     <>
       {/* 배경 딤 */}
@@ -174,9 +175,14 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
                 className="flex flex-col h-full overflow-hidden"
               >
                 {/* 헤더 */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-4 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">주문 히스토리</h2>
-                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                <div className="flex items-center px-4 pt-5 pb-4 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  {onBack ? (
+                    <button onClick={onBack} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 hover:bg-toss-grey-200 transition-colors shrink-0">
+                      <ChevronLeft size={20} />
+                    </button>
+                  ) : <div className="w-8 shrink-0" />}
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">주문 히스토리</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors shrink-0">
                     <X size={18} />
                   </button>
                 </div>

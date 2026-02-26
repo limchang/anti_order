@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, StickyNote, Trash2, GripVertical } from 'lucide-react';
+import { X, Plus, Trash2, GripVertical, ChevronLeft } from 'lucide-react';
 import { AppSettings } from '../types';
 import {
   DndContext,
@@ -21,10 +21,12 @@ import {
   useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 
 interface QuickMemosModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   settings: AppSettings;
   onUpdateSettings: (settings: AppSettings) => void;
 }
@@ -102,9 +104,10 @@ const SortableMemoRow: React.FC<{
   );
 };
 
-export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClose, settings, onUpdateSettings }) => {
+export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClose, onBack, settings, onUpdateSettings }) => {
   const [newMemo, setNewMemo] = useState("");
   const [editingMemo, setEditingMemo] = useState<string | null>(null);
+  const kbOffset = useKeyboardOffset(isOpen);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -167,10 +170,13 @@ export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClos
       </AnimatePresence>
 
       {/* 네비게이션 바에서 확장되는 카드 */}
-      <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+      <div
+        className="fixed left-0 right-0 z-[10000] flex flex-col items-center justify-end pointer-events-none px-3"
+        style={{ bottom: kbOffset + 20, transition: 'bottom 0.15s ease-out' }}
+      >
         <motion.div
           initial={false}
-          animate={{ height: isOpen ? 'calc(100dvh - 70px)' : 0, opacity: isOpen ? 1 : 0 }}
+          animate={{ height: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0, opacity: isOpen ? 1 : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
@@ -184,9 +190,14 @@ export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClos
                 className="flex flex-col h-full overflow-hidden"
               >
                 {/* 헤더 */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">요청사항 관리</h2>
-                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  {onBack ? (
+                    <button onClick={onBack} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 hover:bg-toss-grey-200 transition-colors shrink-0">
+                      <ChevronLeft size={20} />
+                    </button>
+                  ) : <div className="w-8 shrink-0" />}
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">요청사항 관리</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors shrink-0">
                     <X size={18} />
                   </button>
                 </div>
@@ -229,6 +240,7 @@ export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClos
                       value={newMemo}
                       onChange={e => setNewMemo(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleAddMemo()}
+                      onFocus={e => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
                     />
                     <button onClick={handleAddMemo} className="w-12 h-12 bg-toss-blue text-white rounded-2xl flex items-center justify-center active:scale-90 transition-all shadow-lg shadow-toss-blue/20">
                       <Plus size={20} strokeWidth={3} />

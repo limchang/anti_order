@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Coffee, CakeSlice, Trash2, GripVertical, Search, PencilLine, Star } from 'lucide-react';
+import { X, Coffee, CakeSlice, Trash2, GripVertical, Search, PencilLine, Star, ChevronLeft } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -21,10 +21,12 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ItemType } from '../types';
+import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 
 interface MenuManagementModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   drinkItems: string[];
   dessertItems: string[];
   checkedDrinkItems: string[];
@@ -55,8 +57,7 @@ const SortableMenuRow: React.FC<{
       <div {...attributes} {...listeners} className="pl-1 pr-0.5 py-1.5 cursor-grab text-toss-grey-200 hover:text-toss-blue shrink-0 touch-none">
         <GripVertical size={14} />
       </div>
-      <div className={`flex-1 flex items-center rounded-2xl border transition-all overflow-hidden min-w-0 ${isChecked ? 'bg-amber-50 border-amber-200' : 'bg-white border-toss-grey-100 shadow-sm'
-        }`}>
+      <div className={`flex-1 flex items-center rounded-2xl border transition-all overflow-hidden min-w-0 ${isChecked ? 'bg-amber-50 border-amber-200' : 'bg-white border-toss-grey-100 shadow-sm'}`}>
         {showCheck && (
           <button
             onClick={onToggleCheck}
@@ -78,12 +79,13 @@ const SortableMenuRow: React.FC<{
 };
 
 export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
-  isOpen, onClose, drinkItems, dessertItems, checkedDrinkItems, onAdd, onRemove, onUpdateChecked, onUpdateMenuList
+  isOpen, onClose, onBack, drinkItems, dessertItems, checkedDrinkItems, onAdd, onRemove, onUpdateChecked, onUpdateMenuList
 }) => {
   const [activeTab, setActiveTab] = useState<ItemType>('DRINK');
   const [newItemName, setNewItemName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const kbOffset = useKeyboardOffset(isOpen);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -145,10 +147,13 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
       </AnimatePresence>
 
       {/* 네비게이션 바에서 확장되는 카드 */}
-      <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+      <div
+        className="fixed left-0 right-0 z-[10000] flex flex-col items-center justify-end pointer-events-none px-3"
+        style={{ bottom: kbOffset + 20, transition: 'bottom 0.15s ease-out' }}
+      >
         <motion.div
           initial={false}
-          animate={{ height: isOpen ? 'calc(100dvh - 70px)' : 0, opacity: isOpen ? 1 : 0 }}
+          animate={{ height: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0, opacity: isOpen ? 1 : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
@@ -162,9 +167,14 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                 className="flex flex-col h-full overflow-hidden"
               >
                 {/* 헤더 */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">메뉴판</h2>
-                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  {onBack ? (
+                    <button onClick={onBack} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 hover:bg-toss-grey-200 transition-colors shrink-0">
+                      <ChevronLeft size={20} />
+                    </button>
+                  ) : <div className="w-8 shrink-0" />}
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">메뉴판</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors shrink-0">
                     <X size={18} />
                   </button>
                 </div>
@@ -238,6 +248,7 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                       value={searchQuery}
                       onChange={e => { setSearchQuery(e.target.value); setNewItemName(e.target.value); }}
                       onKeyDown={e => e.key === 'Enter' && handleAdd()}
+                      onFocus={e => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
                     />
                     {searchQuery.trim() && (
                       <button onClick={handleAdd} className="absolute right-2.5 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-toss-blue text-white rounded-xl shadow-sm active:scale-95 transition-all text-[12px] font-black">

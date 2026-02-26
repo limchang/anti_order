@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2 } from 'lucide-react';
+import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 import {
   DndContext,
   closestCenter,
@@ -143,6 +144,7 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
+  const kbOffset = useKeyboardOffset(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -221,11 +223,14 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
       </AnimatePresence>
 
       {/* 네비게이션 바에서 확장되는 카드 - OrderSummary 방식과 동일 */}
-      <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+      <div
+        className="fixed left-0 right-0 z-[10000] flex flex-col items-center justify-end pointer-events-none px-3"
+        style={{ bottom: kbOffset + 20, transition: 'bottom 0.15s ease-out' }}
+      >
         <motion.div
           initial={false}
           animate={{
-            height: isOpen ? 'calc(100dvh - 70px)' : 0,
+            height: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0,
             opacity: isOpen ? 1 : 0,
           }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}

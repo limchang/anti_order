@@ -297,7 +297,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex flex-col h-full overflow-hidden"
               >
-                <div className="px-5 mb-4 space-y-2.5 shrink-0 overflow-visible">
+                <div className="px-5 pt-4 mb-4 space-y-2.5 shrink-0 overflow-visible">
                   {undecidedCount > 0 && (
                     <motion.div
                       initial={{ scale: 0.95, opacity: 0 }}

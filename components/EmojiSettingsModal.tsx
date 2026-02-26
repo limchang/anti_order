@@ -1,18 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Smile, Dices } from 'lucide-react';
+import { X, Dices, ChevronLeft } from 'lucide-react';
 import { AppSettings, EmojiCategory } from '../types';
 import { DEFAULT_EMOJIS } from '../App';
 
 interface EmojiSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   settings: AppSettings;
   onUpdateSettings: (settings: AppSettings) => void;
 }
 
-export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, onClose, settings, onUpdateSettings }) => {
+export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, onClose, onBack, settings, onUpdateSettings }) => {
   const [editingEmojiIdx, setEditingEmojiIdx] = useState<number | null>(null);
 
   useEffect(() => {
@@ -69,9 +70,14 @@ export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, 
                 className="flex flex-col h-full overflow-hidden"
               >
                 {/* 헤더 */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">이모지 설정</h2>
-                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  {onBack ? (
+                    <button onClick={onBack} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 hover:bg-toss-grey-200 transition-colors shrink-0">
+                      <ChevronLeft size={20} />
+                    </button>
+                  ) : <div className="w-8 shrink-0" />}
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">이모지 설정</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors shrink-0">
                     <X size={18} />
                   </button>
                 </div>
