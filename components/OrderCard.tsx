@@ -27,7 +27,7 @@ interface OrderCardProps {
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
 }
 
-const CATEGORY_EMOJIS: Record<EmojiCategory, string[]> = {
+export const CATEGORY_EMOJIS: Record<EmojiCategory, string[]> = {
   ANIMALS: ["🦁", "🐯", "🐨", "🐷", "🐸", "🐵", "🐔", "🐧", "🐧", "🐦", "🐥", "🦉", "🐺", "북극곰", "🐴", "🦄", "🐝"],
   FACES: ["😀", "😍", "😎", "🤔", "😴", "🤩", "🥳", "🥺", "😡", "🤢", "🤡", "👻", "👽", "🤖", "💩", "✨"],
   HANDS: ["👍🏻", "👎🏻", "👊🏻", "✌🏻", "👌🏻", "✋🏻", "👐🏻", "🙌🏻", "👏🏻", "🙏🏻", "🤝🏻", "🤘🏻", "🤙🏻", "👋🏻", "✍🏻", "💪🏻"],
@@ -287,7 +287,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             className="flex-1 flex flex-col"
           >
             <div className="grid grid-cols-4 gap-1.5 flex-1 items-center justify-items-center overflow-y-auto no-scrollbar pt-1 pb-2">
-              <button onClick={() => handleAvatarSelect(CATEGORY_EMOJIS[appSettings.randomCategory][Math.floor(Math.random() * 16)])} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/50 text-toss-blue transition-transform active:scale-90 border border-toss-blue/10"><Dices size={20} /></button>
+              <button onClick={() => handleAvatarSelect("🎲")} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/50 text-toss-blue transition-transform active:scale-90 border border-toss-blue/10"><Dices size={20} /></button>
               {appSettings.defaultEmojis.map(emoji => (
                 <button key={emoji} onClick={() => handleAvatarSelect(emoji)} className="w-9 h-9 flex items-center justify-center rounded-xl transition-transform active:scale-90 leading-none">
                   <EmojiRenderer emoji={emoji} size={28} />

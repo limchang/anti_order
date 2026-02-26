@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Plus, Coffee, CakeSlice, HelpCircle, GripVertical, Search, Star, Trash2 } from 'lucide-react';
 import {
   DndContext,
@@ -186,107 +187,122 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[4px]" onClick={onClose}>
-      <div className="bg-white rounded-[24px] w-full max-w-[320px] max-h-[85vh] flex flex-col shadow-toss-elevated overflow-hidden border border-toss-grey-100 animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-4 pt-4 pb-1 shrink-0">
-          <h2 className="text-[15px] font-black text-toss-grey-900 flex items-center gap-2">
-            <Check size={18} className="text-toss-blue" strokeWidth={3} /> 메뉴판
-          </h2>
-          <button onClick={onClose} className="p-1.5 text-toss-grey-400 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={18} /></button>
-        </div>
-
-        <div className="px-3 pt-2 pb-1.5 space-y-2 shrink-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-toss-grey-400" size={14} />
-            <input
-              ref={searchInputRef}
-              type="text"
-              lang="ko"
-              enterKeyHint="search"
-              placeholder={`${activeTab === 'DRINK' ? '음료' : '디저트'} 검색/추가`}
-              className="w-full pl-9 pr-8 py-2.5 bg-toss-grey-100 rounded-xl text-[13px] font-black focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-toss-grey-400 hover:text-toss-grey-600"><X size={14} /></button>
-            )}
-          </div>
-
-          <div className="flex p-0.5 bg-toss-grey-100 rounded-xl">
-            <button onClick={() => setActiveTab('DRINK')} className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'DRINK' ? 'bg-white text-toss-blue shadow-sm' : 'text-toss-grey-400'}`}>
-              <Coffee size={14} /><span>음료</span>
-            </button>
-            <button onClick={() => setActiveTab('DESSERT')} className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'DESSERT' ? 'bg-white text-amber-500 shadow-sm' : 'text-toss-grey-400'}`}>
-              <CakeSlice size={14} /><span>디저트</span>
-            </button>
-          </div>
-        </div>
-
-        {searchQuery.trim() && !exactMatch && (
-          <div className="px-3 pb-1 shrink-0 animate-in slide-in-from-top-1">
-            <button onClick={handleQuickAdd} className="w-full py-2.5 bg-toss-blueLight text-toss-blue rounded-xl font-black text-[12px] flex items-center justify-center gap-1.5 border border-toss-blue/10 active:scale-[0.98] transition-transform">
-              <Plus size={14} strokeWidth={3} /> '{searchQuery}' 등록만 하기
-            </button>
-          </div>
-        )}
-
-        {regSuccess && (
-          <div className="px-3 pb-1 shrink-0 animate-in fade-in zoom-in duration-300">
-            <div className="w-full py-2 bg-green-50 text-green-600 rounded-lg font-black text-[11px] flex items-center justify-center gap-1.5 border border-green-200">
-              <Check size={12} strokeWidth={4} /> 메뉴판에 추가되었습니다
-            </div>
-          </div>
-        )}
-
-        <div className="flex-1 overflow-y-auto custom-scrollbar px-2 space-y-1 pb-2">
-          <div className="px-2 mb-2 space-y-1">
-            <p className="text-[9px] font-bold text-amber-500 leading-tight">
-              * 별(★) 아이콘 선택 시, 주문할 때 항상 표시되는 퀵메뉴에 포함됩니다.
-            </p>
-          </div>
-          {filteredList.length === 0 && !searchQuery.trim() ? (
-            <div className="py-10 text-center text-toss-grey-400 text-[12px] font-black opacity-50">메뉴를 검색해보세요.</div>
-          ) : filteredList.length === 0 ? (
-            <div className="py-10 text-center text-toss-grey-400 text-[12px] font-black opacity-50">검색 결과가 없습니다.</div>
-          ) : (
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={filteredList} strategy={verticalListSortingStrategy}>
-                {filteredList.map((item) => (
-                  <SortableMenuItem
-                    key={item} id={item} item={item} activeTab={activeTab} appSettings={appSettings}
-                    orderedSizes={getItemOrderedSizes(item)}
-                    isCurrentlySelected={selectedItem === item}
-                    isChecked={activeTab === 'DRINK' && checkedDrinkItems.includes(item)}
-                    showCheck={activeTab === 'DRINK'}
-                    handleItemClick={handleItemClick}
-                    onRemove={onRemove}
-                    onToggleCheck={() => onUpdateChecked(item, !checkedDrinkItems.includes(item))}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-          )}
-        </div>
-
-        <div className="p-3 bg-white border-t border-toss-grey-100 grid grid-cols-2 gap-2.5 shrink-0">
-          <button
-            onClick={() => {
-              if (onDeleteSelection) onDeleteSelection();
-              else onSelect([{ itemName: '미정', type: 'DRINK' }]);
-              onClose();
-            }}
-            className="h-11 rounded-2xl font-black bg-toss-redLight text-toss-red active:scale-95 transition-all text-[13px] flex items-center justify-center gap-1.5"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[10000] flex flex-col justify-end pb-6 px-4 bg-black/40 backdrop-blur-sm"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ y: 400, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 400, opacity: 0 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="mx-auto w-full max-w-lg bg-white rounded-[32px] max-h-[85vh] flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 overflow-hidden"
+            onClick={e => e.stopPropagation()}
           >
-            <Trash2 size={16} /> 주문 삭제
-          </button>
-          <button onClick={onClose} className="h-11 rounded-2xl font-black bg-toss-grey-900 text-white active:scale-95 transition-all text-[13px]">닫기</button>
-        </div>
-      </div>
-    </div>
+            <div className="flex items-center justify-between px-4 pt-4 pb-1 shrink-0">
+              <h2 className="text-[15px] font-black text-toss-grey-900 flex items-center gap-2">
+                <Check size={18} className="text-toss-blue" strokeWidth={3} /> 메뉴판
+              </h2>
+              <button onClick={onClose} className="p-1.5 text-toss-grey-400 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={18} /></button>
+            </div>
+
+            <div className="px-3 pt-2 pb-1.5 space-y-2 shrink-0">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-toss-grey-400" size={14} />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  lang="ko"
+                  enterKeyHint="search"
+                  placeholder={`${activeTab === 'DRINK' ? '음료' : '디저트'} 검색/추가`}
+                  className="w-full pl-9 pr-8 py-2.5 bg-toss-grey-100 rounded-xl text-[13px] font-black focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-toss-grey-400 hover:text-toss-grey-600"><X size={14} /></button>
+                )}
+              </div>
+
+              <div className="flex p-0.5 bg-toss-grey-100 rounded-xl">
+                <button onClick={() => setActiveTab('DRINK')} className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'DRINK' ? 'bg-white text-toss-blue shadow-sm' : 'text-toss-grey-400'}`}>
+                  <Coffee size={14} /><span>음료</span>
+                </button>
+                <button onClick={() => setActiveTab('DESSERT')} className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-black transition-all ${activeTab === 'DESSERT' ? 'bg-white text-amber-500 shadow-sm' : 'text-toss-grey-400'}`}>
+                  <CakeSlice size={14} /><span>디저트</span>
+                </button>
+              </div>
+            </div>
+
+            {searchQuery.trim() && !exactMatch && (
+              <div className="px-3 pb-1 shrink-0 animate-in slide-in-from-top-1">
+                <button onClick={handleQuickAdd} className="w-full py-2.5 bg-toss-blueLight text-toss-blue rounded-xl font-black text-[12px] flex items-center justify-center gap-1.5 border border-toss-blue/10 active:scale-[0.98] transition-transform">
+                  <Plus size={14} strokeWidth={3} /> '{searchQuery}' 등록만 하기
+                </button>
+              </div>
+            )}
+
+            {regSuccess && (
+              <div className="px-3 pb-1 shrink-0 animate-in fade-in zoom-in duration-300">
+                <div className="w-full py-2 bg-green-50 text-green-600 rounded-lg font-black text-[11px] flex items-center justify-center gap-1.5 border border-green-200">
+                  <Check size={12} strokeWidth={4} /> 메뉴판에 추가되었습니다
+                </div>
+              </div>
+            )}
+
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-2 space-y-1 pb-2">
+              <div className="px-2 mb-2 space-y-1">
+                <p className="text-[9px] font-bold text-amber-500 leading-tight">
+                  * 별(★) 아이콘 선택 시, 주문할 때 항상 표시되는 퀵메뉴에 포함됩니다.
+                </p>
+              </div>
+              {filteredList.length === 0 && !searchQuery.trim() ? (
+                <div className="py-10 text-center text-toss-grey-400 text-[12px] font-black opacity-50">메뉴를 검색해보세요.</div>
+              ) : filteredList.length === 0 ? (
+                <div className="py-10 text-center text-toss-grey-400 text-[12px] font-black opacity-50">검색 결과가 없습니다.</div>
+              ) : (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={filteredList} strategy={verticalListSortingStrategy}>
+                    {filteredList.map((item) => (
+                      <SortableMenuItem
+                        key={item} id={item} item={item} activeTab={activeTab} appSettings={appSettings}
+                        orderedSizes={getItemOrderedSizes(item)}
+                        isCurrentlySelected={selectedItem === item}
+                        isChecked={activeTab === 'DRINK' && checkedDrinkItems.includes(item)}
+                        showCheck={activeTab === 'DRINK'}
+                        handleItemClick={handleItemClick}
+                        onRemove={onRemove}
+                        onToggleCheck={() => onUpdateChecked(item, !checkedDrinkItems.includes(item))}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              )}
+            </div>
+
+            <div className="p-3 bg-white border-t border-toss-grey-100 grid grid-cols-2 gap-2.5 shrink-0">
+              <button
+                onClick={() => {
+                  if (onDeleteSelection) onDeleteSelection();
+                  else onSelect([{ itemName: '미정', type: 'DRINK' }]);
+                  onClose();
+                }}
+                className="h-11 rounded-2xl font-black bg-toss-redLight text-toss-red active:scale-95 transition-all text-[13px] flex items-center justify-center gap-1.5"
+              >
+                <Trash2 size={16} /> 주문 삭제
+              </button>
+              <button onClick={onClose} className="h-11 rounded-2xl font-black bg-toss-grey-900 text-white active:scale-95 transition-all text-[13px]">닫기</button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

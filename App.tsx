@@ -11,6 +11,8 @@ import { EmojiSettingsModal } from './components/EmojiSettingsModal.tsx';
 import { QuickMemosModal } from './components/QuickMemosModal.tsx';
 import { MenuManagementModal } from './components/MenuManagementModal.tsx';
 import { HistoryModal } from './components/HistoryModal.tsx';
+import { SettingsModal } from './components/SettingsModal';
+import { CATEGORY_EMOJIS } from './components/OrderCard';
 
 const SETTINGS_STORAGE_KEY = 'cafesync_settings_v1';
 const HISTORY_STORAGE_KEY = 'cafesync_history_v1';
@@ -451,6 +453,14 @@ function App() {
               if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋' && idx < tableEmojis.length) {
                 newItems[i] = { ...newItems[i], avatar: tableEmojis[idx] };
                 idx++;
+              }
+            }
+          } else if (!beforeAvatar && updates.avatar === "🎲") {
+            const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
+            newItems[targetIdx] = { ...newItems[targetIdx], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
+            for (let i = 0; i < newItems.length; i++) {
+              if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋') {
+                newItems[i] = { ...newItems[i], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
               }
             }
           }

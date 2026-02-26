@@ -175,7 +175,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     });
   }, [groups, appSettings.showDrinkSize]);
 
-  const totalItemCount = useMemo(() => aggregatedOrders.reduce((acc, curr) => acc + curr.count, 0), [aggregatedOrders]);
+  const totalDrinkCount = useMemo(() => aggregatedOrders.filter(o => o.type === 'DRINK').reduce((acc, curr) => acc + curr.count, 0), [aggregatedOrders]);
+  const totalDessertCount = useMemo(() => aggregatedOrders.filter(o => o.type === 'DESSERT').reduce((acc, curr) => acc + curr.count, 0), [aggregatedOrders]);
+  const totalItemCount = totalDrinkCount + totalDessertCount;
 
   const handleStartEditName = (groupId: string, currentName: string) => {
     setEditingGroupId(groupId);
@@ -607,9 +609,36 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 <div className="px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]">
                   <div className="flex items-center justify-between px-2">
                     <span className="text-[13px] font-black text-toss-grey-500 bg-toss-grey-100/80 px-3 py-1.5 rounded-xl border border-toss-grey-200/50">총원 {totalPeople}명</span>
-                    <div className="flex items-baseline gap-1.5 bg-toss-grey-50 px-4 py-1.5 rounded-2xl border border-toss-grey-100 shadow-sm">
-                      <span className="text-[28px] font-black text-toss-grey-900 tabular-nums tracking-tighter">{totalItemCount}</span>
-                      <span className="text-[14px] font-black text-toss-grey-400 uppercase">개</span>
+                    <div className="flex items-center gap-2">
+                      {totalDrinkCount > 0 && (
+                        <div className="flex items-baseline gap-1 text-toss-blue">
+                          <span className="text-[12px] font-black opacity-80">음료</span>
+                          <span className="text-[20px] font-black tabular-nums tracking-tighter">{totalDrinkCount}</span>
+                          <span className="text-[13px] font-black opacity-80 uppercase leading-none">잔</span>
+                        </div>
+                      )}
+
+                      {totalDrinkCount > 0 && totalDessertCount > 0 && (
+                        <div className="w-[1px] h-3 bg-toss-grey-200"></div>
+                      )}
+
+                      {totalDessertCount > 0 && (
+                        <div className="flex items-baseline gap-1 text-amber-500">
+                          <span className="text-[12px] font-black opacity-80">디저트</span>
+                          <span className="text-[20px] font-black tabular-nums tracking-tighter">{totalDessertCount}</span>
+                          <span className="text-[13px] font-black opacity-80 uppercase leading-none">개</span>
+                        </div>
+                      )}
+
+                      {(totalDrinkCount > 0 || totalDessertCount > 0) && (
+                        <div className="w-[1px] h-3 bg-toss-grey-200 mix-blend-multiply"></div>
+                      )}
+
+                      <div className="flex items-baseline gap-1 ml-1 pl-1">
+                        <span className="text-[12px] font-black text-toss-grey-500 opacity-80">총</span>
+                        <span className="text-[24px] font-black text-toss-grey-900 tabular-nums tracking-tighter">{totalItemCount}</span>
+                        <span className="text-[14px] font-black text-toss-grey-400 uppercase">개</span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex gap-3">
