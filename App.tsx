@@ -458,9 +458,17 @@ function App() {
           } else if (!beforeAvatar && updates.avatar === "🎲") {
             const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
             newItems[targetIdx] = { ...newItems[targetIdx], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
-            for (let i = 0; i < newItems.length; i++) {
-              if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋') {
-                newItems[i] = { ...newItems[i], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
+
+            // "첫번째 사람" 눌렀을 때만 전체 적용
+            const firstEmptyIdx = newItems.findIndex(i => !i.avatar && i.avatar !== '😋' && i.id !== id);
+            // targetIdx가 테이블의 첫번째 항목이거나, 아직 아바타가 없는 첫번째 사람일 경우 동일하게 적용
+            const isFirst = targetIdx === 0 || targetIdx < firstEmptyIdx || firstEmptyIdx === -1;
+
+            if (isFirst) {
+              for (let i = 0; i < newItems.length; i++) {
+                if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋') {
+                  newItems[i] = { ...newItems[i], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
+                }
               }
             }
           }
