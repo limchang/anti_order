@@ -489,60 +489,99 @@ function App() {
 
   return (
     <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden">
-      {/* 상단 광고 배너 영역 */}
-      <header className="bg-toss-grey-50 fixed top-0 left-0 right-0 z-[100] border-b border-toss-grey-100 flex flex-col items-center justify-center p-2 h-14 cursor-pointer hover:bg-toss-grey-100 transition-colors">
-        <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-toss-grey-400 mb-0.5 tracking-wider uppercase">Advertisement</span>
-          <span className="text-[13px] font-black text-toss-grey-500 tracking-tight">상단 배너 광고 영역</span>
+      {/* 상단 헤더 & 광고 배너 영역 */}
+      <header className="bg-white fixed top-0 left-0 right-0 z-[100] border-b border-toss-grey-100 flex items-center justify-between px-3 h-14 shadow-sm">
+        <div className="flex-1 w-full max-w-[400px] h-full overflow-hidden flex items-center justify-start rounded-lg">
+          <iframe
+            srcDoc={`
+              <html>
+                <head><style>body { margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; background: transparent; }</style></head>
+                <body>
+                  <script src="https://ads-partners.coupang.com/g.js"></script>
+                  <script>
+                    new PartnersCoupang.G({"id":968136,"template":"carousel","trackingCode":"AF9552419","width":"100%","height":"50","tsource":""});
+                  </script>
+                </body>
+              </html>
+            `}
+            width="100%"
+            height="50"
+            frameBorder="0"
+            scrolling="no"
+            title="Coupang Ad"
+            style={{ maxWidth: '400px' }}
+          />
         </div>
+        <button onClick={() => setIsMainMenuOpen(true)} className="w-10 h-10 flex items-center justify-center bg-toss-grey-100 text-toss-grey-800 rounded-full active:scale-90 transition-all shrink-0 ml-3">
+          <Menu size={20} strokeWidth={2.5} />
+        </button>
       </header>
 
-      {/* 우측 하단 플로팅 햄버거 메뉴 (위치 조정) */}
-      <div className="fixed bottom-36 right-4 z-[1050] flex flex-col items-end pointer-events-none">
-        <AnimatePresence>
-          {isMainMenuOpen && (
-            <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="w-56 mb-3 bg-white rounded-3xl shadow-toss-elevated border border-toss-grey-100 p-2 pointer-events-auto origin-bottom-right drop-shadow-2xl">
-              <div className="p-1.5 border-b border-toss-grey-50"><span className="text-[9px] font-black text-toss-grey-400 uppercase tracking-widest px-1">주문 관리</span></div>
-              <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 rounded-2xl"><History size={14} /> 저장된 주문 내역</button>
-              <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 rounded-2xl"><UtensilsCrossed size={14} /> 메뉴판 관리</button>
-              <div className="p-1.5 border-t border-b border-toss-grey-50 mt-1"><span className="text-[9px] font-black text-toss-grey-400 uppercase tracking-widest px-1">기능 설정</span></div>
-              <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 rounded-2xl"><Smile size={14} /> 이모지 설정</button>
-              <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 rounded-2xl"><StickyNote size={14} /> 요청사항 관리</button>
-              <div className="p-1.5 border-t border-b border-toss-grey-50 mt-1"><span className="text-[9px] font-black text-toss-grey-400 uppercase tracking-widest px-1">시스템</span></div>
-              <div className="p-1 space-y-1">
-                <div className="flex items-center justify-between px-3 py-1.5">
-                  <span className="text-[12px] font-bold text-toss-grey-700">사이즈 옵션</span>
-                  <button
-                    onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })}
-                    className={`w-9 h-5 rounded-full transition-all relative ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
-                  >
-                    <div className={`absolute top-0.5 left-[3.5px] w-4 h-4 bg-white rounded-full transition-all duration-200 transform ${appSettings.showDrinkSize ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
+      {/* 전체 메뉴 바텀시트 */}
+      <AnimatePresence>
+        {isMainMenuOpen && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
+            <motion.div
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[36px] shadow-toss-elevated z-[2001] px-6 pt-4 pb-12 flex flex-col max-w-lg mx-auto overflow-hidden"
+            >
+              <div className="w-12 h-1.5 bg-toss-grey-200 rounded-full mx-auto mb-6 shrink-0" />
+              <h2 className="text-xl font-black text-toss-grey-900 mb-6 px-2">전체 메뉴</h2>
+
+              <div className="overflow-y-auto no-scrollbar space-y-6 px-2 pb-10 custom-scrollbar">
+                <div>
+                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
+                  <div className="space-y-1">
+                    <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
+                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판 관리</button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between px-3 py-1.5">
-                  <span className="text-[12px] font-bold text-toss-grey-700">함께 먹는 메뉴</span>
-                  <button
-                    onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })}
-                    className={`w-9 h-5 rounded-full transition-all relative ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
-                  >
-                    <div className={`absolute top-0.5 left-[3.5px] w-4 h-4 bg-white rounded-full transition-all duration-200 transform ${appSettings.showSharedMenu ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
+
+                <div>
+                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
+                  <div className="space-y-1">
+                    <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
+                    <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-2 p-1.5 border-t border-toss-grey-50">
-                <button onClick={handleResetAllTables} className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-black text-toss-red hover:bg-toss-redLight rounded-2xl transition-all shadow-sm active:scale-95"><RefreshCw size={14} strokeWidth={3} /> 초기화</button>
+
+                <div>
+                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
+                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
+                      <button
+                        onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })}
+                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                      >
+                        <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between px-4 py-3 border-t border-toss-grey-200/50">
+                      <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
+                      <button
+                        onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })}
+                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                      >
+                        <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-4 text-[14px] font-black text-white bg-toss-grey-800 hover:bg-toss-grey-900 rounded-[20px] transition-all shadow-md active:scale-95"><RotateCcw size={16} strokeWidth={3} /> 모든 데이터 앱 전체 초기화</button>
+                </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-        <button onClick={() => setIsMainMenuOpen(!isMainMenuOpen)} className={`pointer-events-auto p-3.5 w-14 h-14 flex items-center justify-center rounded-full shadow-toss-elevated transition-all active:scale-90 ${isMainMenuOpen ? 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 rotate-180' : 'bg-toss-grey-800 text-white hover:bg-toss-grey-900 border-2 border-white/20'}`}>
-          {isMainMenuOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
-        </button>
-      </div>
+          </>
+        )}
+      </AnimatePresence>
 
-      <main className="flex-1 py-1 mt-[56px] relative w-full overflow-hidden flex flex-col">
+      <main className="flex-1 py-1 mt-[56px] relative w-full overflow-visible flex flex-col">
         {/* 테이블 네비게이션 (Sticky top) */}
-        <div className="sticky top-0 z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-2.5 px-4 w-full shadow-sm mb-2 shrink-0">
+        <div className="sticky top-[56px] z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-3 px-4 w-full shadow-sm mb-2 shrink-0 transition-all">
           <div className="flex items-center justify-start gap-4 overflow-x-auto no-scrollbar max-w-6xl mx-auto w-full">
             {groups.map(group => {
               const isActive = activeGroupId === group.id;

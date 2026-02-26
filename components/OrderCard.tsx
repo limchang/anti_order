@@ -313,22 +313,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           >
             <div className="w-full flex flex-col items-center relative py-1 shrink-0 overflow-visible">
               {/* 상태 표시: 좌측 상단 내부 아이콘 스타일 */}
-              <div className="absolute -top-[9px] -left-[9px] z-[50] flex flex-col items-start pointer-events-none">
+              <div className="absolute top-2 left-2 z-[50] flex flex-col items-start pointer-events-none">
                 <AnimatePresence mode="popLayout">
                   {isUndecided && (
-                    <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-yellow-400 text-yellow-900 rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
+                    <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-yellow-400 text-yellow-900 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
                       <Clock size={12} strokeWidth={3} />
                       <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
                     </motion.div>
                   )}
                   {isNotEating && (
-                    <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-toss-grey-300 text-toss-grey-700 rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
+                    <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-toss-grey-300 text-toss-grey-700 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
                       <X size={12} strokeWidth={3} />
                       <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">안 먹음</span>
                     </motion.div>
                   )}
                   {isDecided && (
-                    <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-toss-blue text-white rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
+                    <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-toss-blue text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
                       <Check size={12} strokeWidth={3} />
                       <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
                     </motion.div>
@@ -338,7 +338,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               </div>
 
               {/* 우측 상단 액션 버튼 */}
-              <div className="absolute -top-[9px] -right-[9px] z-[50] flex gap-1 items-start pointer-events-none">
+              <div className="absolute top-2 right-2 z-[50] flex gap-1 items-start pointer-events-none">
                 <AnimatePresence>
                   {(isDecided || isNotEating) && (
                     <motion.button
@@ -347,7 +347,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
-                      className="w-7 h-7 bg-toss-grey-100 text-toss-grey-600 rounded-bl-[16px] rounded-tr-[4px] rounded-tl-[4px] rounded-br-[4px] shadow-sm border border-toss-grey-200/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-toss-grey-200 group"
+                      className="w-7 h-7 bg-toss-grey-100 text-toss-grey-600 rounded-lg shadow-sm border border-toss-grey-200/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-toss-grey-200 group"
                       title="되돌리기"
                     >
                       <RotateCcw size={12} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
@@ -356,7 +356,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 </AnimatePresence>
                 <button
                   onClick={() => onRemove(order.id)}
-                  className="w-7 h-7 bg-red-50 text-red-500 rounded-tr-[24px] rounded-bl-[4px] rounded-tl-[4px] rounded-br-[4px] shadow-sm border border-red-100/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-red-100"
+                  className="w-7 h-7 bg-red-50 text-red-500 rounded-lg shadow-sm border border-red-100/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-red-100"
                   title="삭제"
                 >
                   <Trash2 size={12} strokeWidth={3} />
@@ -614,7 +614,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     </div>
                   ))}
                   <div className="flex items-center gap-1.5 mt-1.5 w-full">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-blueLight text-toss-blue rounded-lg font-black text-[10px] flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm border border-toss-blue/10"><Plus size={12} strokeWidth={3} /> 추가</button>
+                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-blueLight text-toss-blue rounded-lg font-black text-[10px] flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm border border-toss-blue/10"><Plus size={12} strokeWidth={3} /> 메뉴 추가</button>
                   </div>
                 </div>
               )}
