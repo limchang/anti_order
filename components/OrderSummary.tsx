@@ -598,7 +598,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                 <div className="px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]">
                   <div className="flex items-center justify-between px-2">
-                    <span className="text-[12px] font-black text-toss-grey-400 uppercase tracking-[0.15em] opacity-80">Final Order Count</span>
+                    <span className="text-[13px] font-black text-toss-grey-500 bg-toss-grey-100/80 px-3 py-1.5 rounded-xl border border-toss-grey-200/50">총원 {totalPeople}명</span>
                     <div className="flex items-baseline gap-1.5 bg-toss-grey-50 px-4 py-1.5 rounded-2xl border border-toss-grey-100 shadow-sm">
                       <span className="text-[28px] font-black text-toss-grey-900 tabular-nums tracking-tighter">{totalItemCount}</span>
                       <span className="text-[14px] font-black text-toss-grey-400 uppercase">개</span>

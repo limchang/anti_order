@@ -248,7 +248,6 @@ function App() {
   };
 
   const handleResetAllTables = () => {
-    if (!window.confirm("현재 작업 중인 모든 테이블과 주문 정보가 삭제됩니다.\n정말 초기화할까요?")) return;
     setIsMainMenuOpen(false);
 
     setLastGroupsSnapshot([...groups]);
@@ -325,7 +324,7 @@ function App() {
     const container = scrollContainerRef.current;
     if (element && container) {
       isInternalScrolling.current = true;
-      const offsetLeft = element.offsetLeft - (container.clientWidth / 2) + (element.clientWidth / 2);
+      const offsetLeft = element.offsetLeft - 32; // Align to the left of the container with a little padding (e.g. 32px)
       container.scrollTo({ left: offsetLeft, behavior: 'smooth' });
       setTimeout(() => { isInternalScrolling.current = false; }, 500);
     }
