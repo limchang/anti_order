@@ -6,6 +6,7 @@ export type EmojiCategory = 'ANIMALS' | 'FACES' | 'HANDS' | 'NUMBERS';
 
 export interface AppSettings {
   showDrinkSize: boolean;
+  showSharedMenu: boolean;
   quickMemos: string[];
   defaultEmojis: string[];
   randomCategory: EmojiCategory;
@@ -43,11 +44,11 @@ export interface AggregatedOrder {
   size?: DrinkSize;
   count: number;
   memoCounts?: Record<string, number>;
-  individualMemos?: { 
-    memos: string[]; 
-    avatar: string; 
-    personId: string; 
-    groupId: string 
+  individualMemos?: {
+    memos: string[];
+    avatar: string;
+    personId: string;
+    groupId: string
   }[];
 }
 

@@ -98,25 +98,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   }, [isUndecided, isNotEating]);
 
   useEffect(() => {
-    if (isUndecided && !isMoreExpanded && !showAvatarPicker && !activeMemoSubId) {
+    if (isUndecided && !isMoreExpanded) {
       setExpandTimeLeft(5.0);
-      expandIntervalRef.current = setInterval(() => {
-        setExpandTimeLeft(prev => {
-          const next = Math.max(0, prev - 0.1);
-          if (next <= 0) {
-            setIsMoreExpanded(true);
-            if (expandIntervalRef.current) clearInterval(expandIntervalRef.current);
-          }
-          return next;
-        });
-      }, 100);
-    } else {
-      if (expandIntervalRef.current) clearInterval(expandIntervalRef.current);
     }
-    return () => {
-      if (expandIntervalRef.current) clearInterval(expandIntervalRef.current);
-    };
-  }, [isUndecided, isMoreExpanded, showAvatarPicker, activeMemoSubId]);
+  }, [isUndecided, isMoreExpanded]);
 
   useEffect(() => {
     return () => {
@@ -350,21 +335,32 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   )}
                 </AnimatePresence>
 
+              </div>
+
+              {/* 우측 상단 액션 버튼 */}
+              <div className="absolute -top-[9px] -right-[9px] z-[50] flex gap-1 items-start pointer-events-none">
                 <AnimatePresence>
                   {(isDecided || isNotEating) && (
                     <motion.button
-                      key="undo-button"
+                      key="undo"
                       onClick={handleUndoOrder}
-                      initial={{ opacity: 0, y: -10, scale: 0.8 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.8 }}
-                      className="mt-2 ml-[9px] w-9 h-9 bg-white text-toss-grey-600 hover:text-toss-grey-900 hover:bg-toss-grey-50 rounded-full shadow-md border border-toss-grey-200/80 flex items-center justify-center pointer-events-auto active:scale-95 transition-all z-50 group"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="w-7 h-7 bg-toss-grey-100 text-toss-grey-600 rounded-bl-[16px] rounded-tr-[4px] rounded-tl-[4px] rounded-br-[4px] shadow-sm border border-toss-grey-200/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-toss-grey-200 group"
                       title="되돌리기"
                     >
-                      <RotateCcw size={16} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
+                      <RotateCcw size={12} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
                     </motion.button>
                   )}
                 </AnimatePresence>
+                <button
+                  onClick={() => onRemove(order.id)}
+                  className="w-7 h-7 bg-red-50 text-red-500 rounded-tr-[24px] rounded-bl-[4px] rounded-tl-[4px] rounded-br-[4px] shadow-sm border border-red-100/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-red-100"
+                  title="삭제"
+                >
+                  <Trash2 size={12} strokeWidth={3} />
+                </button>
               </div>
 
               <div className="relative inline-block mb-1 z-10 pt-2">
@@ -440,8 +436,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           ))}
                         </div>
                         <button onClick={() => setIsMoreExpanded(true)} className="w-full h-8 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
-                          <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (expandTimeLeft / 5.0)})`, transition: expandTimeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
-                          <span className="relative z-10 flex items-center gap-1.5">{expandTimeLeft === 5.0 ? "더보기" : `${expandTimeLeft.toFixed(1)}초 후 자동 확장`}</span>
+                          <span className="relative z-10 flex items-center gap-1.5">선택 항목 더보기 (전체 메뉴판 보기)</span>
                         </button>
                       </motion.div>
                     ) : (
