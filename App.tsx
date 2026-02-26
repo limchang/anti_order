@@ -561,7 +561,7 @@ function App() {
                 }}
                 className={`min-w-[40px] h-10 px-3.5 rounded-[16px] flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
               >
-                {isActive ? group.name.replace('번 테이블', '') : firstChar}
+                {firstChar}
                 {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
               </motion.button>
             </div>
@@ -581,8 +581,8 @@ function App() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
             <motion.div
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[36px] shadow-toss-elevated z-[2001] px-6 pt-4 pb-6 flex flex-col max-w-lg mx-auto overflow-hidden"
+              initial={{ y: 400, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 400, opacity: 0 }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-6 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-lg bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 z-[2001] px-6 pt-4 pb-6 flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between mt-2 mb-6 px-2">
                 <h2 className="text-xl font-black text-toss-grey-900">전체 메뉴</h2>
@@ -691,8 +691,8 @@ function App() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2002]" />
             <motion.div
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[28px] shadow-toss-elevated z-[2003] px-6 pt-4 pb-6 flex flex-col items-center max-w-lg mx-auto overflow-hidden"
+              initial={{ y: 400, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 400, opacity: 0 }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-6 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-lg bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 z-[2003] px-6 pt-4 pb-6 flex flex-col items-center overflow-hidden"
             >
               <AnimatePresence mode="wait">
                 {manageStep === 'menu' && (
