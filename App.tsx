@@ -428,11 +428,12 @@ function App() {
   };
 
   const handleRemoveUndecided = (personIds: string[]) => {
+    setLastGroupsSnapshot(groups);
     setGroups(prev => prev.map(g => ({
       ...g,
       items: g.items.filter(p => !personIds.includes(p.id))
     })));
-    showToast(`${personIds.length}명을 삭제했습니다.`);
+    showUndoToast(`${personIds.length}명을 삭제했습니다.`);
   };
 
   const handleLoadPeopleOnly = (item: OrderHistoryItem) => {

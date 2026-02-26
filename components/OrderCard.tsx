@@ -436,7 +436,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           ))}
                         </div>
                         <button onClick={() => setIsMoreExpanded(true)} className="w-full h-8 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
-                          <span className="relative z-10 flex items-center gap-1.5">선택 항목 더보기 (전체 메뉴판 보기)</span>
+                          <span className="relative z-10 flex items-center gap-1.5">더보기</span>
                         </button>
                       </motion.div>
                     ) : (

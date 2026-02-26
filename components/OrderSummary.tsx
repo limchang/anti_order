@@ -58,6 +58,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   groups, onSaveHistory, onJumpToOrder, onUpdateGroupName, onSetNotEating, onRemoveUndecided, onRemoveOrder, appSettings, expandState, onSetExpandState
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('all');
+  const [isUndecidedExpanded, setIsUndecidedExpanded] = useState(false);
   const [showTopShadow, setShowTopShadow] = useState(false);
   const [showBottomShadow, setShowBottomShadow] = useState(false);
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -318,21 +319,21 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               className="p-4 bg-amber-50 rounded-[24px] border border-amber-100 shadow-sm animate-in slide-in-from-top-2"
             >
               <div className="flex items-center justify-between mb-3 px-1">
-                <span className="text-[12px] font-black text-amber-900 tracking-tight flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                <button
+                  onClick={() => setIsUndecidedExpanded(!isUndecidedExpanded)}
+                  className="flex items-center gap-1.5 active:scale-95 transition-all text-left"
+                >
+                  <span className="text-[13px] font-black text-amber-900 tracking-tight flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    미정 인원
+                    <span className="bg-amber-200/50 text-amber-800 px-1.5 py-0.5 rounded-md ml-0.5">{undecidedCount}명</span>
                   </span>
-                  미정 인원 즉시 관리
-                  <span className="bg-amber-200/50 text-amber-800 px-1.5 py-0.5 rounded-md ml-0.5">{undecidedCount}명</span>
-                </span>
+                  {isUndecidedExpanded ? <ChevronUp size={16} className="text-amber-700" /> : <ChevronDown size={16} className="text-amber-700" />}
+                </button>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => onSetNotEating?.(undecidedPersons.map(p => p.id))}
-                    className="h-8 px-3 bg-white border border-amber-200 rounded-xl text-[10px] font-black text-amber-900 shadow-sm flex items-center gap-1.5 active:scale-95 transition-all"
-                  >
-                    <UserMinus size={13} strokeWidth={2.5} /> 전체 안먹음
-                  </button>
                   <button
                     onClick={() => onRemoveUndecided?.(undecidedPersons.map(p => p.id))}
                     className="h-8 px-3 bg-white border border-toss-red/20 rounded-xl text-[10px] font-black text-toss-red shadow-sm flex items-center gap-1.5 active:scale-95 transition-all"
@@ -341,75 +342,86 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   </button>
                 </div>
               </div>
-              <div className="relative overflow-hidden rounded-b-[20px]">
-                <div
-                  ref={undecidedScrollRef}
-                  onScroll={checkUndecidedShadow}
-                  className="flex flex-col gap-2 max-h-[220px] overflow-y-auto no-scrollbar pr-1 py-1"
-                >
-                  <AnimatePresence mode="popLayout" initial={false} onExitComplete={checkUndecidedShadow}>
-                    {undecidedPersons.map((p) => (
-                      <motion.div
-                        layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.2 }}
-                        key={p.id}
-                        className="flex items-center gap-3 bg-white p-2.5 rounded-[20px] border border-amber-100 shadow-sm hover:border-amber-300 transition-colors"
-                      >
-                        <div className="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center text-2xl shrink-0 ring-1 ring-amber-100">
-                          <EmojiRenderer emoji={p.avatar || "👤"} size={28} />
-                        </div>
 
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-black text-toss-grey-900 truncate tracking-tight">{p.groupName}</p>
-                          <p className="text-[10px] font-bold text-amber-600 mt-0.5 uppercase tracking-wide">Pending</p>
-                        </div>
-
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => { onJumpToOrder(p.groupId, p.id); onSetExpandState('collapsed'); }}
-                            className="h-9 px-3.5 bg-toss-grey-100 text-toss-grey-700 rounded-xl text-[11px] font-black flex items-center gap-1.5 active:scale-95 transition-all"
-                          >
-                            이동
-                          </button>
-                          <button
-                            onClick={() => onSetNotEating?.([p.id])}
-                            className="h-9 w-9 bg-toss-grey-900 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shadow-sm"
-                          >
-                            <UserMinus size={15} strokeWidth={2.5} />
-                          </button>
-                          <button
-                            onClick={() => onRemoveOrder?.(p.id)}
-                            className="h-9 w-9 bg-toss-redLight text-toss-red rounded-xl flex items-center justify-center active:scale-95 transition-all border border-toss-red/10"
-                          >
-                            <Trash2 size={15} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-                <AnimatePresence>
-                  {showUndecidedShadow && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 via-amber-50/80 to-transparent pointer-events-none flex items-end justify-center pb-1"
+              <AnimatePresence initial={false}>
+                {isUndecidedExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative overflow-hidden rounded-b-[20px]"
+                  >
+                    <div
+                      ref={undecidedScrollRef}
+                      onScroll={checkUndecidedShadow}
+                      className="flex flex-col gap-2 max-h-[220px] overflow-y-auto no-scrollbar pr-1 py-1"
                     >
-                      <motion.div
-                        animate={{ y: [0, 4, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="text-amber-400 bg-white/50 rounded-full p-0.5 backdrop-blur-sm shadow-sm"
-                      >
-                        <ChevronDown size={16} strokeWidth={3} />
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      <AnimatePresence mode="popLayout" initial={false} onExitComplete={checkUndecidedShadow}>
+                        {undecidedPersons.map((p) => (
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.2 }}
+                            key={p.id}
+                            className="flex items-center gap-3 bg-white p-2.5 rounded-[20px] border border-amber-100 shadow-sm hover:border-amber-300 transition-colors"
+                          >
+                            <div className="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center text-2xl shrink-0 ring-1 ring-amber-100">
+                              <EmojiRenderer emoji={p.avatar || "👤"} size={28} />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[13px] font-black text-toss-grey-900 truncate tracking-tight">{p.groupName}</p>
+                              <p className="text-[10px] font-bold text-amber-600 mt-0.5 uppercase tracking-wide">Pending</p>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => { onJumpToOrder(p.groupId, p.id); onSetExpandState('collapsed'); }}
+                                className="h-9 px-3.5 bg-toss-grey-100 text-toss-grey-700 rounded-xl text-[11px] font-black flex items-center gap-1.5 active:scale-95 transition-all"
+                              >
+                                이동
+                              </button>
+                              <button
+                                onClick={() => onSetNotEating?.([p.id])}
+                                className="h-9 w-9 bg-toss-grey-900 text-white rounded-xl flex items-center justify-center active:scale-95 transition-all shadow-sm"
+                              >
+                                <UserMinus size={15} strokeWidth={2.5} />
+                              </button>
+                              <button
+                                onClick={() => onRemoveOrder?.(p.id)}
+                                className="h-9 w-9 bg-toss-redLight text-toss-red rounded-xl flex items-center justify-center active:scale-95 transition-all border border-toss-red/10"
+                              >
+                                <Trash2 size={15} strokeWidth={2.5} />
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                    <AnimatePresence>
+                      {showUndecidedShadow && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 via-amber-50/80 to-transparent pointer-events-none flex items-end justify-center pb-1"
+                        >
+                          <motion.div
+                            animate={{ y: [0, 4, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                            className="text-amber-400 bg-white/50 rounded-full p-0.5 backdrop-blur-sm shadow-sm"
+                          >
+                            <ChevronDown size={16} strokeWidth={3} />
+                          </motion.div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
         </div>
@@ -618,7 +630,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             </motion.button>
           </div>
         </div>
-      </motion.div>
+      </motion.div >
     </>
   );
 };
