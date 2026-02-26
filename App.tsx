@@ -14,6 +14,7 @@ import { HistoryModal } from './components/HistoryModal.tsx';
 
 const SETTINGS_STORAGE_KEY = 'cafesync_settings_v1';
 const HISTORY_STORAGE_KEY = 'cafesync_history_v1';
+const GROUPS_STORAGE_KEY = 'cafesync_groups_v1';
 export const DEFAULT_EMOJIS = ["👨🏻", "👩🏻", "👶🏻", "👦🏻", "👧🏻", "🧓🏻", "👵🏻", "🐶", "😺", "🐯", "🐷", "◰", "◱", "◳", "◲"];
 
 const createEmptyOrder = (): OrderItem => ({
@@ -30,11 +31,11 @@ function App() {
   const [history, setHistory] = useState<OrderHistoryItem[]>([]);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [isSharedSyncActive, setIsSharedSyncActive] = useState(false);
-  
+
   const [lastGroupsSnapshot, setLastGroupsSnapshot] = useState<OrderGroup[] | null>(null);
   const [undoToast, setUndoToast] = useState<{ message: string; id: string } | null>(null);
   const [toast, setToast] = useState<{ message: string; id: string } | null>(null);
-  
+
   const [managingGroupId, setManagingGroupId] = useState<string | null>(null);
   const [manageStep, setManageStep] = useState<'menu' | 'rename' | 'delete'>('menu');
   const [tempName, setTempName] = useState("");
@@ -43,14 +44,14 @@ function App() {
   const [activeInputCount, setActiveInputCount] = useState(0);
   const isAnyInputActive = activeInputCount > 0;
 
-  const [appSettings, setAppSettings] = useState<AppSettings>({ 
+  const [appSettings, setAppSettings] = useState<AppSettings>({
     showDrinkSize: false,
-    quickMemos: ["덜쓰게", "샷추가", "물 따로", "얼음물"],
+    quickMemos: ["연하게", "샷추가", "물 따로", "얼음물"],
     defaultEmojis: [...DEFAULT_EMOJIS],
     randomCategory: 'ANIMALS',
     checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"]
   });
-  
+
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
   const [summaryState, setSummaryState] = useState<'collapsed' | 'expanded' | 'fullscreen'>('collapsed');
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
@@ -58,7 +59,7 @@ function App() {
   const [isMenuMgmtModalOpen, setIsMenuMgmtModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
-  
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const isInternalScrolling = useRef(false);
@@ -68,7 +69,7 @@ function App() {
     setToast({ message, id });
     setTimeout(() => {
       setToast(prev => prev?.id === id ? null : prev);
-    }, 3000); 
+    }, 3000);
   };
 
   const showUndoToast = (message: string) => {
@@ -76,7 +77,7 @@ function App() {
     setUndoToast({ message, id });
     setTimeout(() => {
       setUndoToast(prev => prev?.id === id ? null : prev);
-    }, 3000); 
+    }, 3000);
   };
 
   const [menuModalState, setMenuModalState] = useState<{
@@ -126,24 +127,52 @@ function App() {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
+
+      // Settings Loading
       const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
       if (savedSettings) {
         try {
           const parsed = JSON.parse(savedSettings);
-          // Ensure default emojis are updated to latest version
           if (JSON.stringify(parsed.defaultEmojis) !== JSON.stringify(DEFAULT_EMOJIS)) {
             parsed.defaultEmojis = [...DEFAULT_EMOJIS];
           }
           setAppSettings(prev => ({ ...prev, ...parsed }));
         } catch (e) { console.error(e); }
       }
+
+      // History Loading
       const savedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
       if (savedHistory) {
         try { setHistory(JSON.parse(savedHistory)); } catch (e) { console.error(e); }
       }
-      addGroup();
+
+      // Groups (Order Data) Loading
+      const savedGroups = localStorage.getItem(GROUPS_STORAGE_KEY);
+      if (savedGroups) {
+        try {
+          const parsedGroups = JSON.parse(savedGroups);
+          if (Array.isArray(parsedGroups) && parsedGroups.length > 0) {
+            setGroups(parsedGroups);
+            setActiveGroupId(parsedGroups[0].id);
+          } else {
+            addGroup();
+          }
+        } catch (e) {
+          console.error(e);
+          addGroup();
+        }
+      } else {
+        addGroup();
+      }
     }
   }, []);
+
+  // Persistence: Save Groups
+  useEffect(() => {
+    if (!isInitialMount.current) {
+      localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+    }
+  }, [groups]);
 
   useEffect(() => {
     if (!isInitialMount.current) {
@@ -160,7 +189,7 @@ function App() {
     const newGroupId = uuidv4();
     const tableNums = groups.map(g => parseInt(g.name?.match(/\d+/)?.[0] || "0")).filter(n => n > 0);
     const nextNum = tableNums.length > 0 ? Math.max(...tableNums) + 1 : 1;
-    
+
     let initialSharedSubItems: OrderSubItem[] = [];
     if (isSharedSyncActive && groups.length > 0) {
       const firstShared = groups[0].items.find(i => i.avatar === '😋');
@@ -168,7 +197,7 @@ function App() {
     }
 
     const initialItems = [
-      ...Array.from({ length: 4 }, createEmptyOrder), 
+      ...Array.from({ length: 4 }, createEmptyOrder),
       { id: uuidv4(), avatar: '😋', subItems: initialSharedSubItems }
     ];
 
@@ -186,7 +215,7 @@ function App() {
     setActiveGroupId(null);
     setIsSharedSyncActive(false);
     showToast("모든 테이블이 초기화되었습니다.");
-    addGroup(); 
+    addGroup();
   };
 
   const removeGroup = (id: string) => {
@@ -260,8 +289,8 @@ function App() {
       .filter(g => g.items.some(p => p.subItems.length > 0))
       .map(g => g.name.trim().match(/\d+/)?.[0] || g.name.trim().charAt(0))
       .filter(Boolean);
-    
-    const generatedTitle = tableFirstChars.length > 0 
+
+    const generatedTitle = tableFirstChars.length > 0
       ? tableFirstChars.join(', ') + "번 테이블"
       : "새 주문";
 
@@ -349,7 +378,7 @@ function App() {
                 const matchInNew = newSubItems.find(n => n.itemName === si.itemName);
                 if (matchInNew) return { ...si, quantity: matchInNew.quantity, isSynced: true };
                 const existsInOld = oldSubItems.find(o => o.itemName === si.itemName);
-                if (existsInOld && existsInOld.isSynced && !matchInNew) return null; 
+                if (existsInOld && existsInOld.isSynced && !matchInNew) return null;
                 return si;
               }).filter(Boolean) as any[];
               newSubItems.forEach(n => {
@@ -374,8 +403,15 @@ function App() {
       ...g,
       items: g.items.map(p => {
         if (!personIds.includes(p.id)) return p;
+
+        let nextAvatar = p.avatar;
+        if (!nextAvatar) {
+          nextAvatar = '👤';
+        }
+
         return {
           ...p,
+          avatar: nextAvatar,
           subItems: [{
             id: uuidv4(),
             itemName: '안 먹음',
@@ -412,8 +448,8 @@ function App() {
     showToast('인원 정보만 불러왔습니다.');
   };
 
-  const currentManagingGroup = useMemo(() => 
-    groups.find(g => g.id === managingGroupId), 
+  const currentManagingGroup = useMemo(() =>
+    groups.find(g => g.id === managingGroupId),
     [groups, managingGroupId]
   );
 
@@ -440,7 +476,7 @@ function App() {
 
   const handleUpdateCheckedItems = (name: string, checked: boolean) => {
     setAppSettings(prev => {
-      const newList = checked 
+      const newList = checked
         ? [...new Set([...prev.checkedDrinkItems, name])]
         : prev.checkedDrinkItems.filter(i => i !== name);
       const updated = { ...prev, checkedDrinkItems: newList };
@@ -474,8 +510,8 @@ function App() {
                   <div className="p-1 space-y-1">
                     <div className="flex items-center justify-between px-3 py-1.5">
                       <span className="text-[12px] font-bold text-toss-grey-700">사이즈 옵션</span>
-                      <button 
-                        onClick={() => handleUpdateSettings({...appSettings, showDrinkSize: !appSettings.showDrinkSize})} 
+                      <button
+                        onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })}
                         className={`w-9 h-5 rounded-full transition-all relative ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
                       >
                         <div className={`absolute top-0.5 left-[3.5px] w-4 h-4 bg-white rounded-full transition-all duration-200 transform ${appSettings.showDrinkSize ? 'translate-x-4' : 'translate-x-0'}`} />
@@ -494,7 +530,7 @@ function App() {
 
       <AnimatePresence>
         {!isAnyInputActive && (
-          <motion.div 
+          <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
@@ -508,7 +544,7 @@ function App() {
                   const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
                   return (
                     <div key={group.id} className="relative shrink-0 py-1">
-                      <motion.button 
+                      <motion.button
                         whileTap={{ scale: 0.9 }}
                         onClick={() => {
                           if (activeGroupId === group.id) openManageSheet(group.id);
@@ -536,10 +572,10 @@ function App() {
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-2 no-scrollbar px-4 scroll-smooth">
             {groups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
-                <OrderGroupSection 
-                  group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} 
-                  updateOrder={updateOrder} 
-                  removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))} 
+                <OrderGroupSection
+                  group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId}
+                  updateOrder={updateOrder}
+                  removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
                   addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))}
                   addSharedMenuItem={(gid) => {
                     let initialSharedSubItems: OrderSubItem[] = [];
@@ -550,10 +586,10 @@ function App() {
                     setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: initialSharedSubItems }] } : g))
                   }}
                   onAddMenuItem={addMenuItemToState}
-                  onRemoveMenuItem={() => {}} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} 
-                  onCopyGroupItemToAll={handleCopySharedMenuToAll} 
-                  onDeleteGroupItemFromAll={() => {}} 
-                  appSettings={{...appSettings, isSharedSyncActive}} 
+                  onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })}
+                  onCopyGroupItemToAll={handleCopySharedMenuToAll}
+                  onDeleteGroupItemFromAll={() => { }}
+                  appSettings={{ ...appSettings, isSharedSyncActive }}
                   onRemoveGroup={() => openManageSheet(group.id)}
                   onInputModeChange={handleInputModeChange}
                   onUpdateCheckedItems={handleUpdateCheckedItems}
@@ -565,7 +601,7 @@ function App() {
           <div className="flex flex-col items-center justify-center min-h-[50vh] px-8 animate-in fade-in duration-500">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-toss-card mb-6 border border-toss-grey-100"><LayoutGrid size={40} className="text-toss-grey-200" /></div>
             <h2 className="text-xl font-black text-toss-grey-800 mb-2">등록된 테이블이 없습니다</h2>
-            <p className="text-sm font-bold text-toss-grey-400 text-center mb-8">하단의 버튼을 눌러 테이블을 추가해보세요.<br/>주문을 시작할 수 있습니다.</p>
+            <p className="text-sm font-bold text-toss-grey-400 text-center mb-8">하단의 버튼을 눌러 테이블을 추가해보세요.<br />주문을 시작할 수 있습니다.</p>
             <button onClick={addGroup} className="px-8 py-4 bg-toss-blue text-white rounded-[24px] font-black text-[15px] shadow-lg shadow-toss-blue/20 active:scale-95 transition-all flex items-center gap-2"><Plus size={20} strokeWidth={3} /> 테이블 추가하기</button>
           </div>
         )}
@@ -575,8 +611,8 @@ function App() {
         {managingGroupId && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
-            <motion.div 
-              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} 
+            <motion.div
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[28px] shadow-toss-elevated z-[2001] px-6 pt-1 pb-6 flex flex-col items-center max-w-lg mx-auto overflow-hidden"
             >
               <div className="w-8 h-1 bg-toss-grey-200 rounded-full my-2.5 shrink-0" />
@@ -626,50 +662,50 @@ function App() {
 
       <AnimatePresence>
         {!isAnyInputActive && (
-          <OrderSummary 
-            groups={groups} onSaveHistory={handleSaveOrder} 
-            onJumpToOrder={(gid, pid) => { 
-              scrollToTable(gid); 
-              setHighlightedItemId(pid); 
-              setSummaryState('collapsed'); 
-              setTimeout(() => setHighlightedItemId(null), 2000); 
-            }} 
+          <OrderSummary
+            groups={groups} onSaveHistory={handleSaveOrder}
+            onJumpToOrder={(gid, pid) => {
+              scrollToTable(gid);
+              setHighlightedItemId(pid);
+              setSummaryState('collapsed');
+              setTimeout(() => setHighlightedItemId(null), 2000);
+            }}
             onUpdateGroupName={updateGroupName}
             onSetNotEating={handleSetNotEating}
             onRemoveUndecided={handleRemoveUndecided}
             onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
-            appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState} 
+            appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
           />
         )}
       </AnimatePresence>
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
-      <MenuManagementModal 
-        isOpen={isMenuMgmtModalOpen} 
-        onClose={() => setIsMenuMgmtModalOpen(false)} 
-        drinkItems={drinkMenuItems} 
-        dessertItems={dessertMenuItems} 
+      <MenuManagementModal
+        isOpen={isMenuMgmtModalOpen}
+        onClose={() => setIsMenuMgmtModalOpen(false)}
+        drinkItems={drinkMenuItems}
+        dessertItems={dessertMenuItems}
         checkedDrinkItems={appSettings.checkedDrinkItems}
-        onAdd={addMenuItemToState} 
-        onRemove={handleRemoveMenuItem} 
+        onAdd={addMenuItemToState}
+        onRemove={handleRemoveMenuItem}
         onUpdateChecked={handleUpdateCheckedItems}
-        onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} 
+        onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)}
       />
       <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
-      <MenuSelectionModal 
-        isOpen={menuModalState.isOpen} 
-        onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))} 
-        title="메뉴 선택" 
-        drinkItems={drinkMenuItems} 
-        dessertItems={dessertMenuItems} 
+      <MenuSelectionModal
+        isOpen={menuModalState.isOpen}
+        onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))}
+        title="메뉴 선택"
+        drinkItems={drinkMenuItems}
+        dessertItems={dessertMenuItems}
         checkedDrinkItems={appSettings.checkedDrinkItems}
-        initialSelections={menuModalState.initialSelections} 
-        selectedItem={menuModalState.selectedItem} 
-        initialType={menuModalState.initialType} 
-        onAdd={addMenuItemToState} 
-        onSelect={(s) => { 
+        initialSelections={menuModalState.initialSelections}
+        selectedItem={menuModalState.selectedItem}
+        initialType={menuModalState.initialType}
+        onAdd={addMenuItemToState}
+        onSelect={(s) => {
           const { orderId, subItemId } = menuModalState;
-          if(!orderId) return;
+          if (!orderId) return;
           const person = groups.flatMap(g => g.items).find(i => i.id === orderId);
           const isSharedMenu = person?.avatar === '😋';
           if (isSharedSyncActive && isSharedMenu) {
@@ -689,21 +725,23 @@ function App() {
               })
             })));
           } else {
-            setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => {
-              if(p.id !== orderId) return p;
-              if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) };
-              const newItems: OrderSubItem[] = s.map(sel => {
-                const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스');
-                return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 };
-              });
-              return { ...p, subItems: [...p.subItems, ...newItems] };
-            }) })));
+            setGroups(prev => prev.map(g => ({
+              ...g, items: g.items.map(p => {
+                if (p.id !== orderId) return p;
+                if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) };
+                const newItems: OrderSubItem[] = s.map(sel => {
+                  const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스');
+                  return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 };
+                });
+                return { ...p, subItems: [...p.subItems, ...newItems] };
+              })
+            })));
           }
           setMenuModalState(prev => ({ ...prev, isOpen: false }));
-        }} 
+        }}
         onDeleteSelection={() => {
           const { orderId, subItemId } = menuModalState;
-          if(!orderId || !subItemId) return;
+          if (!orderId || !subItemId) return;
           const person = groups.flatMap(g => g.items).find(i => i.id === orderId);
           const isSharedMenu = person?.avatar === '😋';
           const subItem = person?.subItems.find(si => si.id === subItemId);
@@ -716,37 +754,39 @@ function App() {
               })
             })));
           } else {
-            setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => {
-              if(p.id !== orderId) return p;
-              return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) };
-            }) })));
+            setGroups(prev => prev.map(g => ({
+              ...g, items: g.items.map(p => {
+                if (p.id !== orderId) return p;
+                return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) };
+              })
+            })));
           }
           setMenuModalState(prev => ({ ...prev, isOpen: false }));
         }}
         onRemove={handleRemoveMenuItem}
         onUpdateChecked={handleUpdateCheckedItems}
         onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)}
-        appSettings={appSettings} 
+        appSettings={appSettings}
       />
-      
+
       <AnimatePresence>
         {undoToast && (
-          <motion.button 
-            initial={{ y: 50, x: "-50%", opacity: 0 }} 
-            animate={{ y: 0, x: "-50%", opacity: 1 }} 
-            exit={{ y: 20, x: "-50%", opacity: 0 }} 
+          <motion.button
+            initial={{ y: 50, x: "-50%", opacity: 0 }}
+            animate={{ y: 0, x: "-50%", opacity: 1 }}
+            exit={{ y: 20, x: "-50%", opacity: 0 }}
             onClick={handleUndoAction}
             className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[10000] bg-toss-grey-900 text-white px-5 py-2.5 rounded-full shadow-toss-elevated flex items-center justify-center gap-2 text-[13px] font-black active:scale-95 border border-white/10"
           >
             <RotateCcw size={14} strokeWidth={3} /> 되돌리기
           </motion.button>
         )}
-        
+
         {toast && !undoToast && (
-          <motion.div 
-            initial={{ y: 50, x: "-50%", opacity: 0 }} 
-            animate={{ y: 0, x: "-50%", opacity: 1 }} 
-            exit={{ y: 20, x: "-50%", opacity: 0 }} 
+          <motion.div
+            initial={{ y: 50, x: "-50%", opacity: 0 }}
+            animate={{ y: 0, x: "-50%", opacity: 1 }}
+            exit={{ y: 20, x: "-50%", opacity: 0 }}
             className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[10000] bg-toss-grey-900 text-white px-6 py-3.5 rounded-[24px] shadow-toss-elevated flex items-center gap-3 min-w-[220px]"
           >
             <div className="w-8 h-8 rounded-full bg-toss-blue flex items-center justify-center shrink-0"><Bell size={16} fill="white" /></div>

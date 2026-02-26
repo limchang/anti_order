@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderItem, ItemType, DrinkSize, AppSettings, OrderSubItem, EmojiCategory } from '../types';
-import { Snowflake, Flame, Trash2, Plus, Dices, MoreHorizontal, AlertCircle, ArrowLeft, ChevronDown, ChevronUp, User, MessageCircle, Check, Pencil, Send, Minus, UtensilsCrossed, UserMinus, RefreshCw, CakeSlice, Info, Clock, RotateCcw, Heart, X } from 'lucide-react';
+import { Snowflake, Flame, Trash2, Plus, Dices, MoreHorizontal, AlertCircle, ArrowLeft, ChevronDown, ChevronUp, User, MessageCircle, Check, Pencil, Send, Minus, UtensilsCrossed, UserMinus, RefreshCw, CakeSlice, Info, Clock, RotateCcw, Heart, X, Star } from 'lucide-react';
 import { EmojiRenderer } from './EmojiRenderer.tsx';
 
 interface ExtendedSubItem extends OrderSubItem {
@@ -34,11 +34,11 @@ const CATEGORY_EMOJIS: Record<EmojiCategory, string[]> = {
   NUMBERS: ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "따봉"]
 };
 
-export const OrderCard: React.FC<OrderCardProps> = ({ 
-  order, 
+export const OrderCard: React.FC<OrderCardProps> = ({
+  order,
   drinkItems,
   onAddMenuItem,
-  onUpdate, 
+  onUpdate,
   onRemove,
   onCopyGroupItemToAll,
   onDeleteGroupItemFromAll,
@@ -56,13 +56,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const [customMemo, setCustomMemo] = useState("");
   const [customMenuName, setCustomMenuName] = useState("");
   const [timeLeft, setTimeLeft] = useState(5.0);
-  const [expandTimeLeft, setExpandTimeLeft] = useState(1.5);
+  const [expandTimeLeft, setExpandTimeLeft] = useState(5.0);
   const [localQuickMemos, setLocalQuickMemos] = useState<string[]>([]);
 
   useEffect(() => {
     setLocalQuickMemos(appSettings.quickMemos);
   }, [appSettings.quickMemos]);
-  
+
   const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const expandIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -71,9 +71,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const isNotEating = !!order.avatar && !isGroupAvatar && order.subItems.length === 1 && order.subItems[0].itemName === '안 먹음';
   const isUndecided = !!order.avatar && !isGroupAvatar && !isNotEating && (order.subItems.length === 0 || order.subItems.every(si => si.itemName === '미정'));
   const isDecided = !!order.avatar && !isGroupAvatar && !isNotEating && !isUndecided;
-  
+
   const [justCompleted, setJustCompleted] = useState(false);
   const prevIsUndecided = useRef(isUndecided);
+  const prevAvatarRef = useRef(order.avatar);
+
+  useEffect(() => {
+    if (order.avatar && !prevAvatarRef.current) {
+      setShowAvatarPicker(false);
+    }
+    prevAvatarRef.current = order.avatar;
+  }, [order.avatar]);
 
   useEffect(() => {
     const isActive = isDirectInputMode || isMemoDirectInputMode;
@@ -83,7 +91,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   useEffect(() => {
     if (prevIsUndecided.current && !isUndecided && !isNotEating) {
       setJustCompleted(true);
-      const timer = setTimeout(() => setJustCompleted(false), 600); 
+      const timer = setTimeout(() => setJustCompleted(false), 600);
       return () => clearTimeout(timer);
     }
     prevIsUndecided.current = isUndecided;
@@ -91,7 +99,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   useEffect(() => {
     if (isUndecided && !isMoreExpanded && !showAvatarPicker && !activeMemoSubId) {
-      setExpandTimeLeft(1.5);
+      setExpandTimeLeft(5.0);
       expandIntervalRef.current = setInterval(() => {
         setExpandTimeLeft(prev => {
           const next = Math.max(0, prev - 0.1);
@@ -141,22 +149,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     setShowAvatarPicker(false);
   };
 
-  const handleInitialOrderFinalize = (menuName?: string) => {
+  const handleInitialOrderFinalize = (menuName?: string, forceTemperature?: 'HOT' | 'ICE') => {
     const finalName = menuName || '미정';
     if (finalName !== '미정' && finalName !== '안 먹음' && !drinkItems.includes(finalName)) {
       onAddMenuItem(finalName, 'DRINK');
       onUpdateCheckedItems?.(finalName, true);
     }
     const isIceDefault = finalName.includes('스무디') || finalName.includes('아이스');
-    onUpdate(order.id, { 
-      subItems: [{ 
-        id: uuidv4(), 
-        type: 'DRINK', 
-        itemName: finalName, 
-        temperature: isIceDefault ? 'ICE' : 'HOT', 
+    onUpdate(order.id, {
+      subItems: [{
+        id: uuidv4(),
+        type: 'DRINK',
+        itemName: finalName,
+        temperature: forceTemperature || (isIceDefault ? 'ICE' : 'HOT'),
         size: 'Tall',
         quantity: 1
-      }] 
+      }]
     });
     setIsMoreExpanded(false);
     setIsDirectInputMode(false);
@@ -177,7 +185,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const handleAddCustomMemo = () => {
     if (!customMemo.trim() || !activeMemoSubId) return;
     const text = customMemo.trim();
-    
+
     // 예시 칩에 추가
     if (!localQuickMemos.includes(text)) {
       setLocalQuickMemos(prev => [...prev, text]);
@@ -249,6 +257,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               {isSynced ? '동기화 중' : '동기화 시작'}
             </button>
           </div>
+
           <div className="flex-1 space-y-2 overflow-y-auto no-scrollbar mb-4 min-h-[50px]">
             {order.subItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full border-2 border-dashed border-toss-grey-100 rounded-2xl bg-toss-grey-50/50 p-6 text-center">
@@ -269,6 +278,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               ))
             )}
           </div>
+
           <div className="grid grid-cols-2 gap-2 mt-auto shrink-0">
             <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="h-10 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10"><Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black uppercase tracking-tight">메뉴 추가</span></button>
             <button onClick={() => onUpdate(order.id, { subItems: [] })} className="h-10 bg-toss-grey-100 text-toss-grey-600 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200"><Trash2 size={14} /><span className="text-[11px] font-black uppercase tracking-tight">비우기</span></button>
@@ -282,16 +292,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   return (
     <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10 
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
-      ${isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' : 
+      ${isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
         isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
-        isDecided ? 'bg-toss-blueLight border-2 border-toss-blue' :
-        'bg-white border-2 border-toss-grey-100'}
+          isDecided ? 'bg-toss-blueLight border-2 border-toss-blue' :
+            'bg-white border-2 border-toss-grey-100'}
     `}>
-      {/* 상태 배지: 이모지 선택 중에도 유지 - 제거됨 (이모지 옆으로 이동) */}
       <AnimatePresence mode="wait">
         {showAvatarPicker ? (
           /* 이모지 선택 화면 */
-          <motion.div 
+          <motion.div
             key="avatar-picker"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -310,7 +319,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           </motion.div>
         ) : (
           /* 주문 상세 화면 */
-          <motion.div 
+          <motion.div
             key="order-detail"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -319,45 +328,79 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           >
             <div className="w-full flex flex-col items-center relative py-1 shrink-0 overflow-visible">
               {/* 상태 표시: 좌측 상단 내부 아이콘 스타일 */}
-              <div className="absolute top-0 left-0 z-[50] pointer-events-none">
-                {isUndecided && (
-                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-8 h-8 bg-yellow-400 text-yellow-900 rounded-br-xl rounded-tl-lg shadow-sm border border-yellow-500/20 flex items-center justify-center">
-                    <Clock size={18} strokeWidth={3} />
-                  </motion.div>
-                )}
-                {isNotEating && (
-                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-8 h-8 bg-toss-grey-200 text-toss-grey-900 rounded-br-xl rounded-tl-lg shadow-sm border border-toss-grey-300 flex items-center justify-center">
-                    <X size={18} strokeWidth={3} />
-                  </motion.div>
-                )}
-                {isDecided && (
-                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-8 h-8 bg-toss-blue text-white rounded-br-xl rounded-tl-lg shadow-sm border border-toss-blue/20 flex items-center justify-center">
-                    <Check size={18} strokeWidth={3} />
-                  </motion.div>
-                )}
-              </div>
+              <div className="absolute -top-[9px] -left-[9px] z-[50] flex flex-col items-start pointer-events-none">
+                <AnimatePresence mode="popLayout">
+                  {isUndecided && (
+                    <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-yellow-400 text-yellow-900 rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
+                      <Clock size={12} strokeWidth={3} />
+                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
+                    </motion.div>
+                  )}
+                  {isNotEating && (
+                    <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-toss-grey-300 text-toss-grey-700 rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
+                      <X size={12} strokeWidth={3} />
+                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">안 먹음</span>
+                    </motion.div>
+                  )}
+                  {isDecided && (
+                    <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-3 py-1.5 bg-toss-blue text-white rounded-tl-[24px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
+                      <Check size={12} strokeWidth={3} />
+                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-              {/* 메모 표시: 우측 상단 내부 정사각형 - 제거됨 (메뉴 하단으로 이동) */}
+                <AnimatePresence>
+                  {(isDecided || isNotEating) && (
+                    <motion.button
+                      key="undo-button"
+                      onClick={handleUndoOrder}
+                      initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.8 }}
+                      className="mt-2 ml-[9px] w-9 h-9 bg-white text-toss-grey-600 hover:text-toss-grey-900 hover:bg-toss-grey-50 rounded-full shadow-md border border-toss-grey-200/80 flex items-center justify-center pointer-events-auto active:scale-95 transition-all z-50 group"
+                      title="되돌리기"
+                    >
+                      <RotateCcw size={16} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <div className="relative inline-block mb-1 z-10 pt-2">
                 <button onClick={handleAvatarClick} className="text-5xl active:scale-95 transition-transform drop-shadow-sm select-none animate-float relative z-10">
                   <EmojiRenderer emoji={order.avatar} size={48} />
-                  {/* 말풍선 아이콘: 메모가 있을 때 표시 */}
                   {allMemos.length > 0 && (
-                    <motion.div 
-                      initial={{ scale: 0, opacity: 0 }} 
-                      animate={{ scale: 1, opacity: 1 }} 
-                      className="absolute -top-1 -right-1 bg-white rounded-full p-1 shadow-sm border border-toss-blue/20 z-20"
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="absolute top-0 right-0 bg-white rounded-full p-1.5 shadow-md border-2 border-toss-blue z-20"
                     >
-                      <MessageCircle size={10} className="text-toss-blue fill-toss-blue/10" />
+                      <MessageCircle size={12} className="text-toss-blue fill-toss-blue/20" />
                     </motion.div>
                   )}
                 </button>
                 <AnimatePresence>
                   {justCompleted && (
-                    <motion.div initial={{ opacity: 0, scale: 0.2, x: 0, y: 0 }} animate={{ opacity: 1, scale: 1.1, x: 10, y: -10 }} exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }} transition={{ duration: 0.4, ease: "easeOut" }} className="absolute top-0 right-0 z-20 pointer-events-none">
-                      <Heart className="text-toss-red fill-toss-red drop-shadow-sm" size={14} />
-                    </motion.div>
+                    <div className="absolute inset-0 z-20 pointer-events-none">
+                      {[...Array(6)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                          animate={{
+                            opacity: [0, 1, 1, 0],
+                            scale: [0, 1.2, 1, 0.8],
+                            x: (i % 2 === 0 ? 1 : -1) * (Math.random() * 40 + 10),
+                            y: -(Math.random() * 50 + 20),
+                            rotate: Math.random() * 90 - 45
+                          }}
+                          transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.05 }}
+                          className="absolute top-1/2 left-1/2"
+                        >
+                          <Heart className="text-toss-red fill-toss-red drop-shadow-sm" size={i % 2 === 0 ? 16 : 12} />
+                        </motion.div>
+                      ))}
+                    </div>
                   )}
                 </AnimatePresence>
               </div>
@@ -365,26 +408,80 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
             <div className="w-full mt-1 flex-1 flex flex-col justify-start overflow-visible">
               {isUndecided ? (
-                <motion.div layout transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="w-full space-y-0.5 animate-in slide-in-from-bottom-2 pb-1 overflow-visible px-1">
+                <motion.div layout transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="w-full space-y-0.5 animate-in slide-in-from-bottom-2 pb-1 overflow-visible">
                   <AnimatePresence mode="wait">
                     {!isMoreExpanded ? (
                       <motion.div key="collapsed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-0.5">
                         <div className="flex flex-col gap-0.5">
-                          {quickMenuOptions.map((menu, idx) => (
-                            <button key={idx} onClick={() => handleInitialOrderFinalize(menu)} className="w-full h-7 bg-white border border-yellow-200 rounded-md font-black text-[10px] text-yellow-800 truncate px-1 shadow-sm text-center active:bg-yellow-100">{menu}</button>
+                          {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
+                            <div key={idx} className="w-full h-8 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); onUpdateCheckedItems?.(menu, false); }}
+                                className="absolute left-0 pl-2.5 pr-2 h-full flex items-center justify-center text-amber-400 hover:text-amber-500 scale-110 active:scale-95 transition-transform z-10"
+                                title="퀵메뉴에서 제거"
+                              >
+                                <Star size={13} fill="currentColor" strokeWidth={0} />
+                              </button>
+                              <button
+                                onClick={() => handleInitialOrderFinalize(menu)}
+                                className="flex-1 h-full text-left pl-[32px] pr-[66px] font-black text-[10.5px] text-yellow-800 truncate active:bg-yellow-50 w-full"
+                              >
+                                {menu}
+                              </button>
+                              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT으로 바로 주문">
+                                  <Flame size={12} strokeWidth={2.5} />
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE로 바로 주문">
+                                  <Snowflake size={12} strokeWidth={2.5} />
+                                </button>
+                              </div>
+                            </div>
                           ))}
                         </div>
-                        <button onClick={() => setIsMoreExpanded(true)} className="w-full h-7 bg-yellow-200 text-yellow-900 rounded-md flex flex-col items-center justify-center font-black text-[9px] shadow-sm mt-0.5 active:scale-[0.98] leading-tight relative overflow-hidden transition-all duration-300">
-                          <div className="absolute inset-0 bg-white/20 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (expandTimeLeft / 1.5)})`, transition: 'transform 0.1s linear' }} />
-                          <span className="relative z-10 flex items-center gap-0.5">더보기 <ChevronDown size={10} /></span>
-                          <span className="relative z-10 text-[7px] opacity-70 font-bold">{expandTimeLeft.toFixed(1)}초 후 자동 확장</span>
+                        <button onClick={() => setIsMoreExpanded(true)} className="w-full h-8 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                          <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (expandTimeLeft / 5.0)})`, transition: expandTimeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
+                          <span className="relative z-10 flex items-center gap-1.5">{expandTimeLeft === 5.0 ? "더보기" : `${expandTimeLeft.toFixed(1)}초 후 자동 확장`}</span>
                         </button>
                       </motion.div>
                     ) : (
                       <motion.div key="expanded" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="flex flex-col gap-0.5 overflow-visible">
-                        {drinkItems.filter(i => i !== '미정' && i !== '안 먹음').map((menu, idx) => (
-                          <button key={idx} onClick={() => handleInitialOrderFinalize(menu)} className="w-full h-8 bg-white border border-yellow-200 rounded-lg font-black text-[10px] text-yellow-800 shrink-0 shadow-sm text-center active:bg-yellow-50 mb-1">{menu}</button>
-                        ))}
+                        {[...drinkItems].filter(i => i !== '미정' && i !== '안 먹음').sort((a, b) => {
+                          const aIsQuick = quickMenuOptions.includes(a);
+                          const bIsQuick = quickMenuOptions.includes(b);
+                          if (aIsQuick && !bIsQuick) return -1;
+                          if (!aIsQuick && bIsQuick) return 1;
+                          return 0;
+                        }).map((menu, idx) => {
+                          const isQuickMenu = quickMenuOptions.includes(menu);
+                          return (
+                            <div key={idx} className="w-full h-8 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden mb-1">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onUpdateCheckedItems?.(menu, !isQuickMenu);
+                                }}
+                                className={`absolute left-0 pl-2.5 pr-2 h-full flex items-center justify-center transition-all z-10 ${isQuickMenu ? 'text-amber-400 hover:text-amber-500 scale-110 active:scale-95' : 'text-toss-grey-300 hover:text-amber-400 active:scale-95'}`}
+                              >
+                                <Star size={13} fill={isQuickMenu ? 'currentColor' : 'none'} strokeWidth={isQuickMenu ? 0 : 2} />
+                              </button>
+                              <button
+                                onClick={() => handleInitialOrderFinalize(menu)}
+                                className="flex-1 h-full text-left pl-[32px] pr-[66px] font-black text-[10.5px] text-yellow-800 truncate active:bg-yellow-50 w-full"
+                              >
+                                {menu}
+                              </button>
+                              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT으로 바로 주문">
+                                  <Flame size={12} strokeWidth={2.5} />
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE로 바로 주문">
+                                  <Snowflake size={12} strokeWidth={2.5} />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
                         {isDirectInputMode ? (
                           <div className="relative h-8 w-full animate-in zoom-in-95 duration-200">
                             <input type="text" lang="ko" enterKeyHint="done" placeholder="입력..." className="w-full h-full bg-white border border-toss-blue rounded-lg pl-2 pr-7 text-[10px] font-black text-toss-grey-900 focus:outline-none placeholder:text-toss-grey-300 text-center" value={customMenuName} onChange={(e) => setCustomMenuName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleInitialOrderFinalize(customMenuName)} onBlur={() => !customMenuName && setIsDirectInputMode(false)} autoFocus />
@@ -402,12 +499,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   </AnimatePresence>
                 </motion.div>
               ) : isNotEating ? (
-                <div className="w-full flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible px-2">
-                  <p className="text-[12px] font-black text-toss-grey-600 mb-2">먹지 않겠대요</p>
-                  <button onClick={handleUndoOrder} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] active:scale-95 transition-all shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-200"><RotateCcw size={12} strokeWidth={3} /> 되돌리기</button>
+                <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[50px]">
+                  <p className="text-[12px] font-black text-toss-grey-600">먹지 않겠대요</p>
                 </div>
               ) : (
-                <div className="w-full space-y-1.5 overflow-visible px-1">
+                <div className="w-full space-y-1.5 overflow-visible">
                   {order.subItems.map((si, idx) => (
                     <div key={si.id} className="flex flex-col gap-1.5 animate-in fade-in duration-300 overflow-visible">
                       {idx > 0 && <div className="w-full h-[1px] bg-toss-grey-100 my-0.5" />}
@@ -431,9 +527,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                               {(['Tall', 'Grande', 'Venti'] as DrinkSize[]).map((sz) => {
                                 const isSizeSelected = (si.size || 'Tall') === sz;
                                 return (
-                                  <button 
-                                    key={sz} 
-                                    onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, size: sz } : s) })} 
+                                  <button
+                                    key={sz}
+                                    onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, size: sz } : s) })}
                                     className={`flex-1 flex items-center justify-center rounded-lg border transition-all text-[8px] font-black ${isSizeSelected ? 'bg-toss-blue border-toss-blue text-white shadow-sm' : 'bg-white border-toss-grey-100 text-toss-grey-400'}`}
                                   >
                                     {sz.charAt(0)}
@@ -445,9 +541,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                         </div>
                       )}
 
-                      {/* 통합 메모 영역: 펼쳐졌을 때는 선택 그리드, 닫혔을 때는 선택된 칩만 표시 */}
                       <div className="w-full overflow-hidden">
-                        <motion.div 
+                        <motion.div
                           layout
                           transition={{ duration: 0.25, ease: "easeInOut" }}
                           className="grid grid-cols-2 gap-1.5 w-full"
@@ -457,11 +552,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                               const isExpanded = activeMemoSubId === si.id;
                               const selectedMemos = si.memo ? si.memo.split(',').map(x => x.trim()).filter(Boolean) : [];
                               const visibleMemos = isExpanded ? localQuickMemos : selectedMemos;
-                              
+
                               return visibleMemos.map((memo, idx, arr) => {
                                 const isSelected = selectedMemos.includes(memo);
                                 const isFullWidth = idx === arr.length - 1 && arr.length % 2 !== 0;
-                                
+
                                 return (
                                   <motion.button
                                     layout
@@ -469,7 +564,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ 
+                                    transition={{
                                       opacity: { duration: 0.2 },
                                       layout: { duration: 0.25, ease: "easeInOut" }
                                     }}
@@ -484,11 +579,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                                         handleDeleteChip(si.id, memo);
                                       }
                                     }}
-                                    className={`h-7 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[9px] transition-colors ${
-                                      isSelected 
-                                        ? 'bg-amber-50 border-amber-200 text-amber-900' 
-                                        : 'bg-white border-toss-grey-100 text-toss-grey-700'
-                                    } ${isFullWidth ? 'col-span-2' : ''}`}
+                                    className={`h-7 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[9px] transition-colors ${isSelected
+                                      ? 'bg-amber-50 border-amber-200 text-amber-900'
+                                      : 'bg-white border-toss-grey-100 text-toss-grey-700'
+                                      } ${isFullWidth ? 'col-span-2' : ''}`}
                                   >
                                     {memo}
                                   </motion.button>
@@ -514,9 +608,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                               ) : (
                                 <button onClick={() => setIsMemoDirectInputMode(true)} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
                               )}
-                              <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-grey-900 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex flex-col items-center justify-center leading-tight relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-white/10 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
-                                <span className="relative z-10">{timeLeft === 5.0 ? "완료" : `${timeLeft.toFixed(1)}초 후 자동 완료`}</span>
+                              <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
+                                <span className="relative z-10 flex items-center gap-1.5">{timeLeft === 5.0 ? "완료" : `${timeLeft.toFixed(1)}초 후 자동 완료`}</span>
                               </button>
                             </motion.div>
                           )}
@@ -524,9 +618,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                       </div>
                     </div>
                   ))}
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="flex-1 h-8 bg-toss-blueLight text-toss-blue rounded-lg font-black text-[10px] flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm border border-toss-blue/10"><Plus size={12} strokeWidth={3} /> 추가</button>
-                    <button onClick={handleUndoOrder} className="w-8 h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black flex items-center justify-center active:scale-95 transition-all shadow-sm border border-toss-grey-200"><RotateCcw size={12} strokeWidth={3} /></button>
+                  <div className="flex items-center gap-1.5 mt-1.5 w-full">
+                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-blueLight text-toss-blue rounded-lg font-black text-[10px] flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm border border-toss-blue/10"><Plus size={12} strokeWidth={3} /> 추가</button>
                   </div>
                 </div>
               )}

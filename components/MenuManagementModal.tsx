@@ -1,20 +1,20 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { X, Plus, Coffee, CakeSlice, Trash2, GripVertical, UtensilsCrossed, Search, PencilLine, Check } from 'lucide-react';
-import { 
-  DndContext, 
-  closestCenter, 
-  KeyboardSensor, 
-  PointerSensor, 
-  useSensor, 
+import { X, Plus, Coffee, CakeSlice, Trash2, GripVertical, UtensilsCrossed, Search, PencilLine, Star } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
   useSensors,
   DragEndEvent,
   TouchSensor
 } from '@dnd-kit/core';
-import { 
-  arrayMove, 
-  SortableContext, 
-  sortableKeyboardCoordinates, 
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable';
@@ -50,24 +50,27 @@ const SortableMenuRow: React.FC<{
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="flex items-center gap-1 group p-0.5">
+    <div ref={setNodeRef} style={style} className="flex items-center gap-2 group p-0.5">
       <div {...attributes} {...listeners} className="p-1 cursor-grab text-toss-grey-300 hover:text-toss-blue transition-colors">
         <GripVertical size={14} />
       </div>
-      <div className={`flex-1 bg-toss-grey-50 border rounded-xl px-3 py-2.5 flex items-center justify-between shadow-sm transition-all ${isChecked ? 'border-toss-blue/30 bg-toss-blueLight/30' : 'border-toss-grey-100'}`}>
-        <div className="flex items-center gap-2">
-          {showCheck && (
-            <button 
-              onClick={onToggleCheck}
-              className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${isChecked ? 'bg-toss-blue text-white' : 'bg-white border border-toss-grey-200 text-transparent'}`}
-            >
-              <Check size={12} strokeWidth={4} />
-            </button>
-          )}
-          <span className={`text-[12px] font-bold transition-colors ${isChecked ? 'text-toss-blue' : 'text-toss-grey-800'}`}>{item}</span>
+      <div className={`flex-1 bg-toss-grey-50 border rounded-xl flex items-center shadow-sm transition-all overflow-hidden ${isChecked ? 'bg-amber-50/50 border-amber-200 shadow-sm' : 'border-toss-grey-100'}`}>
+        {showCheck && (
+          <button
+            onClick={onToggleCheck}
+            className={`pl-3 pr-1.5 h-full min-h-[44px] flex items-center justify-center transition-all ${isChecked ? 'text-amber-400 drop-shadow-sm' : 'text-toss-grey-300 hover:text-amber-400 hover:scale-105'}`}
+            title="자주 찾는 메뉴(퀵메뉴)에 등록"
+          >
+            <Star size={15} fill={isChecked ? 'currentColor' : 'none'} strokeWidth={isChecked ? 0 : 2.5} className={isChecked ? 'scale-110 transition-transform' : ''} />
+          </button>
+        )}
+        <div className={`flex-1 py-2.5 flex items-center justify-between min-w-0 ${showCheck ? 'pr-3 pl-1' : 'px-3'}`}>
+          <span className={`text-[12px] font-black transition-colors truncate ${isChecked ? 'text-amber-700' : 'text-toss-grey-800'}`}>{item}</span>
         </div>
-        <button onClick={onRemove} className="p-1 text-toss-grey-300 hover:text-toss-red transition-colors">
-          <Trash2 size={14} />
+      </div>
+      <div className="flex items-center shrink-0 pl-1">
+        <button onClick={onRemove} className="p-1.5 text-toss-grey-300 hover:text-toss-red transition-colors active:scale-90">
+          <Trash2 size={16} />
         </button>
       </div>
     </div>
@@ -100,9 +103,9 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
     return () => { document.body.style.overflow = 'auto'; };
   }, [isOpen]);
 
-  const currentList = useMemo(() => 
+  const currentList = useMemo(() =>
     activeTab === 'DRINK' ? drinkItems.filter(i => i !== '미정') : dessertItems
-  , [activeTab, drinkItems, dessertItems]);
+    , [activeTab, drinkItems, dessertItems]);
 
   const filteredList = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -132,10 +135,10 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-in fade-in duration-300" onClick={onClose}>
       <div className="bg-white rounded-[24px] w-full max-w-[360px] flex flex-col shadow-toss-elevated animate-in zoom-in-95 duration-300 overflow-hidden max-h-[80vh]" onClick={e => e.stopPropagation()}>
-        
+
         <div className="flex items-center justify-between p-4 pb-2 shrink-0">
           <h2 className="text-base font-black text-toss-grey-900 flex items-center gap-2">
-            <UtensilsCrossed size={18} className="text-toss-blue" /> 메뉴판 관리
+            <UtensilsCrossed size={18} className="text-toss-blue" /> 메뉴판
           </h2>
           <button onClick={onClose} className="p-1.5 text-toss-grey-400 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={18} /></button>
         </div>
@@ -158,11 +161,11 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                 <Search className="text-toss-grey-400 animate-in zoom-in duration-200" size={14} />
               )}
             </div>
-            <input 
+            <input
               ref={inputRef}
-              type="text" 
-              placeholder="검색 및 신규 등록" 
-              className="w-full bg-toss-grey-50 rounded-xl pl-9 pr-10 py-2.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border border-toss-grey-100" 
+              type="text"
+              placeholder="검색 및 신규 등록"
+              className="w-full bg-toss-grey-50 rounded-xl pl-9 pr-10 py-2.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border border-toss-grey-100"
               value={searchQuery}
               onChange={e => { setSearchQuery(e.target.value); setNewItemName(e.target.value); }}
               onKeyDown={e => e.key === 'Enter' && handleAdd()}
@@ -177,19 +180,24 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
 
         <div className="px-2 pb-4 flex-1 overflow-y-auto custom-scrollbar">
           <div className="space-y-0.5 px-2">
-            <span className="text-[10px] font-black text-toss-grey-400 uppercase tracking-widest px-2 mb-1 block">
-              메뉴 순서 (드래그하여 이동)
-            </span>
+            <div className="px-2 mb-2 space-y-1">
+              <span className="text-[10px] font-black text-toss-grey-400 uppercase tracking-widest block">
+                메뉴 목록
+              </span>
+              <p className="text-[9px] font-bold text-amber-500 leading-tight">
+                * 별(★) 아이콘 선택 시, 주문할 때 항상 표시되는 퀵메뉴에 포함됩니다.
+              </p>
+            </div>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
               <SortableContext items={filteredList} strategy={verticalListSortingStrategy}>
                 {filteredList.map(item => (
-                  <SortableMenuRow 
-                    key={item} 
-                    id={item} 
-                    item={item} 
+                  <SortableMenuRow
+                    key={item}
+                    id={item}
+                    item={item}
                     isChecked={activeTab === 'DRINK' && checkedDrinkItems.includes(item)}
                     showCheck={activeTab === 'DRINK'}
-                    onRemove={() => onRemove(item, activeTab)} 
+                    onRemove={() => onRemove(item, activeTab)}
                     onToggleCheck={() => onUpdateChecked(item, !checkedDrinkItems.includes(item))}
                   />
                 ))}
