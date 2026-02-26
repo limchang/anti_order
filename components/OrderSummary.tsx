@@ -97,7 +97,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         checkUndecidedShadow();
       }, 100);
     }
-  }, [expandState, viewMode, groups]);
+  }, [expandState, viewMode, groups, isUndecidedExpanded]);
 
   const personsWithGroup = useMemo(() =>
     groups.flatMap(g => g.items.filter(p => p.avatar !== '😋').map(p => ({ ...p, groupId: g.id, groupName: g.name }))),
@@ -403,7 +403,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                   <motion.div
                                     animate={{ y: [0, 4, 0] }}
                                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                    className="text-amber-400 bg-white/50 rounded-full p-0.5 backdrop-blur-sm shadow-sm"
+                                    className="text-amber-400 bg-white/50 rounded-full p-0.5 backdrop-blur-sm shadow-sm border border-amber-100/50"
                                   >
                                     <ChevronDown size={16} strokeWidth={3} />
                                   </motion.div>
@@ -590,8 +590,16 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     {showBottomShadow && (
                       <motion.div
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none"
-                      />
+                        className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none flex items-end justify-center pb-2"
+                      >
+                        <motion.div
+                          animate={{ y: [0, 4, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                          className="text-toss-grey-400 bg-white/80 rounded-full p-0.5 backdrop-blur-sm shadow-sm border border-toss-grey-100"
+                        >
+                          <ChevronDown size={16} strokeWidth={3} />
+                        </motion.div>
+                      </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -617,8 +625,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-      </div>
+        </motion.div >
+      </div >
     </>
   );
 };

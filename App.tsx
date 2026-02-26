@@ -437,10 +437,27 @@ function App() {
           })
         }));
       }
-      return prev.map(g => ({
-        ...g,
-        items: g.items.map(item => item.id === id ? { ...item, ...updates } : item)
-      }));
+      return prev.map(g => {
+        const targetIdx = g.items.findIndex(item => item.id === id);
+        if (targetIdx > -1) {
+          const newItems = [...g.items];
+          const beforeAvatar = newItems[targetIdx].avatar;
+          newItems[targetIdx] = { ...newItems[targetIdx], ...updates };
+
+          if (!beforeAvatar && updates.avatar === "◰") {
+            const tableEmojis = ["◱", "◳", "◲"];
+            let idx = 0;
+            for (let i = 0; i < newItems.length; i++) {
+              if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋' && idx < tableEmojis.length) {
+                newItems[i] = { ...newItems[i], avatar: tableEmojis[idx] };
+                idx++;
+              }
+            }
+          }
+          return { ...g, items: newItems };
+        }
+        return g;
+      });
     });
   };
 
