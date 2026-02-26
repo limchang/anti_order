@@ -485,27 +485,27 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                   {memoGroups.map((group, gidx) => (
                                     <div key={gidx} className="flex items-center justify-between bg-white p-3 rounded-[20px] border border-toss-grey-100 shadow-sm transition-all hover:border-toss-blue/30">
                                       <div className="flex items-center gap-3">
-                                        <div className="flex flex-col gap-2.5">
+                                        <div className="flex flex-wrap items-center gap-2.5">
                                           <div className="flex flex-wrap gap-1">
                                             {group.memos.map((memoItem, mIdx) => (
-                                              <span key={mIdx} className="text-[11px] font-black text-toss-blue bg-blue-50 px-2.5 py-1 rounded-lg border border-toss-blue/10 w-fit">
+                                              <span key={mIdx} className="text-[11px] font-black text-toss-blue bg-blue-50 px-2.5 py-1.5 rounded-lg border border-toss-blue/10 w-fit leading-none">
                                                 {memoItem === '덜쓰게' ? '연하게' : memoItem}
                                               </span>
                                             ))}
                                           </div>
-                                          <div className="flex flex-wrap gap-1.5">
+                                          <div className="flex flex-wrap items-center gap-1">
                                             {group.people.slice(0, 8).map((p, pidx) => (
                                               <button
                                                 key={pidx}
                                                 onClick={() => { onJumpToOrder(p.groupId, p.personId); onSetExpandState('collapsed'); }}
-                                                className="w-8 h-8 rounded-full bg-toss-grey-50 ring-2 ring-white flex items-center justify-center shrink-0 border border-toss-grey-100 shadow-sm active:scale-90 hover:z-10 relative transition-transform"
+                                                className="w-7 h-7 rounded-full bg-toss-grey-50 ring-2 ring-white flex items-center justify-center shrink-0 border border-toss-grey-100 shadow-sm active:scale-90 hover:z-10 relative transition-transform"
                                                 title="주문자로 이동"
                                               >
-                                                <EmojiRenderer emoji={p.avatar} size={20} />
+                                                <EmojiRenderer emoji={p.avatar} size={18} />
                                               </button>
                                             ))}
                                             {group.people.length > 8 && (
-                                              <div className="w-8 h-8 rounded-full bg-toss-grey-900 ring-2 ring-white flex items-center justify-center text-[10px] font-black text-white shadow-sm">
+                                              <div className="w-7 h-7 rounded-full bg-toss-grey-900 ring-2 ring-white flex items-center justify-center text-[10px] font-black text-white shadow-sm">
                                                 +{group.people.length - 8}
                                               </div>
                                             )}

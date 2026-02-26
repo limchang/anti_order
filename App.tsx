@@ -646,7 +646,7 @@ function App() {
 
         {groups.length > 0 ? (
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2">
-            {groups.map((group) => (
+            {[...groups].reverse().map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
                 <OrderGroupSection
                   group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId}
