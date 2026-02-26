@@ -62,6 +62,7 @@ function App() {
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const navContainerRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const isInternalScrolling = useRef(false);
 
@@ -96,34 +97,71 @@ function App() {
     selectedItem: '',
     initialType: 'DRINK'
   });
-
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const handleScroll = () => {
       if (isInternalScrolling.current) return;
-      const centerX = container.scrollLeft + container.clientWidth / 2;
-      let closestId = null;
+      const containerRect = container.getBoundingClientRect();
+      // Center of the main viewport to check which group is visible
+      const centerX = containerRect.left + containerRect.width / 2;
+
+      let closestId: string | null = null;
       let minDistance = Infinity;
 
       groups.forEach(group => {
         const el = document.getElementById(`group-${group.id}`);
         if (el) {
-          const elCenterX = el.offsetLeft + el.clientWidth / 2;
-          const distance = Math.abs(centerX - elCenterX);
+          const elRect = el.getBoundingClientRect();
+          const elCenter = elRect.left + elRect.width / 2;
+          const distance = Math.abs(centerX - elCenter);
+
           if (distance < minDistance) {
             minDistance = distance;
             closestId = group.id;
           }
         }
       });
-      if (closestId && closestId !== activeGroupId) setActiveGroupId(closestId);
+
+      // Update active group if it changed and we found one reasonably close to center
+      if (closestId && closestId !== activeGroupId) {
+        setActiveGroupId(closestId);
+      }
     };
 
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    let scrollTimeout: NodeJS.Timeout;
+    const debouncedScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isInternalScrolling.current = false;
+      }, 150);
+      handleScroll();
+    };
+
+    container.addEventListener('scroll', debouncedScroll, { passive: true });
+    return () => {
+      container.removeEventListener('scroll', debouncedScroll);
+      clearTimeout(scrollTimeout);
+    };
   }, [groups, activeGroupId]);
+
+  useEffect(() => {
+    const navContainer = navContainerRef.current;
+    if (navContainer && activeGroupId) {
+      const btn = document.getElementById(`nav-btn-${activeGroupId}`);
+      if (btn) {
+        isInternalScrolling.current = true;
+        const scrollLeft = btn.offsetLeft - (navContainer.clientWidth / 2) + (btn.clientWidth / 2);
+        navContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+        // Ensure flag is reset after animation
+        setTimeout(() => {
+          isInternalScrolling.current = false;
+        }, 300);
+      }
+    }
+  }, [activeGroupId]);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -212,11 +250,19 @@ function App() {
   const handleResetAllTables = () => {
     if (!window.confirm("현재 작업 중인 모든 테이블과 주문 정보가 삭제됩니다.\n정말 초기화할까요?")) return;
     setIsMainMenuOpen(false);
-    setGroups([]);
-    setActiveGroupId(null);
+
+    setLastGroupsSnapshot([...groups]);
+
+    // reset to initial state directly
+    const newGroupId = uuidv4();
+    const initialItems = [
+      ...Array.from({ length: 4 }, createEmptyOrder),
+      { id: uuidv4(), avatar: '😋', subItems: [] }
+    ];
+    setGroups([{ id: newGroupId, name: '1번 테이블', items: initialItems }]);
+    setActiveGroupId(newGroupId);
     setIsSharedSyncActive(false);
-    showToast("모든 테이블이 초기화되었습니다.");
-    addGroup();
+    showUndoToast("모든 앱 데이터가 초기화되었습니다.");
   };
 
   const removeGroup = (id: string) => {
@@ -487,6 +533,47 @@ function App() {
     });
   };
 
+  const collapsedBottomBarNode = (
+    <div className="flex items-center w-full gap-2">
+      <button onClick={() => setIsMainMenuOpen(true)} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-[18px] flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all">
+        <Menu size={20} strokeWidth={2.5} />
+      </button>
+
+      <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto pr-2 relative">
+        {groups.map(group => {
+          const isActive = activeGroupId === group.id;
+          const firstChar = group.name.trim().charAt(0) || '?';
+          const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
+          return (
+            <div key={group.id} className="relative shrink-0 py-1">
+              <motion.button
+                id={`nav-btn-${group.id}`}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  if (activeGroupId === group.id) openManageSheet(group.id);
+                  else {
+                    setActiveGroupId(group.id);
+                    scrollToTable(group.id);
+                  }
+                }}
+                className={`min-w-[40px] h-10 px-3.5 rounded-[16px] flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
+              >
+                {isActive ? group.name.replace('번 테이블', '') : firstChar}
+                {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
+              </motion.button>
+            </div>
+          );
+        })}
+        <div className="relative shrink-0 py-1 pr-6 flex items-center h-full">
+          <button onClick={addGroup} className="min-w-[40px] h-10 px-3 rounded-[16px] bg-toss-blue/10 text-toss-blue flex items-center justify-center transition-all shadow-sm snap-center active:scale-95 border border-toss-blue/20">
+            <Plus size={18} strokeWidth={3} />
+          </button>
+          <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden">
       {/* 전체 메뉴 바텀시트 */}
@@ -498,23 +585,27 @@ function App() {
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[36px] shadow-toss-elevated z-[2001] px-6 pt-4 pb-12 flex flex-col max-w-lg mx-auto overflow-hidden"
             >
-              <div className="w-12 h-1.5 bg-toss-grey-200 rounded-full mx-auto mb-6 shrink-0" />
-              <h2 className="text-xl font-black text-toss-grey-900 mb-6 px-2">전체 메뉴</h2>
+              <div className="flex items-center justify-between mt-2 mb-6 px-2">
+                <h2 className="text-xl font-black text-toss-grey-900">전체 메뉴</h2>
+                <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
+                  <X size={20} />
+                </button>
+              </div>
 
               <div className="overflow-y-auto no-scrollbar space-y-6 px-2 pb-10 custom-scrollbar">
                 <div>
                   <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
-                  <div className="space-y-1">
-                    <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
-                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판 관리</button>
+                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
+                    <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
+                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판 관리</button>
                   </div>
                 </div>
 
                 <div>
                   <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
-                  <div className="space-y-1">
-                    <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
-                    <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
+                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
+                    <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
+                    <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
                   </div>
                 </div>
 
@@ -551,42 +642,8 @@ function App() {
         )}
       </AnimatePresence>
 
-      <main className="flex-1 pb-1 relative w-full overflow-hidden flex flex-col">
-        {/* 테이블 네비게이션 (Sticky top) */}
-        <div className="sticky top-0 z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-2.5 px-3 w-full shadow-sm mb-2 shrink-0 transition-all flex items-center justify-between gap-2 overflow-hidden">
-          <div className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-3 w-full">
-            {groups.map(group => {
-              const isActive = activeGroupId === group.id;
-              const firstChar = group.name.trim().charAt(0) || '?';
-              const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
-              return (
-                <div key={group.id} className="relative shrink-0">
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => {
-                      if (activeGroupId === group.id) openManageSheet(group.id);
-                      else { setActiveGroupId(group.id); scrollToTable(group.id); }
-                    }}
-                    className={`min-w-[44px] h-10 px-3 rounded-[12px] flex items-center justify-center font-black text-[14px] transition-all relative whitespace-nowrap ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-toss-grey-100 text-toss-grey-500 hover:bg-toss-grey-200'}`}
-                  >
-                    {isActive ? group.name.replace('번 테이블', '') : firstChar}
-                    {hasUndecided && <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
-                  </motion.button>
-                </div>
-              );
-            })}
-          </div>
-          <div className="shrink-0 flex items-center gap-1.5 pl-1 bg-gradient-to-l from-white/95 via-white/80 to-transparent">
-            {groups.length === 0 && <span className="text-[12px] font-bold text-toss-blue/80 hidden sm:block">테이블을 추가하세요</span>}
-            <button onClick={addGroup} className="h-10 px-2.5 bg-toss-blueLight text-toss-blue rounded-[12px] font-black text-[12px] active:scale-95 transition-all shadow-sm flex items-center gap-1">
-              <Plus size={14} strokeWidth={3} /> <span className="hidden sm:inline">테이블 추가</span>
-            </button>
-            <div className="w-[1px] h-4 bg-toss-grey-200 mx-0.5"></div>
-            <button onClick={() => setIsMainMenuOpen(true)} className="w-10 h-10 flex items-center justify-center bg-toss-grey-100 text-toss-grey-700 rounded-[12px] active:scale-90 transition-all font-black text-[10px] gap-1 hover:bg-toss-grey-200 shadow-sm border border-toss-grey-200/50">
-              <Menu size={18} strokeWidth={2.5} />
-            </button>
-          </div>
-        </div>
+      <main className="flex-1 pt-4 pb-1 relative w-full overflow-hidden flex flex-col z-0">
+        {/* 테이블 네비게이션이 하단 주문요약 탭으로 이동하였습니다 */}
 
         {groups.length > 0 ? (
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2">
@@ -630,16 +687,25 @@ function App() {
       <AnimatePresence>
         {managingGroupId && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2002]" />
             <motion.div
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[28px] shadow-toss-elevated z-[2001] px-6 pt-1 pb-6 flex flex-col items-center max-w-lg mx-auto overflow-hidden"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[28px] shadow-toss-elevated z-[2003] px-6 pt-4 pb-6 flex flex-col items-center max-w-lg mx-auto overflow-hidden"
             >
-              <div className="w-8 h-1 bg-toss-grey-200 rounded-full my-2.5 shrink-0" />
               <AnimatePresence mode="wait">
                 {manageStep === 'menu' && (
                   <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="w-full">
-                    <div className="w-full text-center mb-5"><h3 className="text-[16px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h3><p className="text-[12px] font-bold text-toss-grey-400">테이블 정보를 수정하거나 삭제합니다.</p></div>
+                    <div className="w-full flex items-center justify-between mb-5">
+                      <div className="flex-1" />
+                      <div className="text-center flex-[2]">
+                        <h3 className="text-[16px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h3>
+                      </div>
+                      <div className="flex-1 flex justify-end">
+                        <button onClick={closeManageSheet} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
+                          <X size={20} />
+                        </button>
+                      </div>
+                    </div>
                     <div className="w-full space-y-2">
                       <button onClick={() => setManageStep('rename')} className="w-full bg-toss-grey-100 p-3.5 rounded-[16px] flex items-center justify-between active:scale-[0.97] transition-all">
                         <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-toss-grey-600 shadow-sm"><Pencil size={16} /></div><span className="font-black text-toss-grey-800 text-[14px]">이름 변경하기</span></div><ChevronRight size={16} className="text-toss-grey-300" />
@@ -681,21 +747,24 @@ function App() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {!isAnyInputActive && (
-          <OrderSummary
-            groups={groups} onSaveHistory={handleSaveOrder}
-            onJumpToOrder={(gid, pid) => {
-              scrollToTable(gid);
-              setHighlightedItemId(pid);
-              setSummaryState('collapsed');
-              setTimeout(() => setHighlightedItemId(null), 2000);
-            }}
-            onUpdateGroupName={updateGroupName}
-            onSetNotEating={handleSetNotEating}
-            onRemoveUndecided={handleRemoveUndecided}
-            onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
-            appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
-          />
+        {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
+          <>
+            <OrderSummary
+              collapsedBottomBarNode={collapsedBottomBarNode}
+              groups={groups} onSaveHistory={handleSaveOrder}
+              onJumpToOrder={(gid, pid) => {
+                scrollToTable(gid);
+                setHighlightedItemId(pid);
+                setSummaryState('collapsed');
+                setTimeout(() => setHighlightedItemId(null), 2000);
+              }}
+              onUpdateGroupName={updateGroupName}
+              onSetNotEating={handleSetNotEating}
+              onRemoveUndecided={handleRemoveUndecided}
+              onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })))}
+              appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
+            />
+          </>
         )}
       </AnimatePresence>
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />

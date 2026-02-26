@@ -72,7 +72,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const isUndecided = !!order.avatar && !isGroupAvatar && !isNotEating && (order.subItems.length === 0 || order.subItems.every(si => si.itemName === '미정'));
   const isDecided = !!order.avatar && !isGroupAvatar && !isNotEating && !isUndecided;
 
-  const [justCompleted, setJustCompleted] = useState(false);
   const prevIsUndecided = useRef(isUndecided);
   const prevAvatarRef = useRef(order.avatar);
 
@@ -89,11 +88,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   }, [isDirectInputMode, isMemoDirectInputMode]);
 
   useEffect(() => {
-    if (prevIsUndecided.current && !isUndecided && !isNotEating) {
-      setJustCompleted(true);
-      const timer = setTimeout(() => setJustCompleted(false), 600);
-      return () => clearTimeout(timer);
-    }
     prevIsUndecided.current = isUndecided;
   }, [isUndecided, isNotEating]);
 
@@ -312,58 +306,60 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             className="flex-1 flex flex-col items-center justify-start h-full relative overflow-visible"
           >
             <div className="w-full flex flex-col items-center relative py-1 shrink-0 overflow-visible">
-              {/* 상태 표시: 좌측 상단 내부 아이콘 스타일 */}
-              <div className="absolute top-2 left-2 z-[50] flex flex-col items-start pointer-events-none">
-                <AnimatePresence mode="popLayout">
-                  {isUndecided && (
-                    <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-yellow-400 text-yellow-900 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
-                      <Clock size={12} strokeWidth={3} />
-                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
-                    </motion.div>
-                  )}
-                  {isNotEating && (
-                    <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-toss-grey-300 text-toss-grey-700 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
-                      <X size={12} strokeWidth={3} />
-                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">안 먹음</span>
-                    </motion.div>
-                  )}
-                  {isDecided && (
-                    <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="px-2.5 py-1 bg-toss-blue text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
-                      <Check size={12} strokeWidth={3} />
-                      <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              {/* 중앙 정렬된 상단 상태 및 액션 바 */}
+              <div className="absolute top-2 left-2 right-2 z-[50] flex items-center justify-between pointer-events-none">
+                {/* 상태 표시 */}
+                <div className="flex items-center">
+                  <AnimatePresence mode="popLayout">
+                    {isUndecided && (
+                      <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-yellow-400 text-yellow-900 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
+                        <Clock size={12} strokeWidth={3} />
+                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
+                      </motion.div>
+                    )}
+                    {isNotEating && (
+                      <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-toss-grey-300 text-toss-grey-700 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
+                        <X size={12} strokeWidth={3} />
+                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">안 먹음</span>
+                      </motion.div>
+                    )}
+                    {isDecided && (
+                      <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-toss-blue text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
+                        <Check size={12} strokeWidth={3} />
+                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
+                {/* 우측 상단 액션 버튼 */}
+                <div className="flex items-center h-7 bg-white/90 backdrop-blur-sm border border-toss-grey-200 shadow-sm rounded-lg pointer-events-auto overflow-hidden">
+                  <AnimatePresence>
+                    {(isDecided || isNotEating) && (
+                      <motion.button
+                        key="undo"
+                        onClick={handleUndoOrder}
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: 32 }}
+                        exit={{ opacity: 0, width: 0 }}
+                        className="h-full bg-transparent hover:bg-toss-grey-100 text-toss-grey-400 hover:text-toss-grey-800 flex items-center justify-center transition-colors group"
+                        title="되돌리기"
+                      >
+                        <RotateCcw size={13} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300 shrink-0" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                  <button
+                    onClick={() => onRemove(order.id)}
+                    className="w-8 h-full bg-transparent hover:bg-toss-redLight text-toss-grey-400 hover:text-toss-red flex items-center justify-center transition-colors border-l border-toss-grey-100"
+                    title="삭제"
+                  >
+                    <X size={15} strokeWidth={3} shrink-0="true" />
+                  </button>
+                </div>
               </div>
 
-              {/* 우측 상단 액션 버튼 (윈도우 스타일) */}
-              <div className="absolute top-0 right-0 z-[50] flex pointer-events-none rounded-tr-[24px] rounded-bl-[16px] overflow-hidden shadow-[inset_1px_-1px_0_0_rgba(0,0,0,0.05)] bg-white">
-                <AnimatePresence>
-                  {(isDecided || isNotEating) && (
-                    <motion.button
-                      key="undo"
-                      onClick={handleUndoOrder}
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 32 }}
-                      exit={{ opacity: 0, width: 0 }}
-                      className="h-8 bg-toss-grey-100/80 hover:bg-toss-grey-200 text-toss-grey-500 hover:text-toss-grey-800 flex items-center justify-center pointer-events-auto transition-colors group"
-                      title="되돌리기"
-                    >
-                      <RotateCcw size={12} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
-                    </motion.button>
-                  )}
-                </AnimatePresence>
-                <button
-                  onClick={() => onRemove(order.id)}
-                  className="w-9 h-8 bg-toss-grey-100/80 hover:bg-toss-red text-toss-grey-500 hover:text-white flex items-center justify-center pointer-events-auto transition-colors"
-                  title="삭제"
-                >
-                  <X size={14} strokeWidth={3} />
-                </button>
-              </div>
-
-              <div className="relative inline-block mb-1 z-10 pt-2">
+              <div className="relative inline-block mb-1 z-10 pt-10">
                 <button onClick={handleAvatarClick} className="text-5xl active:scale-95 transition-transform drop-shadow-sm select-none animate-float relative z-10">
                   <EmojiRenderer emoji={order.avatar} size={48} />
                   {allMemos.length > 0 && (
@@ -376,29 +372,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     </motion.div>
                   )}
                 </button>
-                <AnimatePresence>
-                  {justCompleted && (
-                    <div className="absolute inset-0 z-20 pointer-events-none">
-                      {[...Array(6)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                          animate={{
-                            opacity: [0, 1, 1, 0],
-                            scale: [0, 1.2, 1, 0.8],
-                            x: (i % 2 === 0 ? 1 : -1) * (Math.random() * 40 + 10),
-                            y: -(Math.random() * 50 + 20),
-                            rotate: Math.random() * 90 - 45
-                          }}
-                          transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.05 }}
-                          className="absolute top-1/2 left-1/2"
-                        >
-                          <Heart className="text-toss-red fill-toss-red drop-shadow-sm" size={i % 2 === 0 ? 16 : 12} />
-                        </motion.div>
-                      ))}
-                    </div>
-                  )}
-                </AnimatePresence>
               </div>
             </div>
 
