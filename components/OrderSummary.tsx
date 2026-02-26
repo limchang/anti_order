@@ -284,10 +284,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('expanded'); }}
-                className="h-[44px] px-4 rounded-[18px] bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
+                className="h-[44px] px-3.5 rounded-[18px] bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
                 title="주문 확인 열기"
               >
-                {eatingCount > 0 ? `${eatingCount}인 ` : ''}주문 확인
+                주문 확인
                 <ChevronUp size={16} strokeWidth={3} className="text-white/70" />
               </button>
             )}

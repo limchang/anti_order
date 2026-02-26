@@ -543,7 +543,7 @@ function App() {
       </button>
 
       <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto relative">
-        {groups.map(group => {
+        {[...groups].reverse().map(group => {
           const isActive = activeGroupId === group.id;
           const firstChar = group.name.trim().charAt(0) || '?';
           const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
@@ -582,7 +582,7 @@ function App() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
             <motion.div
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[36px] shadow-toss-elevated z-[2001] px-6 pt-4 pb-12 flex flex-col max-w-lg mx-auto overflow-hidden"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[36px] shadow-toss-elevated z-[2001] px-6 pt-4 pb-6 flex flex-col max-w-lg mx-auto overflow-hidden"
             >
               <div className="flex items-center justify-between mt-2 mb-6 px-2">
                 <h2 className="text-xl font-black text-toss-grey-900">전체 메뉴</h2>
@@ -591,7 +591,7 @@ function App() {
                 </button>
               </div>
 
-              <div className="overflow-y-auto no-scrollbar space-y-6 px-2 pb-10 custom-scrollbar">
+              <div className="overflow-y-auto no-scrollbar space-y-6 px-2 pb-4 custom-scrollbar">
                 <div>
                   <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
                   <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
