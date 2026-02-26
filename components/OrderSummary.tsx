@@ -266,8 +266,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         >
           {/* 헤더 */}
           {isExpanded ? (
-            <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full">
-              <h2 className="text-[22px] font-black text-toss-grey-900">주문 확인</h2>
+            <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2">
+              <div className="w-8 shrink-0" />
+              <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">주문 확인</h2>
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('collapsed'); }}
                 className="w-8 h-8 bg-toss-grey-100 hover:bg-toss-grey-200 text-toss-grey-600 rounded-full flex items-center justify-center transition-colors shadow-sm shrink-0 active:scale-95"

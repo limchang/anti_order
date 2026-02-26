@@ -28,10 +28,10 @@ interface OrderCardProps {
 }
 
 export const CATEGORY_EMOJIS: Record<EmojiCategory, string[]> = {
-  ANIMALS: ["🦁", "🐯", "🐨", "🐷", "🐸", "🐵", "🐔", "🐧", "🐧", "🐦", "🐥", "🦉", "🐺", "북극곰", "🐴", "🦄", "🐝"],
-  FACES: ["😀", "😍", "😎", "🤔", "😴", "🤩", "🥳", "🥺", "😡", "🤢", "🤡", "👻", "👽", "🤖", "💩", "✨"],
-  HANDS: ["👍🏻", "👎🏻", "👊🏻", "✌🏻", "👌🏻", "✋🏻", "👐🏻", "🙌🏻", "👏🏻", "🙏🏻", "🤝🏻", "🤘🏻", "🤙🏻", "👋🏻", "✍🏻", "💪🏻"],
-  NUMBERS: ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "따봉"]
+  ANIMALS: ["🦁", "🐯", "🐨", "🦊", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🐥", "🦉", "🐺", "🦝", "🐴", "🦄", "🐝", "🦋", "🐙", "🦈"],
+  FACES: ["😀", "😍", "😎", "🤔", "😴", "🤩", "🥳", "🥺", "😡", "🤢", "🤡", "👻", "👽", "🤖", "💩", "✨", "😇", "🤗", "😜", "🫡"],
+  HANDS: ["👍🏻", "👎🏻", "👊🏻", "✌🏻", "👌🏻", "✋🏻", "👐🏻", "🙌🏻", "👏🏻", "🙏🏻", "🤝🏻", "🤘🏻", "🤙🏻", "👋🏻", "✍🏻", "💪🏻", "☝🏻", "🤞🏻", "🫶🏻", "🤟🏻"],
+  NUMBERS: ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟", "💯", "🅰️", "🅱️", "🆗", "🆒"]
 };
 
 export const OrderCard: React.FC<OrderCardProps> = ({
@@ -269,7 +269,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
-    <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10 
+    <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10 h-full
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
       ${isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
         isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
@@ -467,127 +467,127 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   </AnimatePresence>
                 </motion.div>
               ) : isNotEating ? (
-                <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[50px]">
+                <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[80px]">
                   <p className="text-[12px] font-black text-toss-grey-600">먹지 않겠대요</p>
                 </div>
               ) : (
-                <div className="w-full space-y-1.5 overflow-visible">
-                  {order.subItems.map((si, idx) => (
-                    <div key={si.id} className="flex flex-col gap-1.5 animate-in fade-in duration-300 overflow-visible">
-                      {idx > 0 && <div className="w-full h-[1px] bg-toss-grey-100 my-0.5" />}
-                      <div className="relative w-full h-7 flex items-center justify-center">
-                        <button onClick={() => onOpenMenuModal(order.id, si.itemName, si.id, si.type)} className="w-full h-full bg-toss-grey-100 rounded-lg flex items-center justify-center border border-toss-grey-200 shadow-sm active:scale-95 transition-all px-8">
-                          <span className="text-[11px] font-black text-toss-grey-800 truncate text-center w-full">{si.itemName}</span>
-                        </button>
-                        <button onClick={(e) => { e.stopPropagation(); setActiveMemoSubId(si.id === activeMemoSubId ? null : si.id); startAutoCloseTimer(); }} className={`absolute right-1.5 top-1/2 -translate-y-1/2 p-1 active:scale-90 transition-transform ${activeMemoSubId === si.id ? 'text-toss-blue' : 'text-toss-grey-300 hover:text-toss-blue'}`}>
-                          <MessageCircle size={10} />
-                        </button>
-                      </div>
-
-                      {si.itemName !== '미정' && si.itemName !== '안 먹음' && si.type === 'DRINK' && (
-                        <div className="flex flex-col gap-1.5">
-                          <div className="flex gap-1.5 h-7">
-                            <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'HOT' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'HOT' ? 'bg-toss-redLight border-toss-red text-toss-red' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Flame size={10} strokeWidth={3} /><span className="text-[8px] font-black">HOT</span></button>
-                            <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'ICE' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'ICE' ? 'bg-toss-blueLight border-toss-blue text-toss-blue' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Snowflake size={10} strokeWidth={3} /><span className="text-[8px] font-black">ICE</span></button>
-                          </div>
-                          {appSettings.showDrinkSize && (
-                            <div className="flex gap-1.5 h-7">
-                              {(['Tall', 'Grande', 'Venti'] as DrinkSize[]).map((sz) => {
-                                const isSizeSelected = (si.size || 'Tall') === sz;
-                                return (
-                                  <button
-                                    key={sz}
-                                    onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, size: sz } : s) })}
-                                    className={`flex-1 flex items-center justify-center rounded-lg border transition-all text-[8px] font-black ${isSizeSelected ? 'bg-toss-blue border-toss-blue text-white shadow-sm' : 'bg-white border-toss-grey-100 text-toss-grey-400'}`}
-                                  >
-                                    {sz.charAt(0)}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
+                <div className="w-full flex-1 flex flex-col overflow-visible pt-1">
+                  <div className="flex-1 space-y-2 overflow-visible">
+                    {order.subItems.map((si, idx) => (
+                      <div key={si.id} className="flex flex-col gap-1.5 animate-in fade-in duration-300 overflow-visible">
+                        {idx > 0 && <div className="w-full h-[1px] bg-toss-grey-100 my-0.5" />}
+                        <div className="relative w-full h-7 flex items-center justify-center">
+                          <button onClick={() => onOpenMenuModal(order.id, si.itemName, si.id, si.type)} className="w-full h-full bg-toss-grey-100 rounded-lg flex items-center justify-center border border-toss-grey-200 shadow-sm active:scale-95 transition-all px-8">
+                            <span className="text-[11px] font-black text-toss-grey-800 truncate text-center w-full">{si.itemName}</span>
+                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); setActiveMemoSubId(si.id === activeMemoSubId ? null : si.id); startAutoCloseTimer(); }} className={`absolute right-1.5 top-1/2 -translate-y-1/2 p-1 active:scale-90 transition-transform ${activeMemoSubId === si.id ? 'text-toss-blue' : 'text-toss-grey-300 hover:text-toss-blue'}`}>
+                            <MessageCircle size={10} />
+                          </button>
                         </div>
-                      )}
 
-                      <div className="w-full overflow-hidden">
-                        <motion.div
-                          layout
-                          transition={{ duration: 0.25, ease: "easeInOut" }}
-                          className="grid grid-cols-2 gap-1.5 w-full"
-                        >
-                          <AnimatePresence initial={false} mode="popLayout">
-                            {(() => {
-                              const isExpanded = activeMemoSubId === si.id;
-                              const selectedMemos = si.memo ? si.memo.split(',').map(x => x.trim()).filter(Boolean) : [];
-                              const visibleMemos = isExpanded ? localQuickMemos : selectedMemos;
+                        {si.itemName !== '미정' && si.itemName !== '안 먹음' && si.type === 'DRINK' && (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex gap-1.5 h-7">
+                              <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'HOT' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'HOT' ? 'bg-toss-redLight border-toss-red text-toss-red' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Flame size={10} strokeWidth={3} /><span className="text-[8px] font-black">HOT</span></button>
+                              <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'ICE' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'ICE' ? 'bg-toss-blueLight border-toss-blue text-toss-blue' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Snowflake size={10} strokeWidth={3} /><span className="text-[8px] font-black">ICE</span></button>
+                            </div>
+                            {appSettings.showDrinkSize && (
+                              <div className="flex gap-1.5 h-7">
+                                {(['Tall', 'Grande', 'Venti'] as DrinkSize[]).map((sz) => {
+                                  const isSizeSelected = (si.size || 'Tall') === sz;
+                                  return (
+                                    <button
+                                      key={sz}
+                                      onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, size: sz } : s) })}
+                                      className={`flex-1 flex items-center justify-center rounded-lg border transition-all text-[8px] font-black ${isSizeSelected ? 'bg-toss-blue border-toss-blue text-white shadow-sm' : 'bg-white border-toss-grey-100 text-toss-grey-400'}`}
+                                    >
+                                      {sz.charAt(0)}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
 
-                              return visibleMemos.map((memo, idx, arr) => {
-                                const isSelected = selectedMemos.includes(memo);
-                                const isFullWidth = idx === arr.length - 1 && arr.length % 2 !== 0;
+                        <div className="w-full overflow-hidden">
+                          <motion.div layout transition={{ duration: 0.25, ease: "easeInOut" }} className="grid grid-cols-2 gap-1.5 w-full">
+                            <AnimatePresence initial={false} mode="popLayout">
+                              {(() => {
+                                const isExpanded = activeMemoSubId === si.id;
+                                const selectedMemos = si.memo ? si.memo.split(',').map(x => x.trim()).filter(Boolean) : [];
+                                const visibleMemos = isExpanded ? localQuickMemos : selectedMemos;
 
-                                return (
-                                  <motion.button
-                                    layout
-                                    key={memo}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{
-                                      opacity: { duration: 0.2 },
-                                      layout: { duration: 0.25, ease: "easeInOut" }
-                                    }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (isExpanded) {
-                                        let m = [...selectedMemos];
-                                        m = isSelected ? m.filter(x => x !== memo) : [...m, memo];
-                                        onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, memo: m.join(', ') } : s) });
-                                        startAutoCloseTimer();
-                                      } else {
-                                        handleDeleteChip(si.id, memo);
-                                      }
-                                    }}
-                                    className={`h-7 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[9px] transition-colors ${isSelected
-                                      ? 'bg-amber-50 border-amber-200 text-amber-900'
-                                      : 'bg-white border-toss-grey-100 text-toss-grey-700'
-                                      } ${isFullWidth ? 'col-span-2' : ''}`}
-                                  >
-                                    {memo}
-                                  </motion.button>
-                                );
-                              });
-                            })()}
+                                return visibleMemos.map((memo, idx, arr) => {
+                                  const isSelected = selectedMemos.includes(memo);
+                                  const isFullWidth = idx === arr.length - 1 && arr.length % 2 !== 0;
+
+                                  return (
+                                    <motion.button
+                                      layout
+                                      key={memo}
+                                      initial={{ opacity: 0, scale: 0.9 }}
+                                      animate={{ opacity: 1, scale: 1 }}
+                                      exit={{ opacity: 0, scale: 0.9 }}
+                                      transition={{
+                                        opacity: { duration: 0.2 },
+                                        layout: { duration: 0.25, ease: "easeInOut" }
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (isExpanded) {
+                                          let m = [...selectedMemos];
+                                          m = isSelected ? m.filter(x => x !== memo) : [...m, memo];
+                                          onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, memo: m.join(', ') } : s) });
+                                          startAutoCloseTimer();
+                                        } else {
+                                          handleDeleteChip(si.id, memo);
+                                        }
+                                      }}
+                                      className={`h-7 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[9px] transition-colors ${isSelected
+                                        ? 'bg-amber-50 border-amber-200 text-amber-900'
+                                        : 'bg-white border-toss-grey-100 text-toss-grey-700'
+                                        } ${isFullWidth ? 'col-span-2' : ''}`}
+                                    >
+                                      {memo}
+                                    </motion.button>
+                                  );
+                                });
+                              })()}
+                            </AnimatePresence>
+                          </motion.div>
+
+                          <AnimatePresence>
+                            {activeMemoSubId === si.id && (
+                              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mt-1.5 space-y-1.5">
+                                {isMemoDirectInputMode ? (
+                                  <div className="relative h-8 w-full animate-in zoom-in-95 duration-200">
+                                    <input type="text" lang="ko" enterKeyHint="done" placeholder="메모 입력..." className="w-full h-full bg-white border border-toss-blue rounded-lg pl-2 pr-7 text-[10px] font-black text-toss-grey-900 focus:outline-none placeholder:text-toss-grey-300 text-center" value={customMemo} onChange={(e) => setCustomMemo(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddCustomMemo()} onBlur={() => !customMemo && setIsMemoDirectInputMode(false)} autoFocus />
+                                    <button onClick={handleAddCustomMemo} className="absolute right-1 top-1/2 -translate-y-1/2 text-toss-blue hover:text-toss-blue/70 transition-colors p-1"><Send size={12} strokeWidth={3} /></button>
+                                  </div>
+                                ) : (
+                                  <button onClick={() => setIsMemoDirectInputMode(true)} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
+                                )}
+                                <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                                  <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
+                                  <span className="relative z-10 flex items-center gap-1.5">{timeLeft === 5.0 ? "완료" : `${timeLeft.toFixed(1)}초 후 자동 완료`}</span>
+                                </button>
+                              </motion.div>
+                            )}
                           </AnimatePresence>
-                        </motion.div>
-
-                        <AnimatePresence>
-                          {activeMemoSubId === si.id && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden mt-1.5 space-y-1.5"
-                            >
-                              {isMemoDirectInputMode ? (
-                                <div className="relative h-8 w-full animate-in zoom-in-95 duration-200">
-                                  <input type="text" lang="ko" enterKeyHint="done" placeholder="메모 입력..." className="w-full h-full bg-white border border-toss-blue rounded-lg pl-2 pr-7 text-[10px] font-black text-toss-grey-900 focus:outline-none placeholder:text-toss-grey-300 text-center" value={customMemo} onChange={(e) => setCustomMemo(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddCustomMemo()} onBlur={() => !customMemo && setIsMemoDirectInputMode(false)} autoFocus />
-                                  <button onClick={handleAddCustomMemo} className="absolute right-1 top-1/2 -translate-y-1/2 text-toss-blue hover:text-toss-blue/70 transition-colors p-1"><Send size={12} strokeWidth={3} /></button>
-                                </div>
-                              ) : (
-                                <button onClick={() => setIsMemoDirectInputMode(true)} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
-                              )}
-                              <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
-                                <span className="relative z-10 flex items-center gap-1.5">{timeLeft === 5.0 ? "완료" : `${timeLeft.toFixed(1)}초 후 자동 완료`}</span>
-                              </button>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  <div className="flex items-center gap-1.5 mt-1.5 w-full">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-blueLight text-toss-blue rounded-lg font-black text-[10px] flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm border border-toss-blue/10"><Plus size={12} strokeWidth={3} /> 메뉴 추가</button>
+                    ))}
+                  </div>
+
+                  {/* 옆 카드가 길어질 때 허전함을 채워주는 하단 고정 버튼 바 */}
+                  <div className="grid grid-cols-2 gap-2 mt-4 shrink-0 overflow-visible">
+                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="h-10 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
+                      <Plus size={14} strokeWidth={3} /><span className="text-[10px] font-black uppercase tracking-tight">메뉴 추가</span>
+                    </button>
+                    <button onClick={handleResetCard} className="h-10 bg-white text-toss-grey-400 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 hover:text-toss-red hover:border-toss-red/30">
+                      <RotateCcw size={14} strokeWidth={3} /><span className="text-[10px] font-black uppercase tracking-tight">초기화</span>
+                    </button>
                   </div>
                 </div>
               )}

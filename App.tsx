@@ -634,8 +634,9 @@ function App() {
           <AnimatePresence>
             {isMainMenuOpen && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">전체 메뉴</h2>
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  <div className="w-8 shrink-0" />
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">전체 메뉴</h2>
                   <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
                     <X size={18} />
                   </button>
@@ -754,8 +755,9 @@ function App() {
             {managingGroupId && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
                 {/* 헤더 */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
-                  <h2 className="text-[22px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h2>
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  <div className="w-8 shrink-0" />
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h2>
                   <button onClick={closeManageSheet} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
                     <X size={18} />
                   </button>
