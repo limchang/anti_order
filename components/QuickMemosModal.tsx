@@ -234,7 +234,7 @@ export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClos
                       <Plus size={20} strokeWidth={3} />
                     </button>
                   </div>
-                  <button onClick={onClose} className="w-full h-12 bg-toss-grey-900 text-white rounded-2xl font-black text-[14px] active:scale-[0.98] transition-all">
+                  <button onClick={onClose} className="w-full h-16 bg-toss-grey-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
                     설정 완료
                   </button>
                 </div>

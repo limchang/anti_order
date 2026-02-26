@@ -254,46 +254,39 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         )}
       </AnimatePresence>
 
-      <div className={`fixed left-0 right-0 z-[2001] flex flex-col items-center justify-end pointer-events-none transition-all duration-300 ease-in-out ${isExpanded ? 'bottom-0 pb-6 px-4' : 'bottom-0 pb-4 px-3'}`}>
+      <div className={`fixed left-0 right-0 z-[2001] flex flex-col items-center justify-end pointer-events-none transition-all duration-300 ease-in-out ${isExpanded ? 'bottom-0 pb-5 px-3' : 'bottom-0 pb-4 px-3'}`}>
         <motion.div
           initial={false}
           animate={{
-            height: isExpanded ? '82vh' : 72,
+            height: isExpanded ? 'calc(100dvh - 70px)' : 72,
             borderRadius: isExpanded ? '32px' : '36px',
           }}
           transition={{ type: "spring", damping: 25, stiffness: 220, mass: 0.9 }}
-          className={`w-full max-w-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-toss-grey-200/60 flex flex-col items-stretch pointer-events-auto overflow-hidden ring-1 ring-black/5 bg-white border mx-auto`}
+          className={`w-full max-w-lg shadow-[0_8px_40px_rgb(0,0,0,0.18)] border-toss-grey-200/60 flex flex-col items-stretch pointer-events-auto overflow-hidden ring-1 ring-black/5 border mx-auto ${isExpanded ? 'bg-[#f8f9fb]' : 'bg-white'}`}
         >
-          <div
-            className={`flex items-center justify-between w-full shrink-0 transition-colors bg-transparent ${isExpanded ? 'pt-6 pb-4 px-6 sm:px-8' : 'px-4 h-[72px]'}`}
-          >
-            {isExpanded ? (
-              <div className="flex items-center gap-4 flex-1 min-w-0 px-2">
-                <div className="text-left flex-1 min-w-0">
-                  <h2 className="text-xl font-black text-toss-grey-900">주문 확인</h2>
-                </div>
-              </div>
-            ) : <div className="flex-1 min-w-0 w-full h-full flex items-center overflow-hidden">{collapsedBottomBarNode}</div>}
-
-            {isExpanded ? (
+          {/* 헤더 */}
+          {isExpanded ? (
+            <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full">
+              <h2 className="text-[22px] font-black text-toss-grey-900">주문 확인</h2>
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('collapsed'); }}
                 className="w-8 h-8 bg-toss-grey-100 hover:bg-toss-grey-200 text-toss-grey-600 rounded-full flex items-center justify-center transition-colors shadow-sm shrink-0 active:scale-95"
-                title="닫기"
               >
-                <X size={20} strokeWidth={2.5} />
+                <X size={18} strokeWidth={2.5} />
               </button>
-            ) : (
+            </div>
+          ) : (
+            <div className={`flex items-center justify-between w-full shrink-0 transition-colors bg-transparent px-4 h-[72px]`}>
+              <div className="flex-1 min-w-0 w-full h-full flex items-center overflow-hidden">{collapsedBottomBarNode}</div>
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('expanded'); }}
                 className="h-[44px] px-3.5 rounded-[18px] bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
-                title="주문 확인 열기"
               >
                 주문 확인
                 <ChevronUp size={16} strokeWidth={3} className="text-white/70" />
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           <AnimatePresence>
             {isExpanded && (

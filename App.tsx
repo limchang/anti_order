@@ -626,20 +626,21 @@ function App() {
       <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
         <motion.div
           initial={false}
-          animate={{ height: isMainMenuOpen ? 'calc(100dvh - 70px)' : 0, opacity: isMainMenuOpen ? 1 : 0 }}
+          animate={{ height: isMainMenuOpen ? 'auto' : 0, opacity: isMainMenuOpen ? 1 : 0 }}
+          style={{ maxHeight: isMainMenuOpen ? 'calc(100dvh - 70px)' : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
           <AnimatePresence>
             {isMainMenuOpen && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col h-full overflow-hidden">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
                 <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
                   <h2 className="text-[22px] font-black text-toss-grey-900">전체 메뉴</h2>
                   <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
                     <X size={18} />
                   </button>
                 </div>
-                <div className="overflow-y-auto no-scrollbar flex-1 px-5 py-5 space-y-5 custom-scrollbar">
+                <div className="overflow-y-auto no-scrollbar px-5 py-5 space-y-4 custom-scrollbar">
                   <div>
                     <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
                     <div className="bg-white p-2 rounded-[24px] space-y-1 border border-toss-grey-100 shadow-sm">
@@ -677,9 +678,12 @@ function App() {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-4 text-[14px] font-black text-white bg-toss-grey-800 hover:bg-toss-grey-900 rounded-[20px] transition-all shadow-md active:scale-95"><RotateCcw size={16} strokeWidth={3} /> 모든 데이터 앱 전체 초기화</button>
-                  </div>
+                </div>
+                {/* 하단 초기화 버튼 */}
+                <div className="px-4 pt-2 pb-5 bg-white border-t border-toss-grey-100 rounded-b-[32px]">
+                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
+                    <RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화
+                  </button>
                 </div>
               </motion.div>
             )}
@@ -724,7 +728,7 @@ function App() {
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-toss-card mb-6 border border-toss-grey-100"><LayoutGrid size={40} className="text-toss-grey-200" /></div>
             <h2 className="text-xl font-black text-toss-grey-800 mb-3">간단하고 빠른 주문 수집!</h2>
             <div className="text-[13px] font-bold text-toss-grey-500 text-center mb-8 space-y-2 bg-toss-grey-50 p-5 rounded-[24px]">
-              <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">1</span>하단의 <Plus size={14} strokeWidth={3} className="inline" /> 버튼을 눌러 테이블을 추가하세요.</p>
+              <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">1</span>하단의 <Plus size={14} strokeWidth={3} className="inline" /> 버튼을 눈러 테이블을 추가하세요.</p>
               <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">2</span>사람을 추가하고 각자의 메뉴를 입력하세요.</p>
               <p className="flex items-center justify-start gap-2"><span className="w-6 h-6 flex items-center justify-center bg-toss-blue/10 text-toss-blue rounded-full">3</span>주문 확인 창에서 모아보고 복사하거나 저장할 수 있습니다.</p>
             </div>
@@ -741,13 +745,14 @@ function App() {
       <div className="fixed left-0 right-0 bottom-0 z-[2003] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
         <motion.div
           initial={false}
-          animate={{ height: managingGroupId ? 'calc(100dvh - 70px)' : 0, opacity: managingGroupId ? 1 : 0 }}
+          animate={{ height: managingGroupId ? 'auto' : 0, opacity: managingGroupId ? 1 : 0 }}
+          style={{ maxHeight: managingGroupId ? 'calc(100dvh - 70px)' : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
           <AnimatePresence>
             {managingGroupId && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col h-full overflow-hidden">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
                 {/* 헤더 */}
                 <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
                   <h2 className="text-[22px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h2>

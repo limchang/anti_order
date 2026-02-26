@@ -359,11 +359,11 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
                         else onSelect([{ itemName: '미정', type: 'DRINK' }]);
                         onClose();
                       }}
-                      className="h-12 rounded-2xl font-black bg-toss-redLight text-toss-red active:scale-95 transition-all text-[13px] flex items-center justify-center gap-2"
+                      className="h-16 rounded-[24px] font-black bg-toss-redLight text-toss-red active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 border border-toss-red/10"
                     >
-                      <Trash2 size={16} /> 주문 삭제
+                      <Trash2 size={18} /> 주문 삭제
                     </button>
-                    <button onClick={onClose} className="h-12 rounded-2xl font-black bg-toss-grey-900 text-white active:scale-95 transition-all text-[13px]">닫기</button>
+                    <button onClick={onClose} className="h-16 rounded-[24px] font-black bg-toss-grey-900 text-white active:scale-[0.98] transition-all text-[14px] shadow-xl shadow-toss-grey-900/20 hover:bg-black">닫기</button>
                   </div>
                 </div>
               </motion.div>
