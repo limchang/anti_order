@@ -538,8 +538,11 @@ function App() {
       <button onClick={() => setIsMainMenuOpen(true)} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-[18px] flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all">
         <Menu size={20} strokeWidth={2.5} />
       </button>
+      <button onClick={addGroup} className="w-[44px] h-[44px] shrink-0 bg-toss-blue/10 text-toss-blue border border-toss-blue/20 rounded-[18px] flex items-center justify-center shadow-sm active:scale-95 transition-all">
+        <Plus size={20} strokeWidth={2.5} />
+      </button>
 
-      <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto pr-2 relative">
+      <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto relative">
         {groups.map(group => {
           const isActive = activeGroupId === group.id;
           const firstChar = group.name.trim().charAt(0) || '?';
@@ -564,12 +567,8 @@ function App() {
             </div>
           );
         })}
-        <div className="relative shrink-0 py-1 pr-6 flex items-center h-full">
-          <button onClick={addGroup} className="min-w-[40px] h-10 px-3 rounded-[16px] bg-toss-blue/10 text-toss-blue flex items-center justify-center transition-all shadow-sm snap-center active:scale-95 border border-toss-blue/20">
-            <Plus size={18} strokeWidth={3} />
-          </button>
-          <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
-        </div>
+        <div className="shrink-0 w-4 h-full" />
+        <div className="absolute top-0 right-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent pointer-events-none" />
       </div>
     </div>
   );
