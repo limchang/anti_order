@@ -337,17 +337,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
               </div>
 
-              {/* 우측 상단 액션 버튼 */}
-              <div className="absolute top-2 right-2 z-[50] flex gap-1 items-start pointer-events-none">
+              {/* 우측 상단 액션 버튼 (윈도우 스타일) */}
+              <div className="absolute top-0 right-0 z-[50] flex pointer-events-none rounded-tr-[24px] rounded-bl-[16px] overflow-hidden shadow-[inset_1px_-1px_0_0_rgba(0,0,0,0.05)] bg-white">
                 <AnimatePresence>
                   {(isDecided || isNotEating) && (
                     <motion.button
                       key="undo"
                       onClick={handleUndoOrder}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      className="w-7 h-7 bg-toss-grey-100 text-toss-grey-600 rounded-lg shadow-sm border border-toss-grey-200/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-toss-grey-200 group"
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 32 }}
+                      exit={{ opacity: 0, width: 0 }}
+                      className="h-8 bg-toss-grey-100/80 hover:bg-toss-grey-200 text-toss-grey-500 hover:text-toss-grey-800 flex items-center justify-center pointer-events-auto transition-colors group"
                       title="되돌리기"
                     >
                       <RotateCcw size={12} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300" />
@@ -356,10 +356,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 </AnimatePresence>
                 <button
                   onClick={() => onRemove(order.id)}
-                  className="w-7 h-7 bg-red-50 text-red-500 rounded-lg shadow-sm border border-red-100/50 flex items-center justify-center pointer-events-auto active:scale-95 transition-all hover:bg-red-100"
+                  className="w-9 h-8 bg-toss-grey-100/80 hover:bg-toss-red text-toss-grey-500 hover:text-white flex items-center justify-center pointer-events-auto transition-colors"
                   title="삭제"
                 >
-                  <Trash2 size={12} strokeWidth={3} />
+                  <X size={14} strokeWidth={3} />
                 </button>
               </div>
 

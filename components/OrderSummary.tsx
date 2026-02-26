@@ -273,9 +273,36 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     return Object.values(grouped);
   };
 
+  const CoupangBanner = () => (
+    <div className="w-full h-[50px] overflow-hidden flex items-center justify-center shrink-0 max-w-[400px] mx-auto rounded-xl">
+      <iframe
+        srcDoc={`
+          <html>
+            <head><style>body { margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; background: transparent; }</style></head>
+            <body>
+              <script src="https://ads-partners.coupang.com/g.js"></script>
+              <script>
+                new PartnersCoupang.G({"id":968136,"template":"carousel","trackingCode":"AF9552419","width":"100%","height":"50","tsource":""});
+              </script>
+            </body>
+          </html>
+        `}
+        width="100%"
+        height="50"
+        frameBorder="0"
+        scrolling="no"
+        title="Coupang Ad"
+        style={{ maxWidth: '400px' }}
+      />
+    </div>
+  );
+
   if (expandState === 'collapsed') {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-[2000] flex justify-center pointer-events-none">
+      <div className="fixed bottom-0 left-0 right-0 z-[2000] flex flex-col items-center justify-end pointer-events-none">
+        <div className="w-full max-w-lg px-3 mb-2 flex justify-center pointer-events-auto drop-shadow-sm opacity-95 hover:opacity-100 transition-opacity">
+          <CoupangBanner />
+        </div>
         <button
           onClick={() => onSetExpandState('expanded')}
           className="w-full max-w-lg bg-white/98 backdrop-blur-2xl border-t border-x border-toss-grey-100 rounded-t-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.12)] px-7 pt-3.5 pb-8 flex flex-col items-center pointer-events-auto active:scale-[0.99] transition-all ring-1 ring-black/5"
@@ -306,6 +333,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           <button onClick={() => onSetExpandState('collapsed')} className="w-full flex justify-center py-4">
             <div className="w-12 h-1.5 bg-toss-grey-200 rounded-full" />
           </button>
+          <div className="mb-4">
+            <CoupangBanner />
+          </div>
           <div className="px-7 flex items-center justify-between pb-5">
             <SummaryHeader />
           </div>

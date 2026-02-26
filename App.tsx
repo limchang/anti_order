@@ -489,34 +489,6 @@ function App() {
 
   return (
     <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden">
-      {/* 상단 헤더 & 광고 배너 영역 */}
-      <header className="bg-white fixed top-0 left-0 right-0 z-[100] border-b border-toss-grey-100 flex items-center justify-between px-3 h-14 shadow-sm">
-        <div className="flex-1 w-full max-w-[400px] h-full overflow-hidden flex items-center justify-start rounded-lg">
-          <iframe
-            srcDoc={`
-              <html>
-                <head><style>body { margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; background: transparent; }</style></head>
-                <body>
-                  <script src="https://ads-partners.coupang.com/g.js"></script>
-                  <script>
-                    new PartnersCoupang.G({"id":968136,"template":"carousel","trackingCode":"AF9552419","width":"100%","height":"50","tsource":""});
-                  </script>
-                </body>
-              </html>
-            `}
-            width="100%"
-            height="50"
-            frameBorder="0"
-            scrolling="no"
-            title="Coupang Ad"
-            style={{ maxWidth: '400px' }}
-          />
-        </div>
-        <button onClick={() => setIsMainMenuOpen(true)} className="w-10 h-10 flex items-center justify-center bg-toss-grey-100 text-toss-grey-800 rounded-full active:scale-90 transition-all shrink-0 ml-3">
-          <Menu size={20} strokeWidth={2.5} />
-        </button>
-      </header>
-
       {/* 전체 메뉴 바텀시트 */}
       <AnimatePresence>
         {isMainMenuOpen && (
@@ -579,10 +551,10 @@ function App() {
         )}
       </AnimatePresence>
 
-      <main className="flex-1 py-1 mt-[56px] relative w-full overflow-visible flex flex-col">
+      <main className="flex-1 pb-1 relative w-full overflow-hidden flex flex-col">
         {/* 테이블 네비게이션 (Sticky top) */}
-        <div className="sticky top-[56px] z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-3 px-4 w-full shadow-sm mb-2 shrink-0 transition-all">
-          <div className="flex items-center justify-start gap-4 overflow-x-auto no-scrollbar max-w-6xl mx-auto w-full">
+        <div className="sticky top-0 z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-2.5 px-3 w-full shadow-sm mb-2 shrink-0 transition-all flex items-center justify-between gap-2 overflow-hidden">
+          <div className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-3 w-full">
             {groups.map(group => {
               const isActive = activeGroupId === group.id;
               const firstChar = group.name.trim().charAt(0) || '?';
@@ -595,7 +567,7 @@ function App() {
                       if (activeGroupId === group.id) openManageSheet(group.id);
                       else { setActiveGroupId(group.id); scrollToTable(group.id); }
                     }}
-                    className={`min-w-[44px] h-11 px-3 rounded-2xl flex items-center justify-center font-black text-[15px] transition-all relative whitespace-nowrap ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-toss-grey-100 text-toss-grey-500 hover:bg-toss-grey-200'}`}
+                    className={`min-w-[44px] h-10 px-3 rounded-[12px] flex items-center justify-center font-black text-[14px] transition-all relative whitespace-nowrap ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-toss-grey-100 text-toss-grey-500 hover:bg-toss-grey-200'}`}
                   >
                     {isActive ? group.name.replace('번 테이블', '') : firstChar}
                     {hasUndecided && <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
@@ -603,9 +575,16 @@ function App() {
                 </div>
               );
             })}
-            <div className="shrink-0 pl-2 border-l border-toss-grey-100">
-              <button onClick={addGroup} className="h-11 px-4 bg-toss-blueLight text-toss-blue rounded-2xl font-black text-[13px] active:scale-95 transition-all shadow-sm border border-toss-blue/10 flex items-center gap-1.5 whitespace-nowrap"><Plus size={16} strokeWidth={3} /> 추가</button>
-            </div>
+          </div>
+          <div className="shrink-0 flex items-center gap-1.5 pl-1 bg-gradient-to-l from-white/95 via-white/80 to-transparent">
+            {groups.length === 0 && <span className="text-[12px] font-bold text-toss-blue/80 hidden sm:block">테이블을 추가하세요</span>}
+            <button onClick={addGroup} className="h-10 px-2.5 bg-toss-blueLight text-toss-blue rounded-[12px] font-black text-[12px] active:scale-95 transition-all shadow-sm flex items-center gap-1">
+              <Plus size={14} strokeWidth={3} /> <span className="hidden sm:inline">테이블 추가</span>
+            </button>
+            <div className="w-[1px] h-4 bg-toss-grey-200 mx-0.5"></div>
+            <button onClick={() => setIsMainMenuOpen(true)} className="w-10 h-10 flex items-center justify-center bg-toss-grey-100 text-toss-grey-700 rounded-[12px] active:scale-90 transition-all font-black text-[10px] gap-1 hover:bg-toss-grey-200 shadow-sm border border-toss-grey-200/50">
+              <Menu size={18} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
 
