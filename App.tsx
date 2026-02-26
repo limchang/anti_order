@@ -68,6 +68,14 @@ function App() {
   const isInitialMount = useRef(true);
   const isInternalScrolling = useRef(false);
 
+  // 기 인원이 없는 테이블 자동 삭제
+  useEffect(() => {
+    const hasEmpty = groups.some(g => g.items.length === 0);
+    if (hasEmpty) {
+      setGroups(prev => prev.filter(g => g.items.length > 0));
+    }
+  }, [groups]);
+
   const showToast = (message: string) => {
     const id = uuidv4();
     setToast({ message, id });
@@ -630,7 +638,7 @@ function App() {
                   <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
                   <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
                     <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
-                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판 관리</button>
+                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
                   </div>
                 </div>
 

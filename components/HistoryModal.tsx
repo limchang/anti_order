@@ -142,29 +142,65 @@ const HistoryItem: React.FC<{
 
 export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, history = [], onLoad, onLoadPeopleOnly, onDelete, onUpdate }) => {
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <>
+      {/* 배경 딤 */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-100 flex flex-col overflow-hidden h-[92vh] pb-8"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-6 border-b border-toss-grey-100 shrink-0">
-              <h2 className="text-2xl font-black text-toss-grey-900 flex items-center gap-3"><div className="p-2 bg-toss-blueLight rounded-xl"><Calendar size={24} className="text-toss-blue" /></div>주문 히스토리</h2>
-              <button onClick={onClose} className="p-2 text-toss-grey-400 hover:text-toss-grey-600 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={28} /></button>
-            </div>
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
-              {!Array.isArray(history) || history.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-toss-grey-400 gap-4"><div className="w-20 h-20 bg-toss-grey-50 rounded-full flex items-center justify-center text-toss-grey-200"><Coffee size={40} /></div><p className="font-black">저장된 주문 내역이 없습니다.</p></div>
-              ) : (history.map((item) => (<HistoryItem key={item.id} item={item} onLoad={onLoad} onLoadPeopleOnly={onLoadPeopleOnly} onDelete={onDelete} onUpdate={onUpdate} onClose={onClose} />)))}
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm"
+            onClick={onClose}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 네비게이션 바에서 확장되는 카드 */}
+      <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        <motion.div
+          initial={false}
+          animate={{ height: isOpen ? '88vh' : 0, opacity: isOpen ? 1 : 0 }}
+          transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+        >
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex flex-col h-full overflow-hidden"
+              >
+                {/* 헤더 */}
+                <div className="flex items-center justify-between px-6 pt-5 pb-4 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
+                  <h2 className="text-[22px] font-black text-toss-grey-900">주문 히스토리</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                    <X size={18} />
+                  </button>
+                </div>
+                {/* 리스트 */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar px-5 py-4 space-y-4">
+                  {!Array.isArray(history) || history.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-toss-grey-400 gap-4">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-toss-grey-200 shadow-sm">
+                        <Coffee size={40} />
+                      </div>
+                      <p className="font-black text-[14px]">저장된 주문 내역이 없습니다.</p>
+                    </div>
+                  ) : (
+                    history.map((item) => (
+                      <HistoryItem key={item.id} item={item} onLoad={onLoad} onLoadPeopleOnly={onLoadPeopleOnly} onDelete={onDelete} onUpdate={onUpdate} onClose={onClose} />
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </>
   );
 };
+

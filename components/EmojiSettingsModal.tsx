@@ -37,59 +37,102 @@ export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, 
   ];
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[1200] bg-black/50 backdrop-blur-md" onClick={onClose}>
+    <>
+      {/* 배경 딤 */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-100 flex flex-col overflow-hidden h-[92vh] pb-8"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-5 pb-3 shrink-0">
-              <h2 className="text-lg font-black text-toss-grey-900 flex items-center gap-2"><Smile size={20} className="text-toss-blue" /> 이모지 설정</h2>
-              <button onClick={onClose} className="p-1.5 text-toss-grey-400 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={20} /></button>
-            </div>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm"
+            onClick={onClose}
+          />
+        )}
+      </AnimatePresence>
 
-            <div className="p-5 pt-1 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
-              <section className="space-y-3">
-                <span className="text-[12px] font-black text-toss-grey-400 uppercase tracking-widest">기본 아바타 리스트</span>
-                <div className="grid grid-cols-6 gap-2">
-                  {settings.defaultEmojis.map((emoji, idx) => (
-                    <div key={idx} className="relative aspect-square">
-                      {editingEmojiIdx === idx ? (
-                        <input autoFocus className="w-full h-full text-center bg-toss-blueLight border border-toss-blue rounded-xl outline-none text-base" onBlur={e => handleUpdateEmoji(idx, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUpdateEmoji(idx, (e.target as HTMLInputElement).value)} />
-                      ) : (
-                        <button onClick={() => setEditingEmojiIdx(idx)} className="w-full h-full flex items-center justify-center bg-toss-grey-50 border border-toss-grey-100 rounded-xl text-lg hover:bg-white hover:border-toss-blue/30 transition-all">{emoji}</button>
-                      )}
+      {/* 네비게이션 바에서 확장되는 카드 */}
+      <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        <motion.div
+          initial={false}
+          animate={{ height: isOpen ? '88vh' : 0, opacity: isOpen ? 1 : 0 }}
+          transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+        >
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex flex-col h-full overflow-hidden"
+              >
+                {/* 헤더 */}
+                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
+                  <h2 className="text-[22px] font-black text-toss-grey-900">이모지 설정</h2>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 hover:bg-toss-grey-200 transition-colors">
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* 컨텐츠 */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar px-5 py-4 space-y-6">
+                  <section className="space-y-3">
+                    <span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest block">기본 아바타 리스트</span>
+                    <div className="grid grid-cols-6 gap-2">
+                      {settings.defaultEmojis.map((emoji, idx) => (
+                        <div key={idx} className="relative aspect-square">
+                          {editingEmojiIdx === idx ? (
+                            <input
+                              autoFocus
+                              className="w-full h-full text-center bg-toss-blueLight border border-toss-blue rounded-2xl outline-none text-lg"
+                              onBlur={e => handleUpdateEmoji(idx, e.target.value)}
+                              onKeyDown={e => e.key === 'Enter' && handleUpdateEmoji(idx, (e.target as HTMLInputElement).value)}
+                            />
+                          ) : (
+                            <button
+                              onClick={() => setEditingEmojiIdx(idx)}
+                              className="w-full h-full flex items-center justify-center bg-white border border-toss-grey-100 rounded-2xl text-xl hover:border-toss-blue/30 hover:shadow-md transition-all shadow-sm"
+                            >
+                              {emoji}
+                            </button>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </section>
+                  </section>
 
-              <section className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Dices size={16} className="text-toss-grey-400" />
-                  <span className="text-[12px] font-black text-toss-grey-400 uppercase tracking-widest">랜덤 아바타 카테고리</span>
+                  <section className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Dices size={16} className="text-toss-grey-400" />
+                      <span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">랜덤 아바타 카테고리</span>
+                    </div>
+                    <div className="flex p-1 bg-toss-grey-100 rounded-2xl shadow-inner">
+                      {categories.map(cat => (
+                        <button
+                          key={cat.key}
+                          onClick={() => onUpdateSettings({ ...settings, randomCategory: cat.key })}
+                          className={`flex-1 py-2.5 rounded-xl text-[12px] font-black transition-all ${settings.randomCategory === cat.key ? 'bg-white text-toss-blue shadow-md' : 'text-toss-grey-400'}`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
                 </div>
-                <div className="flex p-1 bg-toss-grey-100 rounded-xl">
-                  {categories.map(cat => (
-                    <button key={cat.key} onClick={() => onUpdateSettings({ ...settings, randomCategory: cat.key })} className={`flex-1 py-2 rounded-lg text-[11px] font-bold transition-all ${settings.randomCategory === cat.key ? 'bg-white text-toss-blue shadow-sm' : 'text-toss-grey-400'}`}>
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            </div>
 
-            <div className="p-4 pt-2 shrink-0 border-t border-toss-grey-50 bg-white">
-              <button onClick={onClose} className="w-full py-4 bg-toss-grey-900 text-white rounded-2xl font-black text-sm active:scale-[0.98] transition-all">설정 완료</button>
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+                {/* 하단 버튼 */}
+                <div className="px-4 pt-3 pb-5 bg-white border-t border-toss-grey-100 shrink-0 rounded-b-[32px]">
+                  <button onClick={onClose} className="w-full h-12 bg-toss-grey-900 text-white rounded-2xl font-black text-[14px] active:scale-[0.98] transition-all">
+                    설정 완료
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </>
   );
 };
