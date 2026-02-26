@@ -72,10 +72,10 @@ const SortableMenuItem: React.FC<{
       </div>
 
       <div className={`flex-1 flex items-center rounded-2xl border transition-all overflow-hidden min-w-0 ${isHighlighted
-          ? 'bg-toss-blueLight border-toss-blue shadow-md shadow-toss-blue/10'
-          : isChecked
-            ? 'bg-amber-50 border-amber-200'
-            : 'bg-white border-toss-grey-100 shadow-sm'
+        ? 'bg-toss-blueLight border-toss-blue shadow-md shadow-toss-blue/10'
+        : isChecked
+          ? 'bg-amber-50 border-amber-200'
+          : 'bg-white border-toss-grey-100 shadow-sm'
         }`}>
         {showCheck && (
           <button
@@ -225,7 +225,7 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
         <motion.div
           initial={false}
           animate={{
-            height: isOpen ? '88vh' : 0,
+            height: isOpen ? 'calc(100dvh - 70px)' : 0,
             opacity: isOpen ? 1 : 0,
           }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}

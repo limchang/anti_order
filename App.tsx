@@ -617,71 +617,75 @@ function App() {
 
   return (
     <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden">
-      {/* 전체 메뉴 바텀시트 */}
+      {/* 전체 메뉴 - expand-from-navbar */}
       <AnimatePresence>
         {isMainMenuOpen && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
-            <motion.div
-              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-200/60 z-[2001] px-6 pt-4 pb-8 flex flex-col max-h-[90vh] overflow-hidden"
-            >
-              <div className="flex items-center justify-between mt-2 mb-6 px-2">
-                <h2 className="text-xl font-black text-toss-grey-900">전체 메뉴</h2>
-                <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="overflow-y-auto no-scrollbar space-y-6 px-2 pb-4 custom-scrollbar">
-                <div>
-                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
-                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
-                    <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
-                    <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
-                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
-                    <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
-                    <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-100 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
-                  <div className="bg-toss-grey-50 p-2 rounded-[24px] space-y-1">
-                    <div className="flex items-center justify-between px-4 py-3">
-                      <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
-                      <button
-                        onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })}
-                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
-                      >
-                        <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-toss-grey-200/50">
-                      <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
-                      <button
-                        onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })}
-                        className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
-                      >
-                        <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-4 text-[14px] font-black text-white bg-toss-grey-800 hover:bg-toss-grey-900 rounded-[20px] transition-all shadow-md active:scale-95"><RotateCcw size={16} strokeWidth={3} /> 모든 데이터 앱 전체 초기화</button>
-                </div>
-              </div>
-            </motion.div>
-          </>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
         )}
       </AnimatePresence>
+      <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        <motion.div
+          initial={false}
+          animate={{ height: isMainMenuOpen ? 'calc(100dvh - 70px)' : 0, opacity: isMainMenuOpen ? 1 : 0 }}
+          transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+        >
+          <AnimatePresence>
+            {isMainMenuOpen && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col h-full overflow-hidden">
+                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
+                  <h2 className="text-[22px] font-black text-toss-grey-900">전체 메뉴</h2>
+                  <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="overflow-y-auto no-scrollbar flex-1 px-5 py-5 space-y-5 custom-scrollbar">
+                  <div>
+                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
+                    <div className="bg-white p-2 rounded-[24px] space-y-1 border border-toss-grey-100 shadow-sm">
+                      <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
+                      <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
+                    <div className="bg-white p-2 rounded-[24px] space-y-1 border border-toss-grey-100 shadow-sm">
+                      <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
+                      <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
+                    <div className="bg-white p-2 rounded-[24px] space-y-1 border border-toss-grey-100 shadow-sm">
+                      <div className="flex items-center justify-between px-4 py-3.5">
+                        <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
+                        <button
+                          onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                        >
+                          <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+                        <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
+                        <button
+                          onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                        >
+                          <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-4 text-[14px] font-black text-white bg-toss-grey-800 hover:bg-toss-grey-900 rounded-[20px] transition-all shadow-md active:scale-95"><RotateCcw size={16} strokeWidth={3} /> 모든 데이터 앱 전체 초기화</button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
 
       <main className="flex-1 pt-4 pb-1 relative w-full overflow-hidden flex flex-col z-0">
         {/* 테이블 네비게이션이 하단 주문요약 탭으로 이동하였습니다 */}
@@ -728,67 +732,67 @@ function App() {
         )}
       </main>
 
+      {/* 테이블 관리 - expand-from-navbar */}
       <AnimatePresence>
         {managingGroupId && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2002]" />
-            <motion.div
-              initial={{ y: 400, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 400, opacity: 0 }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-6 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-lg bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 z-[2003] px-6 pt-4 pb-6 flex flex-col items-center overflow-hidden"
-            >
-              <AnimatePresence mode="wait">
-                {manageStep === 'menu' && (
-                  <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="w-full">
-                    <div className="w-full flex items-center justify-between mb-5">
-                      <div className="flex-1" />
-                      <div className="text-center flex-[2]">
-                        <h3 className="text-[16px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h3>
-                      </div>
-                      <div className="flex-1 flex justify-end">
-                        <button onClick={closeManageSheet} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
-                          <X size={20} />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="w-full space-y-2">
-                      <button onClick={() => setManageStep('rename')} className="w-full bg-toss-grey-100 p-3.5 rounded-[16px] flex items-center justify-between active:scale-[0.97] transition-all">
-                        <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-toss-grey-600 shadow-sm"><Pencil size={16} /></div><span className="font-black text-toss-grey-800 text-[14px]">이름 변경하기</span></div><ChevronRight size={16} className="text-toss-grey-300" />
-                      </button>
-                      <button onClick={() => setManageStep('delete')} className="w-full bg-toss-redLight p-3.5 rounded-[16px] flex items-center justify-between active:scale-[0.97] transition-all">
-                        <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-toss-red shadow-sm"><Trash2 size={16} /></div><span className="font-black text-toss-red text-[14px]">테이블 삭제하기</span></div><ChevronRight size={16} className="text-toss-red/30" />
-                      </button>
-                    </div>
-                    <button onClick={closeManageSheet} className="w-full mt-4 py-2 rounded-2xl font-black text-toss-grey-400 hover:text-toss-grey-600 transition-all text-center text-[12px]">취소</button>
-                  </motion.div>
-                )}
-                {manageStep === 'rename' && (
-                  <motion.div key="rename" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="w-full">
-                    <div className="w-full text-center mb-5"><h3 className="text-[16px] font-black text-toss-grey-900">이름 변경</h3><p className="text-[12px] font-bold text-toss-grey-400">새로운 이름을 입력해주세요.</p></div>
-                    <div className="space-y-4">
-                      <div className="relative">
-                        <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} className="w-full bg-toss-grey-100 rounded-xl px-4 py-3 text-[14px] font-black text-toss-grey-900 focus:outline-none focus:ring-2 focus:ring-toss-blue transition-all border-none placeholder:opacity-40" />
-                      </div>
-                      <div className="flex gap-2">
-                        <button onClick={() => setManageStep('menu')} className="flex-1 py-3 rounded-xl font-black text-toss-grey-500 bg-toss-grey-100 active:scale-95 transition-all text-[13px]">뒤로</button>
-                        <button onClick={renameGroup} className="flex-[2] py-3 rounded-xl font-black text-white bg-toss-blue active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 text-[13px]"><Check size={16} strokeWidth={3} /> 저장</button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-                {manageStep === 'delete' && (
-                  <motion.div key="delete" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="w-full">
-                    <div className="w-full text-center mb-5"><h3 className="text-[16px] font-black text-toss-red">정말 삭제할까요?</h3></div>
-                    <div className="space-y-2">
-                      <button onClick={() => removeGroup(currentManagingGroup!.id)} className="w-full py-3.5 bg-toss-red text-white rounded-[16px] font-black text-[14px] active:scale-95 transition-all shadow-lg">네, 삭제하겠습니다</button>
-                      <button onClick={() => setManageStep('menu')} className="w-full py-3.5 bg-toss-grey-100 text-toss-grey-500 rounded-[16px] font-black text-[13px] active:scale-95 transition-all">취소</button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeManageSheet} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2002]" />
         )}
       </AnimatePresence>
+      <div className="fixed left-0 right-0 bottom-0 z-[2003] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        <motion.div
+          initial={false}
+          animate={{ height: managingGroupId ? 'calc(100dvh - 70px)' : 0, opacity: managingGroupId ? 1 : 0 }}
+          transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+        >
+          <AnimatePresence>
+            {managingGroupId && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col h-full overflow-hidden">
+                {/* 헤더 */}
+                <div className="flex items-center justify-between px-6 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0">
+                  <h2 className="text-[22px] font-black text-toss-grey-900">{currentManagingGroup?.name} 관리</h2>
+                  <button onClick={closeManageSheet} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all">
+                    <X size={18} />
+                  </button>
+                </div>
+                {/* 컨텐츠 */}
+                <div className="flex-1 overflow-y-auto px-5 py-5">
+                  <AnimatePresence mode="wait">
+                    {manageStep === 'menu' && (
+                      <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
+                        <button onClick={() => setManageStep('rename')} className="w-full bg-white border border-toss-grey-100 p-4 rounded-[20px] flex items-center justify-between active:scale-[0.97] transition-all shadow-sm">
+                          <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-toss-grey-50 flex items-center justify-center text-toss-grey-600 shadow-sm"><Pencil size={18} /></div><span className="font-black text-toss-grey-800 text-[15px]">이름 변경하기</span></div><ChevronRight size={18} className="text-toss-grey-300" />
+                        </button>
+                        <button onClick={() => setManageStep('delete')} className="w-full bg-toss-redLight border border-toss-red/10 p-4 rounded-[20px] flex items-center justify-between active:scale-[0.97] transition-all">
+                          <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-toss-red shadow-sm"><Trash2 size={18} /></div><span className="font-black text-toss-red text-[15px]">테이블 삭제하기</span></div><ChevronRight size={18} className="text-toss-red/30" />
+                        </button>
+                        <button onClick={closeManageSheet} className="w-full mt-2 py-3 rounded-2xl font-black text-toss-grey-400 hover:text-toss-grey-600 transition-all text-center text-[13px]">취소</button>
+                      </motion.div>
+                    )}
+                    {manageStep === 'rename' && (
+                      <motion.div key="rename" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+                        <div className="text-center mb-2"><p className="text-[13px] font-bold text-toss-grey-400">새로운 이름을 입력해주세요.</p></div>
+                        <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} className="w-full bg-toss-grey-50 border border-toss-grey-100 rounded-2xl px-4 py-3.5 text-[14px] font-black text-toss-grey-900 focus:outline-none focus:ring-2 focus:ring-toss-blue transition-all placeholder:opacity-40" />
+                        <div className="flex gap-2">
+                          <button onClick={() => setManageStep('menu')} className="flex-1 py-3.5 rounded-2xl font-black text-toss-grey-500 bg-toss-grey-100 active:scale-95 transition-all text-[13px]">뒤로</button>
+                          <button onClick={renameGroup} className="flex-[2] py-3.5 rounded-2xl font-black text-white bg-toss-blue active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 text-[13px]"><Check size={16} strokeWidth={3} /> 저장</button>
+                        </div>
+                      </motion.div>
+                    )}
+                    {manageStep === 'delete' && (
+                      <motion.div key="delete" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
+                        <div className="text-center mb-4"><h3 className="text-[18px] font-black text-toss-red">정말 삭제할까요?</h3><p className="text-[13px] text-toss-grey-400 mt-1">{currentManagingGroup?.name} 테이블의 모든 데이터가 삭제됩니다.</p></div>
+                        <button onClick={() => removeGroup(currentManagingGroup!.id)} className="w-full py-4 bg-toss-red text-white rounded-[20px] font-black text-[14px] active:scale-95 transition-all shadow-lg">네, 삭제하겠습니다</button>
+                        <button onClick={() => setManageStep('menu')} className="w-full py-4 bg-toss-grey-100 text-toss-grey-500 rounded-[20px] font-black text-[13px] active:scale-95 transition-all">취소</button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
 
       <AnimatePresence>
         {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
