@@ -607,11 +607,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 <div className="px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]">
-                  <div className="flex items-center justify-between px-2">
-                    <span className="text-[13px] font-black text-toss-grey-500 bg-toss-grey-100/80 px-3 py-1.5 rounded-xl border border-toss-grey-200/50">총원 {totalPeople}명</span>
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-3 px-1">
+                    <div className="flex items-center">
+                      <span className="text-[13px] font-black text-toss-grey-500 bg-toss-grey-100/80 px-3 py-1.5 rounded-xl border border-toss-grey-200/50 shadow-sm shrink-0">총원 {totalPeople}명</span>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-2 bg-toss-grey-50/50 px-3 py-3 rounded-2xl border border-toss-grey-100 shadow-sm w-full">
                       {totalDrinkCount > 0 && (
-                        <div className="flex items-baseline gap-1 text-toss-blue">
+                        <div className="flex items-baseline gap-1 text-toss-blue shrink-0">
                           <span className="text-[12px] font-black opacity-80">음료</span>
                           <span className="text-[20px] font-black tabular-nums tracking-tighter">{totalDrinkCount}</span>
                           <span className="text-[13px] font-black opacity-80 uppercase leading-none">잔</span>
@@ -619,11 +621,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                       )}
 
                       {totalDrinkCount > 0 && totalDessertCount > 0 && (
-                        <div className="w-[1px] h-3 bg-toss-grey-200"></div>
+                        <div className="w-[1px] h-3 bg-toss-grey-200 shrink-0 hidden sm:block"></div>
                       )}
 
                       {totalDessertCount > 0 && (
-                        <div className="flex items-baseline gap-1 text-amber-500">
+                        <div className="flex items-baseline gap-1 text-amber-500 shrink-0">
                           <span className="text-[12px] font-black opacity-80">디저트</span>
                           <span className="text-[20px] font-black tabular-nums tracking-tighter">{totalDessertCount}</span>
                           <span className="text-[13px] font-black opacity-80 uppercase leading-none">개</span>
@@ -631,10 +633,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                       )}
 
                       {(totalDrinkCount > 0 || totalDessertCount > 0) && (
-                        <div className="w-[1px] h-3 bg-toss-grey-200 mix-blend-multiply"></div>
+                        <div className="w-[1px] h-3 bg-toss-grey-200 mix-blend-multiply shrink-0 hidden sm:block"></div>
                       )}
 
-                      <div className="flex items-baseline gap-1 ml-1 pl-1">
+                      <div className="flex items-baseline gap-1 ml-1 pl-1 shrink-0">
                         <span className="text-[12px] font-black text-toss-grey-500 opacity-80">총</span>
                         <span className="text-[24px] font-black text-toss-grey-900 tabular-nums tracking-tighter">{totalItemCount}</span>
                         <span className="text-[14px] font-black text-toss-grey-400 uppercase">개</span>

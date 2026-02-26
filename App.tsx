@@ -607,8 +607,8 @@ function App() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />
             <motion.div
-              initial={{ y: 400, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 400, opacity: 0 }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-6 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-lg bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 z-[2001] px-6 pt-4 pb-6 flex flex-col overflow-hidden"
+              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-200/60 z-[2001] px-6 pt-4 pb-8 flex flex-col max-h-[90vh] overflow-hidden"
             >
               <div className="flex items-center justify-between mt-2 mb-6 px-2">
                 <h2 className="text-xl font-black text-toss-grey-900">전체 메뉴</h2>

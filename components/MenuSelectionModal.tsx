@@ -194,15 +194,15 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[10000] flex flex-col justify-end pb-6 px-4 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-[10000] bg-black/40 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
-            initial={{ y: 400, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 400, opacity: 0 }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="mx-auto w-full max-w-lg bg-white rounded-[32px] max-h-[85vh] flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200/60 ring-1 ring-black/5 overflow-hidden"
+            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-200/60 flex flex-col overflow-hidden max-h-[90vh] pb-8"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 pt-4 pb-1 shrink-0">
