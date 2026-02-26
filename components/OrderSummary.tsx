@@ -142,12 +142,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           });
 
           if (currentMemos.length > 0) {
-            item.individualMemos = [...(item.individualMemos || []), {
+            const addedMemos = Array(qty).fill({
               memos: currentMemos,
               avatar: person.avatar || '👤',
               personId: person.id,
               groupId: person.groupId
-            }];
+            });
+            item.individualMemos = [...(item.individualMemos || []), ...addedMemos];
           }
         } else {
           const memoCounts: Record<string, number> = {};
@@ -156,12 +157,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           map.set(key, {
             type: si.type, itemName: si.itemName.trim(), temperature: si.temperature, size: (appSettings.showDrinkSize && si.type === 'DRINK') ? (si.size || 'Tall') : undefined, count: qty,
             memoCounts,
-            individualMemos: currentMemos.length > 0 ? [{
+            individualMemos: currentMemos.length > 0 ? Array(qty).fill({
               memos: currentMemos,
               avatar: person.avatar || '👤',
               personId: person.id,
               groupId: person.groupId
-            }] : []
+            }) : []
           });
         }
       });
@@ -261,12 +262,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   const getMemoGroups = (memos?: { memos: string[]; avatar: string; personId: string; groupId: string }[]) => {
     if (!memos) return [];
-    const grouped: Record<string, { memo: string; people: any[] }> = {};
+    const grouped: Record<string, { memos: string[]; people: any[] }> = {};
     memos.forEach(m => {
-      m.memos.forEach(memoText => {
-        if (!grouped[memoText]) grouped[memoText] = { memo: memoText, people: [] };
-        grouped[memoText].people.push(m);
-      });
+      const sortedMemos = [...m.memos].map(x => x.trim()).filter(Boolean).sort();
+      const groupKey = sortedMemos.join(', ');
+      if (!grouped[groupKey]) grouped[groupKey] = { memos: sortedMemos, people: [] };
+      grouped[groupKey].people.push(m);
     });
     return Object.values(grouped);
   };
@@ -452,12 +453,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     <motion.div
                       layout
                       key={idx}
-                      className="bg-white rounded-[24px] border border-toss-grey-100 shadow-toss-sm overflow-hidden transition-all duration-300 hover:border-toss-blue/30"
+                      className="bg-white rounded-[24px] border border-toss-grey-100 shadow-toss-sm overflow-hidden transition-all duration-300"
                     >
-                      <button
-                        onClick={() => hasMemos && toggleItemExpansion(itemKey)}
-                        className={`w-full flex items-center justify-between p-4 active:bg-toss-grey-50 transition-colors ${!hasMemos ? 'py-5' : ''}`}
-                      >
+                      <div className={`w-full flex items-center justify-between p-4 ${hasMemos ? 'bg-toss-grey-50/30 border-b border-toss-grey-50/50' : 'py-5'}`}>
                         <div className="flex items-center gap-3 min-w-0">
                           {item.type === 'DRINK' ? (
                             <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-lg border-2 shrink-0 ${item.temperature === 'ICE' ? 'bg-toss-blueLight border-toss-blue text-toss-blue' : 'bg-toss-redLight border-toss-red text-toss-red'}`}>{item.temperature}</span>
@@ -475,47 +473,37 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               <span className="text-[22px] font-black text-toss-grey-900 tabular-nums">{item.count}</span>
                               <span className="text-[13px] font-bold text-toss-grey-500">개</span>
                             </div>
-                            {item.memoCounts && Object.keys(item.memoCounts).length > 0 && (
-                              <div className="flex flex-wrap justify-end gap-1">
-                                {Object.entries(item.memoCounts).map(([memo, count], midx) => (
-                                  <div key={midx} className="flex items-center gap-1 bg-toss-blue/5 border border-toss-blue/20 px-2 py-0.5 rounded-lg shadow-sm">
-                                    <span className="text-[10px] font-black text-toss-blue">{memo === '덜쓰게' ? '연하게' : memo}</span>
-                                    <span className="text-[10px] font-black text-toss-blue/50">{count}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
                           </div>
-                          {hasMemos && (
-                            <div className={`p-1 rounded-full transition-transform ${isCollapsed ? '' : 'rotate-180'} text-toss-grey-300`}>
-                              <ChevronDown size={18} strokeWidth={3} />
-                            </div>
-                          )}
                         </div>
-                      </button>
-                      {hasMemos && !isCollapsed && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="px-4 pb-4 space-y-2 border-t border-toss-grey-50 pt-3 bg-toss-grey-50/20"
-                        >
+                      </div>
+
+                      {hasMemos && (
+                        <div className="px-4 pb-4 space-y-2 pt-3 bg-white">
                           {memoGroups.map((group, gidx) => (
-                            <div key={gidx} className="flex items-center justify-between bg-white p-3 rounded-[20px] border border-toss-grey-100 shadow-sm animate-in fade-in slide-in-from-left-2 transition-all">
+                            <div key={gidx} className="flex items-center justify-between bg-white p-3 rounded-[20px] border border-toss-grey-100 shadow-sm transition-all hover:border-toss-blue/30">
                               <div className="flex items-center gap-3">
-                                <div className="flex flex-col">
-                                  <span className="text-[11px] font-black text-toss-blue bg-toss-blue/5 px-2.5 py-1 rounded-full border border-toss-blue/10 w-fit">
-                                    {group.memo === '덜쓰게' ? '연하게' : group.memo}
-                                  </span>
-                                  <div className="flex -space-x-2 mt-2">
-                                    {group.people.slice(0, 6).map((p, pidx) => (
-                                      <div key={pidx} className="w-7 h-7 rounded-full bg-toss-grey-50 ring-2 ring-white flex items-center justify-center shrink-0 border border-toss-grey-100 shadow-sm">
-                                        <EmojiRenderer emoji={p.avatar} size={18} />
-                                      </div>
+                                <div className="flex flex-col gap-2.5">
+                                  <div className="flex flex-wrap gap-1">
+                                    {group.memos.map((memoItem, mIdx) => (
+                                      <span key={mIdx} className="text-[11px] font-black text-toss-blue bg-blue-50 px-2.5 py-1 rounded-lg border border-toss-blue/10 w-fit">
+                                        {memoItem === '덜쓰게' ? '연하게' : memoItem}
+                                      </span>
                                     ))}
-                                    {group.people.length > 6 && (
-                                      <div className="w-7 h-7 rounded-full bg-toss-grey-900 ring-2 ring-white flex items-center justify-center text-[9px] font-black text-white shadow-sm">
-                                        +{group.people.length - 6}
+                                  </div>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {group.people.slice(0, 8).map((p, pidx) => (
+                                      <button
+                                        key={pidx}
+                                        onClick={() => { onJumpToOrder(p.groupId, p.personId); onSetExpandState('collapsed'); }}
+                                        className="w-8 h-8 rounded-full bg-toss-grey-50 ring-2 ring-white flex items-center justify-center shrink-0 border border-toss-grey-100 shadow-sm active:scale-90 hover:z-10 relative transition-transform"
+                                        title="주문자로 이동"
+                                      >
+                                        <EmojiRenderer emoji={p.avatar} size={20} />
+                                      </button>
+                                    ))}
+                                    {group.people.length > 8 && (
+                                      <div className="w-8 h-8 rounded-full bg-toss-grey-900 ring-2 ring-white flex items-center justify-center text-[10px] font-black text-white shadow-sm">
+                                        +{group.people.length - 8}
                                       </div>
                                     )}
                                   </div>
@@ -523,19 +511,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               </div>
                               <div className="flex flex-col items-end gap-1 pr-1">
                                 <div className="flex items-baseline gap-0.5">
-                                  <span className="text-[18px] font-black text-toss-grey-900">{group.people.length}</span>
-                                  <span className="text-[12px] font-bold text-toss-grey-400">명</span>
+                                  <span className="text-[18px] font-black text-toss-blue tabular-nums">{group.people.length}</span>
+                                  <span className="text-[12px] font-bold text-toss-grey-400">잔</span>
                                 </div>
-                                <button
-                                  onClick={() => { onJumpToOrder(group.people[0].groupId, group.people[0].personId); onSetExpandState('collapsed'); }}
-                                  className="text-[10px] font-black text-toss-blue bg-toss-blueLight px-2 py-1 rounded-lg border border-toss-blue/5 active:scale-95 transition-all mt-1"
-                                >
-                                  전체보기
-                                </button>
                               </div>
                             </div>
                           ))}
-                        </motion.div>
+                        </div>
                       )}
                     </motion.div>
                   );
