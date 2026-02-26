@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { OrderHistoryItem } from '../types';
 import { X, Trash2, RotateCcw, Calendar, Coffee, AlertCircle, ChevronDown, ChevronUp, StickyNote, PenLine, Plus, Users } from 'lucide-react';
 import { EmojiRenderer } from './EmojiRenderer.tsx';
@@ -57,10 +58,10 @@ const HistoryItem: React.FC<{
           {item.title && <p className="text-xs text-toss-grey-400 mt-1 font-black">총 {item.totalCount}개 메뉴</p>}
         </div>
         {isDeleting ? (
-            <div className="flex items-center gap-1 bg-toss-redLight p-1 rounded-lg animate-in fade-in slide-in-from-right-2 duration-200">
-                <button onClick={() => setIsDeleting(false)} className="p-1 text-toss-grey-600 hover:text-toss-grey-900"><X size={16} /></button>
-                <button onClick={() => onDelete(item.id)} className="px-2 py-0.5 bg-toss-red text-white text-xs font-black rounded">삭제</button>
-            </div>
+          <div className="flex items-center gap-1 bg-toss-redLight p-1 rounded-lg animate-in fade-in slide-in-from-right-2 duration-200">
+            <button onClick={() => setIsDeleting(false)} className="p-1 text-toss-grey-600 hover:text-toss-grey-900"><X size={16} /></button>
+            <button onClick={() => onDelete(item.id)} className="px-2 py-0.5 bg-toss-red text-white text-xs font-black rounded">삭제</button>
+          </div>
         ) : (<button onClick={() => setIsDeleting(true)} className="text-toss-grey-300 hover:text-toss-red p-1.5 rounded-lg transition-colors"><Trash2 size={18} /></button>)}
       </div>
       {isEditingMemo ? (
@@ -73,66 +74,66 @@ const HistoryItem: React.FC<{
         </div>
       ) : (
         <div className="mb-4">
-           {item.memo ? (
-              <div onClick={() => !isDeletingMemo && setIsEditingMemo(true)} className="p-3.5 bg-yellow-50/70 rounded-xl border border-yellow-100/50 flex items-center gap-3 text-sm text-yellow-800 cursor-pointer hover:border-yellow-200 transition-all relative group">
-                  <StickyNote size={16} className="shrink-0 text-yellow-600" />
-                  <p className="font-black flex-1 truncate">{item.memo}</p>
-                  <div className="shrink-0 flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                    {isDeletingMemo ? (
-                        <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-lg p-1 animate-in fade-in duration-200 absolute right-2 top-1/2 -translate-y-1/2 shadow-sm border border-yellow-200">
-                            <button onClick={() => setIsDeletingMemo(false)} className="p-1 hover:bg-yellow-100 rounded text-yellow-700"><X size={14} /></button>
-                            <button onClick={() => { onUpdate(item.id, { memo: undefined }); setIsDeletingMemo(false); }} className="px-2 py-1 bg-red-500 text-white text-[10px] rounded font-black">삭제</button>
-                        </div>
-                    ) : (
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => setIsDeletingMemo(true)} className="p-1.5 text-yellow-600 hover:text-red-500 hover:bg-yellow-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
-                            <button onClick={() => setIsEditingMemo(true)} className="p-1.5 text-yellow-600 hover:text-toss-blue hover:bg-yellow-100 rounded-lg transition-colors"><PenLine size={14} /></button>
-                        </div>
-                    )}
+          {item.memo ? (
+            <div onClick={() => !isDeletingMemo && setIsEditingMemo(true)} className="p-3.5 bg-yellow-50/70 rounded-xl border border-yellow-100/50 flex items-center gap-3 text-sm text-yellow-800 cursor-pointer hover:border-yellow-200 transition-all relative group">
+              <StickyNote size={16} className="shrink-0 text-yellow-600" />
+              <p className="font-black flex-1 truncate">{item.memo}</p>
+              <div className="shrink-0 flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                {isDeletingMemo ? (
+                  <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-lg p-1 animate-in fade-in duration-200 absolute right-2 top-1/2 -translate-y-1/2 shadow-sm border border-yellow-200">
+                    <button onClick={() => setIsDeletingMemo(false)} className="p-1 hover:bg-yellow-100 rounded text-yellow-700"><X size={14} /></button>
+                    <button onClick={() => { onUpdate(item.id, { memo: undefined }); setIsDeletingMemo(false); }} className="px-2 py-1 bg-red-500 text-white text-[10px] rounded font-black">삭제</button>
                   </div>
+                ) : (
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => setIsDeletingMemo(true)} className="p-1.5 text-yellow-600 hover:text-red-500 hover:bg-yellow-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                    <button onClick={() => setIsEditingMemo(true)} className="p-1.5 text-yellow-600 hover:text-toss-blue hover:bg-yellow-100 rounded-lg transition-colors"><PenLine size={14} /></button>
+                  </div>
+                )}
               </div>
-           ) : (<button onClick={() => setIsEditingMemo(true)} className="flex items-center gap-1.5 text-xs font-black text-toss-grey-400 hover:text-toss-blue transition-colors px-1 bg-toss-grey-50 py-2 rounded-lg w-full justify-center border border-dashed border-toss-grey-200"><Plus size={14} /> 메모 추가하기</button>)}
+            </div>
+          ) : (<button onClick={() => setIsEditingMemo(true)} className="flex items-center gap-1.5 text-xs font-black text-toss-grey-400 hover:text-toss-blue transition-colors px-1 bg-toss-grey-50 py-2 rounded-lg w-full justify-center border border-dashed border-toss-grey-200"><Plus size={14} /> 메모 추가하기</button>)}
         </div>
       )}
       <div className="bg-toss-grey-50 rounded-xl overflow-hidden border border-toss-grey-100">
-          {!isExpanded ? (<p className="text-sm text-toss-grey-600 line-clamp-2 p-4 whitespace-pre-line leading-relaxed">{item.summaryText}</p>) : (
-              <div className="p-4 space-y-4 animate-in fade-in duration-200">
-                  {(item.groups || []).map((group) => (
-                    <div key={group.id} className="border-b border-toss-grey-200 last:border-0 pb-3 last:pb-0">
-                        <div className="font-black text-toss-grey-900 text-[13px] mb-2 px-1 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-toss-blue"></div>{group.name || "테이블 이름 없음"}</div>
-                        <div className="space-y-1">
-                            {(group.items || []).map((order) => (
-                                <React.Fragment key={order.id}>
-                                  {(order.subItems || []).map((subItem) => (
-                                    <div key={subItem.id} className="flex justify-between items-center text-[13px] px-2 py-1.5 hover:bg-white rounded-lg transition-colors">
-                                        <div className="flex items-center gap-2 overflow-hidden">
-                                          <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                                            <EmojiRenderer emoji={order.avatar || "-"} size={16} />
-                                          </div>
-                                          <span className="text-toss-grey-800 font-black truncate">{subItem.itemName}</span>
-                                        </div>
-                                        <span className={`shrink-0 font-black ${subItem.type === 'DRINK' ? (subItem.temperature === 'ICE' ? 'text-toss-blue' : 'text-toss-red') : 'text-amber-600'}`}>
-                                          {subItem.type === 'DRINK' ? (subItem.temperature || 'ICE') : `${subItem.quantity || 1}개`}
-                                        </span>
-                                    </div>
-                                  ))}
-                                </React.Fragment>
-                            ))}
+        {!isExpanded ? (<p className="text-sm text-toss-grey-600 line-clamp-2 p-4 whitespace-pre-line leading-relaxed">{item.summaryText}</p>) : (
+          <div className="p-4 space-y-4 animate-in fade-in duration-200">
+            {(item.groups || []).map((group) => (
+              <div key={group.id} className="border-b border-toss-grey-200 last:border-0 pb-3 last:pb-0">
+                <div className="font-black text-toss-grey-900 text-[13px] mb-2 px-1 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-toss-blue"></div>{group.name || "테이블 이름 없음"}</div>
+                <div className="space-y-1">
+                  {(group.items || []).map((order) => (
+                    <React.Fragment key={order.id}>
+                      {(order.subItems || []).map((subItem) => (
+                        <div key={subItem.id} className="flex justify-between items-center text-[13px] px-2 py-1.5 hover:bg-white rounded-lg transition-colors">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                              <EmojiRenderer emoji={order.avatar || "-"} size={16} />
+                            </div>
+                            <span className="text-toss-grey-800 font-black truncate">{subItem.itemName}</span>
+                          </div>
+                          <span className={`shrink-0 font-black ${subItem.type === 'DRINK' ? (subItem.temperature === 'ICE' ? 'text-toss-blue' : 'text-toss-red') : 'text-amber-600'}`}>
+                            {subItem.type === 'DRINK' ? (subItem.temperature || 'ICE') : `${subItem.quantity || 1}개`}
+                          </span>
                         </div>
-                    </div>
-                 ))}
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
-          )}
-          <button onClick={() => setIsExpanded(!isExpanded)} className="w-full flex items-center justify-center gap-1.5 py-3 text-xs font-black text-toss-grey-400 hover:bg-toss-grey-100 hover:text-toss-grey-600 transition-all border-t border-toss-grey-100">{isExpanded ? (<>접기 <ChevronUp size={14} /></>) : (<>상세 내역 보기 <ChevronDown size={14} /></>)}</button>
+            ))}
+          </div>
+        )}
+        <button onClick={() => setIsExpanded(!isExpanded)} className="w-full flex items-center justify-center gap-1.5 py-3 text-xs font-black text-toss-grey-400 hover:bg-toss-grey-100 hover:text-toss-grey-600 transition-all border-t border-toss-grey-100">{isExpanded ? (<>접기 <ChevronUp size={14} /></>) : (<>상세 내역 보기 <ChevronDown size={14} /></>)}</button>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2">
         {loadingType ? (
-            <button onClick={() => { if(loadingType === 'all') onLoad(item); else onLoadPeopleOnly?.(item); onClose(); }} className="col-span-2 flex items-center justify-center gap-2 py-4 bg-toss-red text-white rounded-2xl hover:bg-toss-red/90 transition-all text-sm font-black shadow-lg shadow-toss-red/20 animate-in zoom-in-95 duration-200"><AlertCircle size={18} />현재 내역이 교체됩니다. 확인!</button>
+          <button onClick={() => { if (loadingType === 'all') onLoad(item); else onLoadPeopleOnly?.(item); onClose(); }} className="col-span-2 flex items-center justify-center gap-2 py-4 bg-toss-red text-white rounded-2xl hover:bg-toss-red/90 transition-all text-sm font-black shadow-lg shadow-toss-red/20 animate-in zoom-in-95 duration-200"><AlertCircle size={18} />현재 내역이 교체됩니다. 확인!</button>
         ) : (
-            <>
-              <button onClick={() => { setLoadingType('all'); setTimeout(() => setLoadingType(null), 3000); }} className="flex flex-col items-center justify-center gap-1 py-3.5 bg-toss-grey-900 text-white rounded-2xl hover:bg-black transition-all text-[12px] font-black shadow-toss-sm"><RotateCcw size={16} />전체 불러오기</button>
-              <button onClick={() => { setLoadingType('people'); setTimeout(() => setLoadingType(null), 3000); }} className="flex flex-col items-center justify-center gap-1 py-3.5 bg-toss-blue text-white rounded-2xl hover:bg-toss-blue/90 transition-all text-[12px] font-black shadow-toss-sm shadow-toss-blue/10"><Users size={16} />인원만 불러오기</button>
-            </>
+          <>
+            <button onClick={() => { setLoadingType('all'); setTimeout(() => setLoadingType(null), 3000); }} className="flex flex-col items-center justify-center gap-1 py-3.5 bg-toss-grey-900 text-white rounded-2xl hover:bg-black transition-all text-[12px] font-black shadow-toss-sm"><RotateCcw size={16} />전체 불러오기</button>
+            <button onClick={() => { setLoadingType('people'); setTimeout(() => setLoadingType(null), 3000); }} className="flex flex-col items-center justify-center gap-1 py-3.5 bg-toss-blue text-white rounded-2xl hover:bg-toss-blue/90 transition-all text-[12px] font-black shadow-toss-sm shadow-toss-blue/10"><Users size={16} />인원만 불러오기</button>
+          </>
         )}
       </div>
     </div>
@@ -140,20 +141,30 @@ const HistoryItem: React.FC<{
 };
 
 export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, history = [], onLoad, onLoadPeopleOnly, onDelete, onUpdate }) => {
-  if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-[32px] w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-toss-grey-100">
-          <h2 className="text-2xl font-black text-toss-grey-900 flex items-center gap-3"><div className="p-2 bg-toss-blueLight rounded-xl"><Calendar size={24} className="text-toss-blue" /></div>주문 히스토리</h2>
-          <button onClick={onClose} className="p-2 text-toss-grey-400 hover:text-toss-grey-600 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={28} /></button>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm" onClick={onClose}>
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-100 flex flex-col overflow-hidden h-[92vh] pb-8"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-6 border-b border-toss-grey-100 shrink-0">
+              <h2 className="text-2xl font-black text-toss-grey-900 flex items-center gap-3"><div className="p-2 bg-toss-blueLight rounded-xl"><Calendar size={24} className="text-toss-blue" /></div>주문 히스토리</h2>
+              <button onClick={onClose} className="p-2 text-toss-grey-400 hover:text-toss-grey-600 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={28} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
+              {!Array.isArray(history) || history.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-toss-grey-400 gap-4"><div className="w-20 h-20 bg-toss-grey-50 rounded-full flex items-center justify-center text-toss-grey-200"><Coffee size={40} /></div><p className="font-black">저장된 주문 내역이 없습니다.</p></div>
+              ) : (history.map((item) => (<HistoryItem key={item.id} item={item} onLoad={onLoad} onLoadPeopleOnly={onLoadPeopleOnly} onDelete={onDelete} onUpdate={onUpdate} onClose={onClose} />)))}
+            </div>
+          </motion.div>
         </div>
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
-          {!Array.isArray(history) || history.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-toss-grey-400 gap-4"><div className="w-20 h-20 bg-toss-grey-50 rounded-full flex items-center justify-center text-toss-grey-200"><Coffee size={40} /></div><p className="font-black">저장된 주문 내역이 없습니다.</p></div>
-          ) : (history.map((item) => (<HistoryItem key={item.id} item={item} onLoad={onLoad} onLoadPeopleOnly={onLoadPeopleOnly} onDelete={onDelete} onUpdate={onUpdate} onClose={onClose} />)))}
-        </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };

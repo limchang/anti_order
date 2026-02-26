@@ -140,7 +140,7 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-100 flex flex-col overflow-hidden max-h-[90vh] pb-8"
+            className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.12)] border-t border-toss-grey-100 flex flex-col overflow-hidden h-[92vh] pb-8"
             onClick={e => e.stopPropagation()}
           >
 
@@ -151,7 +151,7 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
               <button onClick={onClose} className="p-1.5 text-toss-grey-400 hover:bg-toss-grey-100 rounded-full transition-colors"><X size={18} /></button>
             </div>
 
-            <div className="px-4 pb-3 space-y-3 shrink-0">
+            <div className="px-4 pb-2 space-y-3 shrink-0">
               <div className="flex p-0.5 bg-toss-grey-100 rounded-xl">
                 <button onClick={() => setActiveTab('DRINK')} className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold transition-all ${activeTab === 'DRINK' ? 'bg-white text-toss-blue shadow-sm' : 'text-toss-grey-400'}`}>
                   <Coffee size={14} /> 음료
@@ -159,30 +159,6 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                 <button onClick={() => setActiveTab('DESSERT')} className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold transition-all ${activeTab === 'DESSERT' ? 'bg-white text-amber-500 shadow-sm' : 'text-toss-grey-400'}`}>
                   <CakeSlice size={14} /> 디저트
                 </button>
-              </div>
-
-              <div className="relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">
-                  {searchQuery.trim() ? (
-                    <PencilLine className="text-toss-blue animate-in zoom-in duration-200" size={14} />
-                  ) : (
-                    <Search className="text-toss-grey-400 animate-in zoom-in duration-200" size={14} />
-                  )}
-                </div>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="검색 및 신규 등록"
-                  className="w-full bg-toss-grey-50 rounded-xl pl-9 pr-10 py-2.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border border-toss-grey-100"
-                  value={searchQuery}
-                  onChange={e => { setSearchQuery(e.target.value); setNewItemName(e.target.value); }}
-                  onKeyDown={e => e.key === 'Enter' && handleAdd()}
-                />
-                {searchQuery.trim() && (
-                  <button onClick={handleAdd} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 bg-toss-blue text-white rounded-lg shadow-sm active:scale-95 transition-all">
-                    <Plus size={14} strokeWidth={3} />
-                  </button>
-                )}
               </div>
             </div>
 
@@ -192,9 +168,6 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                   <span className="text-[10px] font-black text-toss-grey-400 uppercase tracking-widest block">
                     메뉴 목록
                   </span>
-                  <p className="text-[9px] font-bold text-amber-500 leading-tight">
-                    * 별(★) 아이콘 선택 시, 주문할 때 항상 표시되는 퀵메뉴에 포함됩니다.
-                  </p>
                 </div>
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={filteredList} strategy={verticalListSortingStrategy}>
@@ -219,7 +192,30 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
               </div>
             </div>
 
-            <div className="p-4 pt-2 shrink-0 border-t border-toss-grey-50 bg-white">
+            <div className="p-4 pt-4 shrink-0 border-t border-toss-grey-50 bg-white space-y-3">
+              <div className="relative">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  {searchQuery.trim() ? (
+                    <PencilLine className="text-toss-blue animate-in zoom-in duration-200" size={14} />
+                  ) : (
+                    <Search className="text-toss-grey-400 animate-in zoom-in duration-200" size={14} />
+                  )}
+                </div>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="새로운 메뉴 입력"
+                  className="w-full bg-toss-grey-50 rounded-xl pl-9 pr-10 py-3 text-[14px] font-bold focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all border border-toss-grey-100"
+                  value={searchQuery}
+                  onChange={e => { setSearchQuery(e.target.value); setNewItemName(e.target.value); }}
+                  onKeyDown={e => e.key === 'Enter' && handleAdd()}
+                />
+                {searchQuery.trim() && (
+                  <button onClick={handleAdd} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 px-3 bg-toss-blue text-white rounded-lg shadow-sm active:scale-95 transition-all text-xs font-black">
+                    등록
+                  </button>
+                )}
+              </div>
               <button onClick={onClose} className="w-full py-3.5 bg-toss-grey-900 text-white rounded-2xl font-black text-[14px] active:scale-[0.98] transition-all">
                 관리 완료
               </button>
