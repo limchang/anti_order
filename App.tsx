@@ -496,7 +496,7 @@ function App() {
         </div>
       </header>
 
-      {/* 우측 하단 플로팅 햄버거 메뉴 */}
+      {/* 우측 하단 플로팅 햄버거 메뉴 (위치 조정) */}
       <div className="fixed bottom-36 right-4 z-[1050] flex flex-col items-end pointer-events-none">
         <AnimatePresence>
           {isMainMenuOpen && (
@@ -534,53 +534,43 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
-        <button onClick={() => setIsMainMenuOpen(!isMainMenuOpen)} className={`pointer-events-auto p-3.5 rounded-full shadow-toss-elevated transition-all active:scale-90 ${isMainMenuOpen ? 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 rotate-180' : 'bg-white text-toss-grey-800 border border-toss-grey-200 hover:bg-toss-grey-50'}`}>
+        <button onClick={() => setIsMainMenuOpen(!isMainMenuOpen)} className={`pointer-events-auto p-3.5 w-14 h-14 flex items-center justify-center rounded-full shadow-toss-elevated transition-all active:scale-90 ${isMainMenuOpen ? 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 rotate-180' : 'bg-toss-grey-800 text-white hover:bg-toss-grey-900 border-2 border-white/20'}`}>
           {isMainMenuOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
         </button>
       </div>
 
-      <AnimatePresence>
-        {!isAnyInputActive && (
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 50, opacity: 0 }}
-            className="fixed bottom-28 left-0 right-0 z-[1000] flex justify-center px-4 pointer-events-none"
-          >
-            <div className="bg-white/90 backdrop-blur-2xl border border-white/50 rounded-[28px] p-1.5 shadow-toss-elevated pointer-events-auto w-fit max-w-[calc(100vw-32px)] ring-1 ring-black/5 flex flex-col items-center transition-all duration-300">
-              <div className="flex items-center justify-center gap-3 px-3 py-1 overflow-x-auto no-scrollbar max-w-full">
-                {groups.map(group => {
-                  const isActive = activeGroupId === group.id;
-                  const firstChar = group.name.trim().charAt(0) || '?';
-                  const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
-                  return (
-                    <div key={group.id} className="relative shrink-0 py-1">
-                      <motion.button
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => {
-                          if (activeGroupId === group.id) openManageSheet(group.id);
-                          else { setActiveGroupId(group.id); scrollToTable(group.id); }
-                        }}
-                        className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-[14px] transition-all relative ${isActive ? 'bg-toss-blue text-white shadow-md scale-110 z-10' : 'bg-toss-grey-100 text-toss-grey-400'}`}
-                      >
-                        {firstChar}
-                        {hasUndecided && <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
-                      </motion.button>
-                    </div>
-                  );
-                })}
-                <div className="shrink-0 py-1">
-                  <button onClick={addGroup} className="h-9 px-4 bg-toss-blueLight text-toss-blue rounded-full font-black text-[12px] active:scale-95 transition-all shadow-sm border border-toss-blue/10 whitespace-nowrap">테이블 추가</button>
+      <main className="flex-1 py-1 mt-[56px] relative w-full overflow-hidden flex flex-col">
+        {/* 테이블 네비게이션 (Sticky top) */}
+        <div className="sticky top-0 z-[90] bg-white/95 backdrop-blur-xl border-b border-toss-grey-100 py-2.5 px-4 w-full shadow-sm mb-2 shrink-0">
+          <div className="flex items-center justify-start gap-4 overflow-x-auto no-scrollbar max-w-6xl mx-auto w-full">
+            {groups.map(group => {
+              const isActive = activeGroupId === group.id;
+              const firstChar = group.name.trim().charAt(0) || '?';
+              const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
+              return (
+                <div key={group.id} className="relative shrink-0">
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => {
+                      if (activeGroupId === group.id) openManageSheet(group.id);
+                      else { setActiveGroupId(group.id); scrollToTable(group.id); }
+                    }}
+                    className={`min-w-[44px] h-11 px-3 rounded-2xl flex items-center justify-center font-black text-[15px] transition-all relative whitespace-nowrap ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-toss-grey-100 text-toss-grey-500 hover:bg-toss-grey-200'}`}
+                  >
+                    {isActive ? group.name.replace('번 테이블', '') : firstChar}
+                    {hasUndecided && <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
+                  </motion.button>
                 </div>
-              </div>
+              );
+            })}
+            <div className="shrink-0 pl-2 border-l border-toss-grey-100">
+              <button onClick={addGroup} className="h-11 px-4 bg-toss-blueLight text-toss-blue rounded-2xl font-black text-[13px] active:scale-95 transition-all shadow-sm border border-toss-blue/10 flex items-center gap-1.5 whitespace-nowrap"><Plus size={16} strokeWidth={3} /> 추가</button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
 
-      <main className="flex-1 py-2 mt-[58px]">
         {groups.length > 0 ? (
-          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-2 no-scrollbar px-4 scroll-smooth">
+          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2">
             {groups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
                 <OrderGroupSection
@@ -609,7 +599,7 @@ function App() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center min-h-[50vh] px-8 animate-in fade-in duration-500">
+          <div className="flex flex-col items-center justify-center min-h-[50vh] px-8 animate-in fade-in duration-500 w-full flex-1">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-toss-card mb-6 border border-toss-grey-100"><LayoutGrid size={40} className="text-toss-grey-200" /></div>
             <h2 className="text-xl font-black text-toss-grey-800 mb-2">등록된 테이블이 없습니다</h2>
             <p className="text-sm font-bold text-toss-grey-400 text-center mb-8">하단의 버튼을 눌러 테이블을 추가해보세요.<br />주문을 시작할 수 있습니다.</p>
@@ -782,30 +772,34 @@ function App() {
 
       <AnimatePresence>
         {undoToast && (
-          <motion.button
-            initial={{ y: 50, x: "-50%", opacity: 0 }}
-            animate={{ y: 0, x: "-50%", opacity: 1 }}
-            exit={{ y: 20, x: "-50%", opacity: 0 }}
-            onClick={handleUndoAction}
-            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[10000] bg-toss-grey-900 text-white px-5 py-2.5 rounded-full shadow-toss-elevated flex items-center justify-center gap-2 text-[13px] font-black active:scale-95 border border-white/10"
-          >
-            <RotateCcw size={14} strokeWidth={3} /> 되돌리기
-          </motion.button>
+          <div className="fixed bottom-28 w-full flex justify-center z-[10000] pointer-events-none px-4">
+            <motion.button
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 10, opacity: 0 }}
+              onClick={handleUndoAction}
+              className="bg-toss-grey-900 text-white px-5 py-2.5 rounded-full shadow-toss-elevated flex items-center justify-center gap-2 text-[13px] font-black pointer-events-auto active:scale-95 border border-white/10"
+            >
+              <RotateCcw size={14} strokeWidth={3} /> 되돌리기
+            </motion.button>
+          </div>
         )}
 
         {toast && !undoToast && (
-          <motion.div
-            initial={{ y: 50, x: "-50%", opacity: 0 }}
-            animate={{ y: 0, x: "-50%", opacity: 1 }}
-            exit={{ y: 20, x: "-50%", opacity: 0 }}
-            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[10000] bg-toss-grey-900 text-white px-6 py-3.5 rounded-[24px] shadow-toss-elevated flex items-center gap-3 min-w-[220px]"
-          >
-            <div className="w-8 h-8 rounded-full bg-toss-blue flex items-center justify-center shrink-0"><Bell size={16} fill="white" /></div>
-            <span className="text-[13px] font-black tracking-tight">{toast.message}</span>
-          </motion.div>
+          <div className="fixed bottom-28 w-full flex justify-center z-[10000] pointer-events-none px-4">
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 10, opacity: 0 }}
+              className="bg-toss-grey-900 text-white px-6 py-3.5 rounded-[24px] shadow-toss-elevated flex items-center gap-3 min-w-[220px]"
+            >
+              <div className="w-8 h-8 rounded-full bg-toss-blue flex items-center justify-center shrink-0"><Bell size={16} fill="white" /></div>
+              <span className="text-[13px] font-black tracking-tight">{toast.message}</span>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }
 export default App;
