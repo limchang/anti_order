@@ -120,21 +120,24 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   return (
     <section className="relative bg-white rounded-2xl border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
       {/* 퀵 액션 - 세그먼트 탭바 스타일 */}
-      <div className="flex items-stretch bg-toss-grey-50 rounded-xl border border-toss-grey-200 overflow-hidden shadow-sm">
+      <div className="flex items-stretch bg-white rounded-xl border border-toss-grey-200 overflow-hidden shadow-sm">
         {quickActions.map((action, index) => (
           <button
             key={action.label}
-            onClick={action.onClick}
+            onClick={(e) => {
+              if (navigator.vibrate) navigator.vibrate(50);
+              action.onClick();
+            }}
             title={action.title}
-            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-3 hover:bg-white/60 active:bg-white/80 transition-all
+            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 hover:bg-toss-grey-50 active:bg-toss-grey-100 transition-all
               ${index < quickActions.length - 1 ? 'border-r border-toss-grey-200' : ''}`}
           >
-            <span className="text-[16px] leading-none">
+            <span className="text-[17px] leading-none">
               {action.isSettings
-                ? <Settings size={16} strokeWidth={2} className={action.textColor} />
+                ? <Settings size={17} strokeWidth={2} className={action.textColor} />
                 : <span className="drop-shadow-sm">{action.icon}</span>}
             </span>
-            <span className={`text-[10px] font-black ${action.textColor} whitespace-nowrap tracking-tight leading-none`}>{action.label}</span>
+            <span className={`text-[11px] font-black ${action.textColor} whitespace-nowrap tracking-tight leading-none`}>{action.label}</span>
           </button>
         ))}
       </div>
