@@ -52,7 +52,8 @@ function App() {
     quickMemos: ["연하게", "샷추가", "물 따로", "얼음물"],
     defaultEmojis: [...DEFAULT_EMOJIS],
     randomCategory: 'ANIMALS',
-    checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"]
+    checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"],
+    highlightOrderCard: false,
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
@@ -697,6 +698,18 @@ function App() {
                           className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
                         >
                           <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+                        <div>
+                          <span className="text-[14px] font-black text-toss-grey-800">주문 상태 셀 강조 표시</span>
+                          <p className="text-[11px] text-toss-grey-400 mt-0.5">고민중·주문완료·안먹음 배경색 변경</p>
+                        </div>
+                        <button
+                          onClick={() => handleUpdateSettings({ ...appSettings, highlightOrderCard: !appSettings.highlightOrderCard })}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.highlightOrderCard ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                        >
+                          <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.highlightOrderCard ? 'translate-x-[20px]' : 'translate-x-0'}`} />
                         </button>
                       </div>
                     </div>

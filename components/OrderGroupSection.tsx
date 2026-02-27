@@ -149,9 +149,11 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="relative overflow-visible flex flex-col"
+                className="relative overflow-visible"
               >
-                <div className="shrink-0 overflow-visible">
+                {/* 카드 뒤 회색 배경 - 높이 차이만큼 아래 노출됨 (나중에 디자인 요소 추가 예정) */}
+                <div className="absolute inset-0 rounded-[26px] bg-toss-grey-100" style={{ zIndex: 0 }} />
+                <div className="relative" style={{ zIndex: 1 }}>
                   <OrderCard
                     order={order}
                     drinkItems={drinkMenuItems}
@@ -169,8 +171,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                     onUpdateCheckedItems={onUpdateCheckedItems}
                   />
                 </div>
-                {/* 높이 차이만큼 회색 공간 - 나중에 디자인 요소 추가 예정 */}
-                <div className="flex-1 min-h-0 mt-1.5 rounded-[18px] bg-toss-grey-50 border border-toss-grey-100/60" />
               </motion.div>
             ))}
             {isOdd && (

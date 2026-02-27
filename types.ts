@@ -11,6 +11,7 @@ export interface AppSettings {
   defaultEmojis: string[];
   randomCategory: EmojiCategory;
   checkedDrinkItems: string[];
+  highlightOrderCard: boolean;
 }
 
 export interface OrderSubItem {

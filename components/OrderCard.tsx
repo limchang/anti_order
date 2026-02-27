@@ -273,10 +273,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   return (
     <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
-      ${isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
-        isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
-          isDecided ? 'bg-toss-blueLight border-2 border-toss-blue' :
-            'bg-white border-2 border-toss-grey-100'}
+      ${appSettings.highlightOrderCard
+        ? (isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
+          isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
+            isDecided ? 'bg-toss-blueLight border-2 border-toss-blue' :
+              'bg-white border-2 border-toss-grey-100')
+        : 'bg-white border-2 border-toss-grey-100'}
     `}>
       <AnimatePresence mode="wait">
         {showAvatarPicker ? (
@@ -402,15 +404,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
                             <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
                               <button
-                                onClick={(e) => { e.stopPropagation(); onUpdateCheckedItems?.(menu, false); }}
-                                className="absolute left-0 pl-2.5 pr-2 h-full flex items-center justify-center text-amber-400 hover:text-amber-500 scale-110 active:scale-95 transition-transform z-10"
-                                title="퀵메뉴에서 제거"
-                              >
-                                <Star size={13} fill="currentColor" strokeWidth={0} />
-                              </button>
-                              <button
                                 onClick={() => handleInitialOrderFinalize(menu)}
-                                className="flex-1 h-full text-left pl-[30px] pr-[60px] font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight"
+                                className="flex-1 h-full text-left px-3 font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight pr-[54px]"
                               >
                                 {menu}
                               </button>
