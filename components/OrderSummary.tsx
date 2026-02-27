@@ -280,6 +280,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             <div className={`flex items-center justify-between w-full shrink-0 transition-colors bg-transparent px-4 h-[72px]`}>
               <div className="flex-1 min-w-0 w-full h-full flex items-center overflow-hidden">{collapsedBottomBarNode}</div>
               <button
+                data-tutorial="summary-btn"
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('expanded'); }}
                 className="h-[44px] px-3.5 rounded-xl bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
               >

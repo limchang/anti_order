@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Plus, Menu, X, StickyNote, Smile, UtensilsCrossed, Pencil, Trash2, ChevronRight, ChevronLeft, Check, History, Bell, RefreshCw, LayoutGrid, RotateCcw } from 'lucide-react';
+import { Plus, Menu, X, StickyNote, Smile, UtensilsCrossed, Pencil, Trash2, ChevronRight, ChevronLeft, Check, History, Bell, RefreshCw, LayoutGrid, RotateCcw, Pointer } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { OrderItem, OrderGroup, ItemType, AppSettings, OrderSubItem, OrderHistoryItem } from './types.ts';
 import { OrderSummary } from './components/OrderSummary.tsx';
@@ -12,6 +12,7 @@ import { QuickMemosModal } from './components/QuickMemosModal.tsx';
 import { MenuManagementModal } from './components/MenuManagementModal.tsx';
 import { HistoryModal } from './components/HistoryModal.tsx';
 import { SettingsModal } from './components/SettingsModal';
+import { AutoTutorial } from './components/AutoTutorial';
 import { CATEGORY_EMOJIS } from './components/OrderCard';
 
 const SETTINGS_STORAGE_KEY = 'cafesync_settings_v1';
@@ -64,6 +65,7 @@ function App() {
   const [isMenuMgmtModalOpen, setIsMenuMgmtModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
+  const [isTutorialRunning, setIsTutorialRunning] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -604,7 +606,7 @@ function App() {
       <button onClick={() => setIsMainMenuOpen(true)} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-xl flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all">
         <Menu size={20} strokeWidth={2.5} />
       </button>
-      <button onClick={addGroup} className="w-[44px] h-[44px] shrink-0 bg-toss-blue/10 text-toss-blue border border-toss-blue/20 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all">
+      <button data-tutorial="add-group" onClick={addGroup} className="w-[44px] h-[44px] shrink-0 bg-toss-blue/10 text-toss-blue border border-toss-blue/20 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all">
         <Plus size={20} strokeWidth={2.5} />
       </button>
 
@@ -666,6 +668,15 @@ function App() {
                   </button>
                 </div>
                 <div className="overflow-y-auto no-scrollbar px-5 py-5 space-y-4 custom-scrollbar">
+                  <div>
+                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
+                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
+                      <button onClick={() => { setIsTutorialRunning(true); setIsMainMenuOpen(false); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95">
+                        <Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
                     <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
@@ -872,6 +883,7 @@ function App() {
         onUpdateChecked={handleUpdateCheckedItems}
         onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)}
       />
+      {isTutorialRunning && <AutoTutorial onComplete={() => setIsTutorialRunning(false)} />}
       <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <MenuSelectionModal

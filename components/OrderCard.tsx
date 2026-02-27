@@ -415,7 +415,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             {/* 이모지 아바타 */}
             <div className="w-full flex justify-center mb-1">
               <div className="relative inline-block">
-                <button onClick={handleAvatarClick} className="text-5xl active:scale-95 transition-transform drop-shadow-sm select-none animate-float relative z-10">
+                <button data-tutorial="avatar" onClick={handleAvatarClick} className="text-5xl active:scale-95 transition-transform drop-shadow-sm select-none animate-float relative z-10">
                   <EmojiRenderer emoji={order.avatar} size={48} />
                   {allMemos.length > 0 && (
                     <motion.div
@@ -471,7 +471,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                             </div>
                           ))}
                         </div>
-                        <button onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                        <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
                           <span className="relative z-10 flex items-center gap-1.5">더보기</span>
                         </button>
                       </motion.div>
@@ -543,7 +543,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           <button onClick={() => onOpenMenuModal(order.id, si.itemName, si.id, si.type)} className="w-full h-full bg-toss-grey-100 rounded-lg flex items-center justify-center border border-toss-grey-200 shadow-sm active:scale-95 transition-all px-8">
                             <span className="text-[11px] font-black text-toss-grey-800 truncate text-center w-full">{si.itemName}</span>
                           </button>
-                          <button onClick={(e) => { e.stopPropagation(); setActiveMemoSubId(si.id === activeMemoSubId ? null : si.id); startAutoCloseTimer(); }} className={`absolute right-1.5 top-1/2 -translate-y-1/2 p-1 active:scale-90 transition-transform ${activeMemoSubId === si.id ? 'text-toss-blue' : 'text-toss-grey-300 hover:text-toss-blue'}`}>
+                          <button data-tutorial="memo-btn" onClick={(e) => { e.stopPropagation(); setActiveMemoSubId(si.id === activeMemoSubId ? null : si.id); startAutoCloseTimer(); }} className={`absolute right-1.5 top-1/2 -translate-y-1/2 p-1 active:scale-90 transition-transform ${activeMemoSubId === si.id ? 'text-toss-blue' : 'text-toss-grey-300 hover:text-toss-blue'}`}>
                             <MessageCircle size={10} />
                           </button>
                         </div>

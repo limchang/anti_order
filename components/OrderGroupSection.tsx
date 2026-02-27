@@ -124,6 +124,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         {quickActions.map((action, index) => (
           <button
             key={action.label}
+            data-tutorial={action.label === '모두 아메리카노' ? 'quick-all' : undefined}
             onClick={(e) => {
               if (navigator.vibrate) navigator.vibrate(50);
               action.onClick();
