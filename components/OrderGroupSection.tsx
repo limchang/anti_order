@@ -90,35 +90,39 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
 
   const quickActions = [
     {
-      label: '이모지\n랜덤',
+      label: '이모지 랜덤',
       icon: '🎲',
       onClick: handleAllRandom,
       title: '모든 인원 랜덤 이모지 선택',
-      iconBg: 'bg-violet-100',
-      textColor: 'text-violet-700',
+      chipBg: 'bg-violet-50',
+      chipBorder: 'border-violet-200',
+      textColor: 'text-violet-800',
     },
     {
-      label: '자리\n이모지',
+      label: '자리 이모지',
       icon: '📍',
       onClick: handleTablePositionEmojis,
       title: '자리 위치 이모지로 지정 (◰◱◳◲)',
-      iconBg: 'bg-sky-100',
-      textColor: 'text-sky-700',
+      chipBg: 'bg-sky-50',
+      chipBorder: 'border-sky-200',
+      textColor: 'text-sky-800',
     },
     {
-      label: '모두\n아메리카노',
+      label: '모두 아메리카노',
       icon: '☕',
       onClick: handleAllAmericano,
       title: '모든 인원에게 랜덤 이모지 적용 후 아메리카노 설정',
-      iconBg: 'bg-amber-100',
-      textColor: 'text-amber-700',
+      chipBg: 'bg-amber-50',
+      chipBorder: 'border-amber-200',
+      textColor: 'text-amber-800',
     },
     {
-      label: '테이블\n설정',
-      icon: null, // lucide icon 사용
+      label: '테이블 설정',
+      icon: null,
       onClick: onOpenSettings,
       title: '테이블 이름 변경 및 삭제',
-      iconBg: 'bg-toss-grey-100',
+      chipBg: 'bg-toss-grey-50',
+      chipBorder: 'border-toss-grey-200',
       textColor: 'text-toss-grey-600',
       isSettings: true,
     },
@@ -126,21 +130,21 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
 
   return (
     <section className="relative bg-white rounded-[24px] border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
-      {/* 퀵 액션 - 4분할 세로 아이콘 버튼 */}
-      <div className="grid grid-cols-4 gap-1 px-0.5 pt-0.5 pb-2 border-b border-toss-grey-100 mb-0.5">
+      {/* 퀵 액션 - Material Design Chip 스타일 */}
+      <div className="flex items-center gap-1.5 px-0.5 pt-0.5 pb-2.5 border-b border-toss-grey-100 overflow-x-auto no-scrollbar">
         {quickActions.map((action) => (
           <button
             key={action.label}
             onClick={action.onClick}
             title={action.title}
-            className="flex flex-col items-center justify-center gap-1.5 py-2.5 px-1 rounded-2xl bg-white border border-toss-grey-150 hover:bg-toss-grey-50 active:scale-95 transition-all shadow-sm"
+            className={`flex items-center gap-1.5 h-9 pl-2.5 pr-3.5 rounded-full border shrink-0 ${action.chipBg} ${action.chipBorder} active:scale-95 transition-all shadow-sm hover:brightness-95`}
           >
-            <div className={`w-8 h-8 rounded-[12px] ${action.iconBg} flex items-center justify-center text-[16px] leading-none shadow-sm`}>
+            <span className="text-[15px] leading-none">
               {action.isSettings
-                ? <Settings size={16} strokeWidth={2.5} className="text-toss-grey-500" />
+                ? <Settings size={14} strokeWidth={2.5} className={action.textColor} />
                 : action.icon}
-            </div>
-            <span className={`text-[8.5px] font-black ${action.textColor} leading-tight text-center whitespace-pre-line`}>{action.label}</span>
+            </span>
+            <span className={`text-[11.5px] font-bold ${action.textColor} whitespace-nowrap tracking-tight`}>{action.label}</span>
           </button>
         ))}
       </div>
@@ -211,6 +215,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
           </div>
         )}
       </div>
-    </section>
+    </section >
   );
 };
