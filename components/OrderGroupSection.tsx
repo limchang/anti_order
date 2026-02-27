@@ -53,7 +53,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   const sharedItem = useMemo(() => group.items.find(item => item.avatar === '😋'), [group.items]);
   const isOdd = individualItems.length % 2 !== 0;
 
-  // 이모지 랜덤
   const handleAllRandom = () => {
     const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
     individualItems.forEach(item => {
@@ -61,7 +60,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
     });
   };
 
-  // 자리 위치 이모지 (◰◱◳◲)
   const handleTablePositionEmojis = () => {
     individualItems.forEach((item, idx) => {
       const emoji = TABLE_EMOJIS[idx % TABLE_EMOJIS.length];
@@ -69,7 +67,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
     });
   };
 
-  // 모두 아메리카노 - 이모지 없으면 랜덤 적용 후 아메리카노 설정
   const handleAllAmericano = () => {
     const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
     individualItems.forEach(item => {
@@ -94,57 +91,50 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       icon: '🎲',
       onClick: handleAllRandom,
       title: '모든 인원 랜덤 이모지 선택',
-      chipBg: 'bg-violet-50',
-      chipBorder: 'border-violet-200',
-      textColor: 'text-violet-800',
+      textColor: 'text-violet-700',
     },
     {
       label: '자리 이모지',
       icon: '📍',
       onClick: handleTablePositionEmojis,
       title: '자리 위치 이모지로 지정 (◰◱◳◲)',
-      chipBg: 'bg-sky-50',
-      chipBorder: 'border-sky-200',
-      textColor: 'text-sky-800',
+      textColor: 'text-sky-700',
     },
     {
       label: '모두 아메리카노',
       icon: '☕',
       onClick: handleAllAmericano,
       title: '모든 인원에게 랜덤 이모지 적용 후 아메리카노 설정',
-      chipBg: 'bg-amber-50',
-      chipBorder: 'border-amber-200',
-      textColor: 'text-amber-800',
+      textColor: 'text-amber-700',
     },
     {
       label: '테이블 설정',
       icon: null,
       onClick: onOpenSettings,
       title: '테이블 이름 변경 및 삭제',
-      chipBg: 'bg-toss-grey-50',
-      chipBorder: 'border-toss-grey-200',
-      textColor: 'text-toss-grey-600',
+      textColor: 'text-toss-grey-500',
       isSettings: true,
     },
   ];
 
   return (
     <section className="relative bg-white rounded-[24px] border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
-      {/* 퀵 액션 - Material Design Chip 스타일 */}
-      <div className="flex items-center gap-1.5 px-0.5 pt-0.5 pb-2.5 border-b border-toss-grey-100 overflow-x-auto no-scrollbar">
-        {quickActions.map((action) => (
+      {/* 퀵 액션 - 세그먼트 탭바 스타일 */}
+      <div className="flex items-stretch bg-toss-grey-50 rounded-[14px] border border-toss-grey-100 overflow-hidden">
+        {quickActions.map((action, index) => (
           <button
             key={action.label}
             onClick={action.onClick}
             title={action.title}
-            className={`flex items-center gap-1.5 h-9 pl-2.5 pr-3.5 rounded-full border shrink-0 ${action.chipBg} ${action.chipBorder} active:scale-95 transition-all shadow-sm hover:brightness-95`}
+            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 active:bg-white/70 transition-all
+              ${index < quickActions.length - 1 ? 'border-r border-toss-grey-200' : ''}`}
           >
             <span className="text-[15px] leading-none">
               {action.isSettings
-                ? <Settings size={14} strokeWidth={2.5} className={action.textColor} />
+                ? <Settings size={14} strokeWidth={2} className={action.textColor} />
                 : action.icon}
             </span>
-            <span className={`text-[11.5px] font-bold ${action.textColor} whitespace-nowrap tracking-tight`}>{action.label}</span>
+            <span className={`text-[9px] font-bold ${action.textColor} whitespace-nowrap tracking-tight leading-none`}>{action.label}</span>
           </button>
         ))}
       </div>
@@ -153,23 +143,34 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         <div className="grid gap-2 grid-cols-2 items-stretch justify-items-stretch relative overflow-visible">
           <AnimatePresence mode="popLayout">
             {individualItems.map((order) => (
-              <motion.div key={order.id} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative overflow-visible">
-                <OrderCard
-                  order={order}
-                  drinkItems={drinkMenuItems}
-                  dessertMenuItems={dessertMenuItems}
-                  onAddMenuItem={onAddMenuItem}
-                  onRemoveMenuItem={onRemoveMenuItem}
-                  onUpdate={updateOrder}
-                  onRemove={removeOrder}
-                  highlighted={order.id === highlightedItemId}
-                  onOpenMenuModal={onOpenMenuModal}
-                  onCopyGroupItemToAll={onCopyGroupItemToAll}
-                  onDeleteGroupItemFromAll={onDeleteGroupItemFromAll}
-                  appSettings={appSettings}
-                  onInputModeChange={onInputModeChange}
-                  onUpdateCheckedItems={onUpdateCheckedItems}
-                />
+              <motion.div
+                key={order.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="relative overflow-visible flex flex-col"
+              >
+                <div className="shrink-0 overflow-visible">
+                  <OrderCard
+                    order={order}
+                    drinkItems={drinkMenuItems}
+                    dessertMenuItems={dessertMenuItems}
+                    onAddMenuItem={onAddMenuItem}
+                    onRemoveMenuItem={onRemoveMenuItem}
+                    onUpdate={updateOrder}
+                    onRemove={removeOrder}
+                    highlighted={order.id === highlightedItemId}
+                    onOpenMenuModal={onOpenMenuModal}
+                    onCopyGroupItemToAll={onCopyGroupItemToAll}
+                    onDeleteGroupItemFromAll={onDeleteGroupItemFromAll}
+                    appSettings={appSettings}
+                    onInputModeChange={onInputModeChange}
+                    onUpdateCheckedItems={onUpdateCheckedItems}
+                  />
+                </div>
+                {/* 높이 차이만큼 회색 공간 - 나중에 디자인 요소 추가 예정 */}
+                <div className="flex-1 min-h-0 mt-1.5 rounded-[18px] bg-toss-grey-50 border border-toss-grey-100/60" />
               </motion.div>
             ))}
             {isOdd && (
@@ -181,7 +182,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         </div>
 
         {!isOdd && (
-          <button onClick={() => addOrderItem(group.id)} className="w-full h-10 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-[0.98] transition-all shrink-0">
+          <button onClick={() => addOrderItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-[0.98] transition-all shrink-0">
             <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black uppercase tracking-tighter">추가</span>
           </button>
         )}
@@ -207,7 +208,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                   onUpdateCheckedItems={onUpdateCheckedItems}
                 />
               ) : (
-                <button onClick={() => addSharedMenuItem(group.id)} className="w-full h-10 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-95 transition-all">
+                <button onClick={() => addSharedMenuItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-95 transition-all">
                   <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black uppercase">공용 메뉴 추가</span>
                 </button>
               )}
@@ -215,6 +216,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
           </div>
         )}
       </div>
-    </section >
+    </section>
   );
 };

@@ -271,7 +271,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
-    <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10 h-full
+    <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
       ${isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
         isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
@@ -328,7 +328,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     {isDecided && (
                       <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-toss-blue text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
                         <Check size={12} strokeWidth={3} />
-                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문</span>
+                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -400,7 +400,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                       <motion.div key="collapsed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-0.5">
                         <div className="flex flex-col gap-0.5">
                           {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
-                            <div key={idx} className="w-full h-8 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
+                            <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
                               <button
                                 onClick={(e) => { e.stopPropagation(); onUpdateCheckedItems?.(menu, false); }}
                                 className="absolute left-0 pl-2.5 pr-2 h-full flex items-center justify-center text-amber-400 hover:text-amber-500 scale-110 active:scale-95 transition-transform z-10"
@@ -410,22 +410,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                               </button>
                               <button
                                 onClick={() => handleInitialOrderFinalize(menu)}
-                                className="flex-1 h-full text-left pl-[32px] pr-[66px] font-black text-[10.5px] text-yellow-800 truncate active:bg-yellow-50 w-full"
+                                className="flex-1 h-full text-left pl-[30px] pr-[60px] font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight"
                               >
                                 {menu}
                               </button>
                               <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT으로 바로 주문">
-                                  <Flame size={12} strokeWidth={2.5} />
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT">
+                                  <Flame size={11} strokeWidth={2.5} />
                                 </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE로 바로 주문">
-                                  <Snowflake size={12} strokeWidth={2.5} />
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE">
+                                  <Snowflake size={11} strokeWidth={2.5} />
                                 </button>
                               </div>
                             </div>
                           ))}
                         </div>
-                        <button onClick={() => setIsMoreExpanded(true)} className="w-full h-8 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                        <button onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
                           <span className="relative z-10 flex items-center gap-1.5">더보기</span>
                         </button>
                       </motion.div>
@@ -440,7 +440,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                         }).map((menu, idx) => {
                           const isQuickMenu = quickMenuOptions.includes(menu);
                           return (
-                            <div key={idx} className="w-full h-8 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden mb-1">
+                            <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden mb-1">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -452,16 +452,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                               </button>
                               <button
                                 onClick={() => handleInitialOrderFinalize(menu)}
-                                className="flex-1 h-full text-left pl-[32px] pr-[66px] font-black text-[10.5px] text-yellow-800 truncate active:bg-yellow-50 w-full"
+                                className="flex-1 h-full text-left pl-[30px] pr-[60px] font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight"
                               >
                                 {menu}
                               </button>
                               <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT으로 바로 주문">
-                                  <Flame size={12} strokeWidth={2.5} />
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT">
+                                  <Flame size={11} strokeWidth={2.5} />
                                 </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-7 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE로 바로 주문">
-                                  <Snowflake size={12} strokeWidth={2.5} />
+                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE">
+                                  <Snowflake size={11} strokeWidth={2.5} />
                                 </button>
                               </div>
                             </div>
@@ -598,9 +598,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   </div>
 
                   {/* 하단 메뉴 추가 버튼 - mt-auto로 항상 셀 바닥에 고정 */}
-                  <div className="mt-auto pt-4 shrink-0 overflow-visible">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-10 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
-                      <Plus size={14} strokeWidth={3} /><span className="text-[10px] font-black uppercase tracking-tight">메뉴 추가</span>
+                  <div className="mt-auto pt-3 shrink-0 overflow-visible">
+                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-9 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
+                      <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black tracking-tight">메뉴 추가</span>
                     </button>
                   </div>
                 </div>
