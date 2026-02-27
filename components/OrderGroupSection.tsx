@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Plus, Settings } from 'lucide-react';
+import { Plus, Settings, LayoutGrid } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, OrderItem, ItemType, AppSettings } from '../types.ts';
 import { OrderCard } from './OrderCard.tsx';
@@ -87,7 +87,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
 
   const quickActions = [
     {
-      label: '이모지 랜덤',
+      label: '랜덤 이모지',
       icon: '🎲',
       onClick: handleAllRandom,
       title: '모든 인원 랜덤 이모지 선택',
@@ -95,7 +95,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
     },
     {
       label: '자리 이모지',
-      icon: '📍',
+      icon: <LayoutGrid size={16} strokeWidth={2.5} />,
       onClick: handleTablePositionEmojis,
       title: '자리 위치 이모지로 지정 (◰◱◳◲)',
       textColor: 'text-sky-700',

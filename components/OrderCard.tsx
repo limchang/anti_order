@@ -294,13 +294,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
     <div className={`relative rounded-2xl flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
-      ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
+      ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card border-2 border-toss-grey-100'}
       ${appSettings.highlightOrderCard
-        ? (isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
-          isNotEating ? 'bg-toss-grey-100 border-2 border-toss-grey-300' :
-            isDecided ? 'bg-toss-blueLight border-2 border-toss-blue' :
-              'bg-white border-2 border-toss-grey-100')
-        : 'bg-white border-2 border-toss-grey-100'}
+        ? (isUndecided ? 'bg-amber-50/50' :
+          isNotEating ? 'bg-toss-grey-100/50' :
+            isDecided ? 'bg-toss-blueLight/30' :
+              'bg-white')
+        : 'bg-white'}
     `}>
       <AnimatePresence mode="wait">
         {showAvatarPicker ? (
@@ -342,10 +342,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   transition={{ duration: 0.15 }}
                   className={`relative w-full h-full px-2.5 rounded-lg shadow-sm flex items-center justify-center border ${statusStyle.bg}`}
                 >
-                  <div className={`flex items-center gap-1.5 ${statusStyle.text}`}>
-                    {statusStyle.icon}
-                    <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">{statusStyle.label}</span>
-                  </div>
+                  <span className={`relative text-[10px] font-black tracking-tight leading-none pt-[1px] ${statusStyle.text}`}>
+                    {statusStyle.icon && (
+                      <span className="absolute right-full mr-1.5 top-1/2 -translate-y-1/2 flex items-center">
+                        {statusStyle.icon}
+                      </span>
+                    )}
+                    {statusStyle.label}
+                  </span>
 
                   {/* ... 더보기 버튼 - 되돌리기/삭제 */}
                   <div className={`absolute right-1 top-1/2 -translate-y-1/2 flex items-center ${!isUndecided && !isNotEating && !isDecided ? 'hidden' : ''}`} ref={moreMenuRef}>
@@ -365,6 +369,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           transition={{ duration: 0.12 }}
                           className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[80px] py-0.5"
                         >
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onOpenMenuModal(order.id, '미정', null, 'DESSERT'); setShowMoreMenu(false); }}
+                            className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-blue hover:bg-toss-blueLight/20 transition-colors border-b border-toss-grey-100 whitespace-nowrap"
+                          >
+                            <Plus size={12} strokeWidth={2.5} />
+                            메뉴 추가
+                          </button>
                           {(isDecided || isNotEating) && (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleUndoOrder(); setShowMoreMenu(false); }}
