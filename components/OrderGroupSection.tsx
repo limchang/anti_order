@@ -127,17 +127,17 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   return (
     <section className="relative bg-white rounded-[24px] border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
       {/* 퀵 액션 - 4분할 세로 아이콘 버튼 */}
-      <div className="grid grid-cols-4 gap-1 px-0.5 pt-0.5">
+      <div className="grid grid-cols-4 gap-1 px-0.5 pt-0.5 pb-2 border-b border-toss-grey-100 mb-0.5">
         {quickActions.map((action) => (
           <button
             key={action.label}
             onClick={action.onClick}
             title={action.title}
-            className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-2xl bg-toss-grey-50 border border-toss-grey-100 hover:bg-toss-grey-100 active:scale-95 transition-all"
+            className="flex flex-col items-center justify-center gap-1.5 py-2.5 px-1 rounded-2xl bg-white border border-toss-grey-150 hover:bg-toss-grey-50 active:scale-95 transition-all shadow-sm"
           >
-            <div className={`w-7 h-7 rounded-xl ${action.iconBg} flex items-center justify-center text-[15px] leading-none`}>
+            <div className={`w-8 h-8 rounded-[12px] ${action.iconBg} flex items-center justify-center text-[16px] leading-none shadow-sm`}>
               {action.isSettings
-                ? <Settings size={15} strokeWidth={2.5} className="text-toss-grey-500" />
+                ? <Settings size={16} strokeWidth={2.5} className="text-toss-grey-500" />
                 : action.icon}
             </div>
             <span className={`text-[8.5px] font-black ${action.textColor} leading-tight text-center whitespace-pre-line`}>{action.label}</span>

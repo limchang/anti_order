@@ -796,7 +796,7 @@ function App() {
                         <button onClick={() => setManageStep('delete')} className="w-full bg-toss-redLight border border-toss-red/10 p-4 rounded-[20px] flex items-center justify-between active:scale-[0.97] transition-all">
                           <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-toss-red shadow-sm"><Trash2 size={18} /></div><span className="font-black text-toss-red text-[15px]">테이블 삭제하기</span></div><ChevronRight size={18} className="text-toss-red/30" />
                         </button>
-                        <button onClick={closeManageSheet} className="w-full mt-2 py-3 rounded-2xl font-black text-toss-grey-400 hover:text-toss-grey-600 transition-all text-center text-[13px]">취소</button>
+                        <button onClick={closeManageSheet} className="w-full mt-2 h-14 rounded-[20px] font-black text-white bg-toss-grey-800 hover:bg-toss-grey-900 active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 shadow-lg shadow-toss-grey-900/20">닫기</button>
                       </motion.div>
                     )}
                     {manageStep === 'rename' && (
@@ -813,7 +813,7 @@ function App() {
                       <motion.div key="delete" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
                         <div className="text-center mb-4"><h3 className="text-[18px] font-black text-toss-red">정말 삭제할까요?</h3><p className="text-[13px] text-toss-grey-400 mt-1">{currentManagingGroup?.name} 테이블의 모든 데이터가 삭제됩니다.</p></div>
                         <button onClick={() => removeGroup(currentManagingGroup!.id)} className="w-full py-4 bg-toss-red text-white rounded-[20px] font-black text-[14px] active:scale-95 transition-all shadow-lg">네, 삭제하겠습니다</button>
-                        <button onClick={() => setManageStep('menu')} className="w-full py-4 bg-toss-grey-100 text-toss-grey-500 rounded-[20px] font-black text-[13px] active:scale-95 transition-all">취소</button>
+                        <button onClick={() => setManageStep('menu')} className="w-full h-14 bg-toss-grey-800 text-white rounded-[20px] font-black text-[14px] active:scale-[0.98] transition-all shadow-lg shadow-toss-grey-900/20 flex items-center justify-center">취소</button>
                       </motion.div>
                     )}
                   </AnimatePresence>

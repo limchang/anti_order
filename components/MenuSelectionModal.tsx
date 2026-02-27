@@ -230,9 +230,10 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
         <motion.div
           initial={false}
           animate={{
-            height: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0,
+            height: isOpen ? 'auto' : 0,
             opacity: isOpen ? 1 : 0,
           }}
+          style={{ maxHeight: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
