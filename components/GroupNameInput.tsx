@@ -90,7 +90,7 @@ export const GroupNameInput: React.FC<GroupNameInputProps> = ({
       )}
 
       {isOpen && (
-        <div className="absolute top-12 left-0 z-50 bg-white border border-toss-grey-100 rounded-[20px] shadow-toss p-2 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
+        <div className="absolute top-12 left-0 z-50 bg-white border border-toss-grey-100 rounded-xl shadow-toss p-2 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
           <button
             onClick={handleCustomInputClick}
             className="w-9 h-9 flex items-center justify-center rounded-full bg-toss-grey-100 text-toss-grey-500 hover:bg-toss-blueLight hover:text-toss-blue transition-all border border-transparent"

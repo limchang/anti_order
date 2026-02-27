@@ -58,7 +58,7 @@ export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, 
           initial={false}
           animate={{ height: isOpen ? 'calc(100dvh - 70px)' : 0, opacity: isOpen ? 1 : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
-          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
           <AnimatePresence>
             {isOpen && (
@@ -130,7 +130,7 @@ export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, 
 
                 {/* 하단 버튼 */}
                 <div className="px-4 pt-3 pb-5 bg-white border-t border-toss-grey-100 shrink-0 rounded-b-[32px]">
-                  <button onClick={onClose} className="w-full h-16 bg-toss-grey-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
+                  <button onClick={onClose} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
                     설정 완료
                   </button>
                 </div>

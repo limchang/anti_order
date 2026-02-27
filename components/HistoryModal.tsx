@@ -163,7 +163,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, onB
           initial={false}
           animate={{ height: isOpen ? 'calc(100dvh - 70px)' : 0, opacity: isOpen ? 1 : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
-          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
           <AnimatePresence>
             {isOpen && (

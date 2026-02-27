@@ -281,7 +281,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               <div className="flex-1 min-w-0 w-full h-full flex items-center overflow-hidden">{collapsedBottomBarNode}</div>
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('expanded'); }}
-                className="h-[44px] px-3.5 rounded-[18px] bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
+                className="h-[44px] px-3.5 rounded-xl bg-toss-grey-900 flex items-center justify-center text-white shrink-0 shadow-md hover:bg-black active:scale-95 transition-all gap-1.5 font-black text-[13px] ml-1"
               >
                 주문 확인
                 <ChevronUp size={16} strokeWidth={3} className="text-white/70" />
@@ -303,7 +303,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     <motion.div
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="px-4 py-3.5 bg-amber-50 rounded-[22px] border border-amber-100 shadow-sm animate-in slide-in-from-top-2"
+                      className="px-4 py-3.5 bg-amber-50 rounded-xl border border-amber-100 shadow-sm animate-in slide-in-from-top-2"
                     >
                       <div className={`flex items-center justify-between px-1 ${isUndecidedExpanded ? 'mb-3' : 'mb-0'}`}>
                         <div
@@ -353,7 +353,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     exit={{ opacity: 0, scale: 0.8 }}
                                     transition={{ duration: 0.2 }}
                                     key={p.id}
-                                    className="flex items-center gap-3 bg-white p-2.5 rounded-[20px] border border-amber-100 shadow-sm hover:border-amber-300 transition-colors"
+                                    className="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-amber-100 shadow-sm hover:border-amber-300 transition-colors"
                                   >
                                     <div className="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center text-2xl shrink-0 ring-1 ring-amber-100">
                                       <EmojiRenderer emoji={p.avatar || "👤"} size={28} />
@@ -414,9 +414,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 <div className="px-6 mb-3 shrink-0">
-                  <div className="flex p-1.5 bg-toss-grey-100 rounded-[24px]">
-                    <button onClick={() => setViewMode('all')} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-[20px] text-[14px] font-black tracking-tight transition-all duration-300 ${viewMode === 'all' ? 'bg-white text-toss-blue shadow-md' : 'text-toss-grey-400'}`}><LayoutGrid size={16} strokeWidth={2.5} /> 합계 보기</button>
-                    <button onClick={() => setViewMode('table')} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-[20px] text-[14px] font-black tracking-tight transition-all duration-300 ${viewMode === 'table' ? 'bg-white text-toss-blue shadow-md' : 'text-toss-grey-400'}`}><List size={16} strokeWidth={2.5} /> 테이블별 보기</button>
+                  <div className="flex p-1.5 bg-toss-grey-100 rounded-2xl">
+                    <button onClick={() => setViewMode('all')} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-black tracking-tight transition-all duration-300 ${viewMode === 'all' ? 'bg-white text-toss-blue shadow-md' : 'text-toss-grey-400'}`}><LayoutGrid size={16} strokeWidth={2.5} /> 합계 보기</button>
+                    <button onClick={() => setViewMode('table')} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-black tracking-tight transition-all duration-300 ${viewMode === 'table' ? 'bg-white text-toss-blue shadow-md' : 'text-toss-grey-400'}`}><List size={16} strokeWidth={2.5} /> 테이블별 보기</button>
                   </div>
                 </div>
 
@@ -452,7 +452,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                             <motion.div
                               layout
                               key={idx}
-                              className="bg-white rounded-[24px] border border-toss-grey-100 shadow-toss-sm overflow-hidden transition-all duration-300"
+                              className="bg-white rounded-2xl border border-toss-grey-100 shadow-toss-sm overflow-hidden transition-all duration-300"
                             >
                               <div className={`w-full flex items-center justify-between p-4 ${hasMemos ? 'bg-toss-grey-50/30 border-b border-toss-grey-50/50' : 'py-5'}`}>
                                 <div className="flex items-center gap-3 min-w-0">
@@ -479,7 +479,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               {hasMemos && (
                                 <div className="px-4 pb-4 space-y-2 pt-3 bg-white">
                                   {memoGroups.map((group, gidx) => (
-                                    <div key={gidx} className="flex items-center justify-between bg-white p-3 rounded-[20px] border border-toss-grey-100 shadow-sm transition-all hover:border-toss-blue/30">
+                                    <div key={gidx} className="flex items-center justify-between bg-white p-3 rounded-xl border border-toss-grey-100 shadow-sm transition-all hover:border-toss-blue/30">
                                       <div className="flex items-center gap-3">
                                         <div className="flex flex-wrap items-center gap-2.5">
                                           <div className="flex flex-wrap gap-1">
@@ -529,7 +529,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                         const groupItemCount = group.items.reduce((acc, p) => acc + p.subItems.reduce((sAcc, si) => (si.itemName !== '미정' && si.itemName !== '안 먹음' ? sAcc + (si.quantity || 1) : sAcc), 0), 0);
 
                         return (
-                          <div key={group.id} className="bg-white rounded-[28px] border border-toss-grey-100 overflow-hidden shadow-toss-sm mb-3">
+                          <div key={group.id} className="bg-white rounded-2xl border border-toss-grey-100 overflow-hidden shadow-toss-sm mb-3">
                             <div className="bg-toss-grey-100/50 px-5 py-3.5 flex items-center justify-between border-b border-toss-grey-100">
                               {isEditing ? (
                                 <div className="flex items-center gap-2 flex-1">
@@ -626,7 +626,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     <motion.button
                       whileTap={{ scale: 0.96 }}
                       onClick={() => onSaveHistory(viewMode === 'all' ? allSummary : tableSummary, totalItemCount)}
-                      className="w-full h-16 bg-toss-grey-900 text-white rounded-[24px] font-black text-[16px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 transition-all hover:bg-black active:scale-95"
+                      className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[16px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 transition-all hover:bg-black active:scale-95"
                     >
                       <Save size={18} strokeWidth={2.5} /> 내역 저장하기
                     </motion.button>

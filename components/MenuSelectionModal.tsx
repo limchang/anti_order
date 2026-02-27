@@ -235,7 +235,7 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
           }}
           style={{ maxHeight: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
-          className="w-full max-w-lg bg-[#f8f9fb] rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
+          className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
           <AnimatePresence>
             {isOpen && (
@@ -366,11 +366,11 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
                         else onSelect([{ itemName: '미정', type: 'DRINK' }]);
                         onClose();
                       }}
-                      className="h-16 rounded-[24px] font-black bg-toss-redLight text-toss-red active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 border border-toss-red/10"
+                      className="h-16 rounded-2xl font-black bg-toss-redLight text-toss-red active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 border border-toss-red/10"
                     >
                       <Trash2 size={18} /> 주문 삭제
                     </button>
-                    <button onClick={onClose} className="h-16 rounded-[24px] font-black bg-toss-grey-900 text-white active:scale-[0.98] transition-all text-[14px] shadow-xl shadow-toss-grey-900/20 hover:bg-black">닫기</button>
+                    <button onClick={onClose} className="h-16 rounded-2xl font-black bg-toss-grey-900 text-white active:scale-[0.98] transition-all text-[14px] shadow-xl shadow-toss-grey-900/20 hover:bg-black">닫기</button>
                   </div>
                 </div>
               </motion.div>

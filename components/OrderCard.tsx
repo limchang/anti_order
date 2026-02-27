@@ -60,6 +60,20 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   const [timeLeft, setTimeLeft] = useState(5.0);
   const [expandTimeLeft, setExpandTimeLeft] = useState(5.0);
   const [localQuickMemos, setLocalQuickMemos] = useState<string[]>([]);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showMoreMenu) return;
+    const handleClick = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setShowMoreMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showMoreMenu]);
+
 
   useEffect(() => {
     setLocalQuickMemos(appSettings.quickMemos);
@@ -226,7 +240,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   if (isGroupAvatar) {
     const isSynced = appSettings.isSharedSyncActive;
     return (
-      <div className={`relative rounded-[24px] shadow-toss-card border-2 h-full flex flex-col p-4 transition-all duration-300 bg-white overflow-visible ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'border-toss-grey-100'}`}>
+      <div className={`relative rounded-2xl shadow-toss-card border-2 h-full flex flex-col p-4 transition-all duration-300 bg-white overflow-visible ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'border-toss-grey-100'}`}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -269,9 +283,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     );
   }
 
+  const getStatusStyle = () => {
+    if (isUndecided) return { bg: 'bg-amber-400 border-amber-500/30', text: 'text-amber-900', icon: <Clock size={12} strokeWidth={3} />, label: '고민 중', moreBtn: 'text-amber-800/60 hover:text-amber-900 active:scale-90' };
+    if (isNotEating) return { bg: 'bg-toss-grey-300 border-toss-grey-400/20', text: 'text-toss-grey-700', icon: <X size={12} strokeWidth={3} />, label: '안 먹음', moreBtn: 'text-toss-grey-600/60 hover:text-toss-grey-800 active:scale-90' };
+    if (isDecided) return { bg: 'bg-toss-blue border-toss-blue/20', text: 'text-white', icon: <Check size={12} strokeWidth={3} />, label: '주문 완료', moreBtn: 'text-white/60 hover:text-white active:scale-90' };
+    return { bg: 'bg-toss-grey-50 border-toss-grey-100', text: 'text-transparent', icon: null, label: '', moreBtn: 'hidden' };
+  };
+  const statusStyle = getStatusStyle();
+
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
-    <div className={`relative rounded-[24px] flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
+    <div className={`relative rounded-2xl flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card'}
       ${appSettings.highlightOrderCard
         ? (isUndecided ? 'bg-yellow-50 border-2 border-yellow-400' :
@@ -309,61 +331,66 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             exit={{ opacity: 0, scale: 0.95 }}
             className="flex-1 flex flex-col items-center justify-start h-full relative overflow-visible"
           >
-            <div className="w-full flex flex-col items-center relative py-1 shrink-0 overflow-visible">
-              {/* 중앙 정렬된 상단 상태 및 액션 바 */}
-              <div className="absolute top-2 left-2 right-2 z-[50] flex items-center justify-between pointer-events-none">
-                {/* 상태 표시 */}
-                <div className="flex items-center">
-                  <AnimatePresence mode="popLayout">
-                    {isUndecided && (
-                      <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-amber-400 text-amber-900 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-amber-500/30">
-                        <Clock size={12} strokeWidth={3} />
-                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
-                      </motion.div>
-                    )}
-                    {isNotEating && (
-                      <motion.div key="status-noteating" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-toss-grey-300 text-toss-grey-700 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-grey-400/20">
-                        <X size={12} strokeWidth={3} />
-                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">안 먹음</span>
-                      </motion.div>
-                    )}
-                    {isDecided && (
-                      <motion.div key="status-decided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-toss-blue text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-toss-blue/20">
-                        <Check size={12} strokeWidth={3} />
-                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">주문 완료</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+            {/* 꽉 찬 상태 셀: 상태 뱃지 및 ... 메뉴 통합 */}
+            <div className="w-full flex items-center justify-between mb-2 shrink-0 h-7 z-[50]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={isUndecided ? 'undecided' : isNotEating ? 'noteating' : isDecided ? 'decided' : 'empty'}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className={`relative w-full h-full px-2.5 rounded-lg shadow-sm flex items-center justify-center border ${statusStyle.bg}`}
+                >
+                  <div className={`flex items-center gap-1.5 ${statusStyle.text}`}>
+                    {statusStyle.icon}
+                    <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">{statusStyle.label}</span>
+                  </div>
 
-                {/* 우측 상단 액션 버튼 */}
-                <div className="flex items-center h-7 bg-white border border-toss-grey-200 shadow-md rounded-lg pointer-events-auto overflow-hidden">
-                  <AnimatePresence>
-                    {(isDecided || isNotEating) && (
-                      <motion.button
-                        key="undo"
-                        onClick={handleUndoOrder}
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: 32 }}
-                        exit={{ opacity: 0, width: 0 }}
-                        className="h-full bg-transparent hover:bg-toss-grey-100 text-toss-grey-400 hover:text-toss-grey-800 flex items-center justify-center transition-colors group"
-                        title="되돌리기"
-                      >
-                        <RotateCcw size={13} strokeWidth={3} className="group-hover:-rotate-90 transition-transform duration-300 shrink-0" />
-                      </motion.button>
-                    )}
-                  </AnimatePresence>
-                  <button
-                    onClick={() => onRemove(order.id)}
-                    className="w-8 h-full bg-transparent hover:bg-toss-redLight text-toss-grey-400 hover:text-toss-red flex items-center justify-center transition-colors border-l border-toss-grey-100"
-                    title="삭제"
-                  >
-                    <X size={15} strokeWidth={3} shrink-0="true" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="relative inline-block mb-1 z-10 pt-10">
+                  {/* ... 더보기 버튼 - 되돌리기/삭제 */}
+                  <div className={`absolute right-1 top-1/2 -translate-y-1/2 flex items-center ${!isUndecided && !isNotEating && !isDecided ? 'hidden' : ''}`} ref={moreMenuRef}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setShowMoreMenu(prev => !prev); }}
+                      className={`w-[22px] h-[22px] flex items-center justify-center transition-all ${statusStyle.moreBtn}`}
+                      title="더보기"
+                    >
+                      <MoreHorizontal size={14} strokeWidth={2.5} />
+                    </button>
+                    <AnimatePresence>
+                      {showMoreMenu && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, y: -4 }}
+                          transition={{ duration: 0.12 }}
+                          className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[70px] py-0.5"
+                        >
+                          {(isDecided || isNotEating) && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleUndoOrder(); setShowMoreMenu(false); }}
+                              className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 transition-colors"
+                            >
+                              <RotateCcw size={11} strokeWidth={2.5} className="text-toss-grey-400" />
+                              되돌리기
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onRemove(order.id); setShowMoreMenu(false); }}
+                            className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-red hover:bg-toss-redLight transition-colors border-t border-toss-grey-100"
+                          >
+                            <Trash2 size={11} strokeWidth={2.5} />
+                            삭제
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            {/* 이모지 아바타 */}
+            <div className="w-full flex justify-center mb-1">
+              <div className="relative inline-block">
                 <button onClick={handleAvatarClick} className="text-5xl active:scale-95 transition-transform drop-shadow-sm select-none animate-float relative z-10">
                   <EmojiRenderer emoji={order.avatar} size={48} />
                   {allMemos.length > 0 && (
@@ -592,18 +619,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     ))}
                   </div>
 
-                  {/* 하단 메뉴 추가 버튼 - mt-auto로 항상 셀 바닥에 고정 */}
-                  <div className="mt-auto pt-3 shrink-0 overflow-visible">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-9 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
-                      <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black tracking-tight">메뉴 추가</span>
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
-          </motion.div>
+          </motion.div >
         )}
-      </AnimatePresence>
-    </div>
+      </AnimatePresence >
+    </div >
   );
 };

@@ -118,23 +118,23 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   ];
 
   return (
-    <section className="relative bg-white rounded-[24px] border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
+    <section className="relative bg-white rounded-2xl border p-2 flex flex-col gap-2 z-0 border-toss-grey-100 shadow-toss-card overflow-visible">
       {/* 퀵 액션 - 세그먼트 탭바 스타일 */}
-      <div className="flex items-stretch bg-toss-grey-50 rounded-[14px] border border-toss-grey-100 overflow-hidden">
+      <div className="flex items-stretch bg-toss-grey-50 rounded-xl border border-toss-grey-200 overflow-hidden shadow-sm">
         {quickActions.map((action, index) => (
           <button
             key={action.label}
             onClick={action.onClick}
             title={action.title}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 active:bg-white/70 transition-all
+            className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-3 hover:bg-white/60 active:bg-white/80 transition-all
               ${index < quickActions.length - 1 ? 'border-r border-toss-grey-200' : ''}`}
           >
-            <span className="text-[15px] leading-none">
+            <span className="text-[16px] leading-none">
               {action.isSettings
-                ? <Settings size={14} strokeWidth={2} className={action.textColor} />
-                : action.icon}
+                ? <Settings size={16} strokeWidth={2} className={action.textColor} />
+                : <span className="drop-shadow-sm">{action.icon}</span>}
             </span>
-            <span className={`text-[9px] font-bold ${action.textColor} whitespace-nowrap tracking-tight leading-none`}>{action.label}</span>
+            <span className={`text-[10px] font-black ${action.textColor} whitespace-nowrap tracking-tight leading-none`}>{action.label}</span>
           </button>
         ))}
       </div>
@@ -152,7 +152,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                 className="relative overflow-visible"
               >
                 {/* 카드 뒤 회색 배경 - 높이 차이만큼 아래 노출됨 (나중에 디자인 요소 추가 예정) */}
-                <div className="absolute inset-0 rounded-[26px] bg-toss-grey-100" style={{ zIndex: 0 }} />
+                <div className="absolute inset-0 rounded-2xl bg-toss-grey-100" style={{ zIndex: 0 }} />
                 <div className="relative" style={{ zIndex: 1 }}>
                   <OrderCard
                     order={order}
@@ -174,7 +174,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
               </motion.div>
             ))}
             {isOdd && (
-              <motion.button layout onClick={() => addOrderItem(group.id)} className="border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[20px] flex flex-col items-center justify-center gap-0.5 min-h-[110px] hover:bg-toss-grey-100 hover:border-toss-blue/30 active:scale-95 transition-all">
+              <motion.button layout onClick={() => addOrderItem(group.id)} className="border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-xl flex flex-col items-center justify-center gap-0.5 min-h-[110px] hover:bg-toss-grey-100 hover:border-toss-blue/30 active:scale-95 transition-all">
                 <Plus size={16} strokeWidth={3} /><span className="text-[10px] font-black uppercase">추가</span>
               </motion.button>
             )}
@@ -182,7 +182,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         </div>
 
         {!isOdd && (
-          <button onClick={() => addOrderItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-[0.98] transition-all shrink-0">
+          <button onClick={() => addOrderItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-xl flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-[0.98] transition-all shrink-0">
             <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black uppercase tracking-tighter">추가</span>
           </button>
         )}
@@ -208,7 +208,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                   onUpdateCheckedItems={onUpdateCheckedItems}
                 />
               ) : (
-                <button onClick={() => addSharedMenuItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-[14px] flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-95 transition-all">
+                <button onClick={() => addSharedMenuItem(group.id)} className="w-full h-9 border-2 border-dashed border-toss-grey-200 bg-toss-grey-50 text-toss-grey-400 rounded-xl flex items-center justify-center gap-1 hover:bg-toss-grey-100 active:scale-95 transition-all">
                   <Plus size={14} strokeWidth={3} /><span className="text-[11px] font-black uppercase">공용 메뉴 추가</span>
                 </button>
               )}
