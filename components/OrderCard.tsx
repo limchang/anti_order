@@ -247,15 +247,28 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               <div className="w-7 h-7 rounded-full bg-toss-blueLight flex items-center justify-center"><UtensilsCrossed size={14} className="text-toss-blue" /></div>
               <h3 className="text-[12px] font-black text-toss-grey-900 tracking-tight">함께 먹는 메뉴</h3>
             </div>
-            <button onClick={() => onCopyGroupItemToAll(order.id)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black transition-all ${isSynced ? 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 ring-2 ring-toss-blue/10 animate-pulse' : 'bg-toss-grey-100 text-toss-grey-400 border border-toss-grey-200'}`}>
-              <RefreshCw size={10} strokeWidth={3} className={isSynced ? 'animate-spin-slow' : ''} />
-              {isSynced ? '동기화 중' : '동기화 시작'}
-            </button>
+            <div className="flex items-center gap-2">
+              {isSynced && (
+                <button
+                  onClick={appSettings.onToggleQuantitySync}
+                  className={`flex items-center gap-1 px-1.5 py-1 rounded transition-colors ${appSettings.isQuantitySyncActive ? 'text-toss-blue' : 'text-toss-grey-400'}`}
+                >
+                  <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center transition-colors ${appSettings.isQuantitySyncActive ? 'bg-toss-blue border-toss-blue' : 'bg-white border-toss-grey-300'}`}>
+                    {appSettings.isQuantitySyncActive && <Check size={10} strokeWidth={3} className="text-white" />}
+                  </div>
+                  <span className="text-[10px] font-bold tracking-tight shrink-0">수량도 병합</span>
+                </button>
+              )}
+              <button onClick={() => onCopyGroupItemToAll(order.id)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black transition-all ${isSynced ? 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 ring-2 ring-toss-blue/10 animate-pulse' : 'bg-toss-grey-100 text-toss-grey-400 border border-toss-grey-200'}`}>
+                <RefreshCw size={10} strokeWidth={3} className={isSynced ? 'animate-spin-slow' : ''} />
+                {isSynced ? '동기화 중' : '동기화 시작'}
+              </button>
+            </div>
           </div>
 
-          <div className="flex-1 space-y-2 overflow-y-auto no-scrollbar mb-4 min-h-[50px]">
+          <div className={`flex-1 overflow-y-auto no-scrollbar mb-4 min-h-[60px] ${order.subItems.length === 0 ? 'flex flex-col' : 'space-y-2'}`}>
             {order.subItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full border-2 border-dashed border-toss-grey-100 rounded-2xl bg-toss-grey-50/50 p-6 text-center">
+              <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-toss-grey-100 rounded-2xl bg-toss-grey-50/50 p-6 text-center">
                 <span className="text-[12px] font-black text-toss-grey-800 mb-2">함께 나눌 메뉴가 아직 없어요</span>
               </div>
             ) : (

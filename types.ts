@@ -12,6 +12,9 @@ export interface AppSettings {
   randomCategory: EmojiCategory;
   checkedDrinkItems: string[];
   highlightOrderCard: boolean;
+  isSharedSyncActive?: boolean;
+  isQuantitySyncActive?: boolean;
+  onToggleQuantitySync?: () => void;
 }
 
 export interface OrderSubItem {

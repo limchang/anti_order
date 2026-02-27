@@ -33,6 +33,7 @@ function App() {
   const [history, setHistory] = useState<OrderHistoryItem[]>([]);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [isSharedSyncActive, setIsSharedSyncActive] = useState(false);
+  const [isQuantitySyncActive, setIsQuantitySyncActive] = useState(true);
 
   const [lastGroupsSnapshot, setLastGroupsSnapshot] = useState<OrderGroup[] | null>(null);
   const [undoToast, setUndoToast] = useState<{ message: string; id: string } | null>(null);
@@ -433,7 +434,7 @@ function App() {
               let mirroredSubItems = [...item.subItems] as (OrderSubItem & { isSynced?: boolean })[];
               mirroredSubItems = mirroredSubItems.map(si => {
                 const matchInNew = newSubItems.find(n => n.itemName === si.itemName);
-                if (matchInNew) return { ...si, quantity: matchInNew.quantity, isSynced: true };
+                if (matchInNew) return { ...si, quantity: isQuantitySyncActive ? matchInNew.quantity : si.quantity, isSynced: true };
                 const existsInOld = oldSubItems.find(o => o.itemName === si.itemName);
                 if (existsInOld && existsInOld.isSynced && !matchInNew) return null;
                 return si;
@@ -751,7 +752,7 @@ function App() {
                   onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })}
                   onCopyGroupItemToAll={handleCopySharedMenuToAll}
                   onDeleteGroupItemFromAll={() => { }}
-                  appSettings={{ ...appSettings, isSharedSyncActive }}
+                  appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }}
                   onRemoveGroup={() => openManageSheet(group.id)}
                   onOpenSettings={() => openManageSheet(group.id)}
                   onInputModeChange={handleInputModeChange}
