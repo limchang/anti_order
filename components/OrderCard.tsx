@@ -49,6 +49,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   onUpdateCheckedItems
 }) => {
   const [showAvatarPicker, setShowAvatarPicker] = useState(!order.avatar && order.avatar !== '😋');
+  const allRandomEmojis = useMemo(() => Object.values(CATEGORY_EMOJIS).flat(), []);
+  const isRandomEmoji = useMemo(() => !!order.avatar && allRandomEmojis.includes(order.avatar), [order.avatar, allRandomEmojis]);
   const [isMoreExpanded, setIsMoreExpanded] = useState(false);
   const [activeMemoSubId, setActiveMemoSubId] = useState<string | null>(null);
   const [isDirectInputMode, setIsDirectInputMode] = useState(false);
@@ -372,6 +374,21 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     </motion.div>
                   )}
                 </button>
+                {isRandomEmoji && (
+                  <motion.button
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
+                      onUpdate(order.id, { avatar: emojis[Math.floor(Math.random() * emojis.length)] });
+                    }}
+                    className="absolute -bottom-1 -left-1 w-5 h-5 bg-white rounded-full shadow-md border border-toss-grey-200 flex items-center justify-center z-20 active:scale-90 transition-transform hover:bg-toss-grey-50"
+                    title="다시 랜덤 선택"
+                  >
+                    <Dices size={11} className="text-toss-grey-500" />
+                  </motion.button>
+                )}
               </div>
             </div>
 
@@ -568,8 +585,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                                 ) : (
                                   <button onClick={() => setIsMemoDirectInputMode(true)} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
                                 )}
-                                <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-blue text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
-                                  <div className="absolute inset-0 bg-white/40 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
+                                <button onClick={() => { setActiveMemoSubId(null); setIsMemoDirectInputMode(false); }} className="w-full h-8 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                                  <div className="absolute inset-0 bg-white/20 w-full scale-x-0 origin-left" style={{ transform: `scaleX(${1 - (timeLeft / 5.0)})`, transition: timeLeft === 5.0 ? 'none' : 'transform 0.1s linear' }} />
                                   <span className="relative z-10 flex items-center gap-1.5">{timeLeft === 5.0 ? "완료" : `${timeLeft.toFixed(1)}초 후 자동 완료`}</span>
                                 </button>
                               </motion.div>
@@ -580,13 +597,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     ))}
                   </div>
 
-                  {/* 옆 카드가 길어질 때 허전함을 채워주는 하단 고정 버튼 바 */}
-                  <div className="grid grid-cols-2 gap-2 mt-4 shrink-0 overflow-visible">
-                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="h-10 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
+                  {/* 하단 메뉴 추가 버튼 - mt-auto로 항상 셀 바닥에 고정 */}
+                  <div className="mt-auto pt-4 shrink-0 overflow-visible">
+                    <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-10 bg-toss-blue text-white rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-lg shadow-toss-blue/10">
                       <Plus size={14} strokeWidth={3} /><span className="text-[10px] font-black uppercase tracking-tight">메뉴 추가</span>
-                    </button>
-                    <button onClick={handleResetCard} className="h-10 bg-white text-toss-grey-400 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 hover:text-toss-red hover:border-toss-red/30">
-                      <RotateCcw size={14} strokeWidth={3} /><span className="text-[10px] font-black uppercase tracking-tight">초기화</span>
                     </button>
                   </div>
                 </div>

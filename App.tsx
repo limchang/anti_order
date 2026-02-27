@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Plus, Menu, X, StickyNote, Smile, UtensilsCrossed, Pencil, Trash2, ChevronRight, Check, History, Bell, RefreshCw, LayoutGrid, RotateCcw } from 'lucide-react';
+import { Plus, Menu, X, StickyNote, Smile, UtensilsCrossed, Pencil, Trash2, ChevronRight, ChevronLeft, Check, History, Bell, RefreshCw, LayoutGrid, RotateCcw } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { OrderItem, OrderGroup, ItemType, AppSettings, OrderSubItem, OrderHistoryItem } from './types.ts';
 import { OrderSummary } from './components/OrderSummary.tsx';
@@ -520,7 +520,7 @@ function App() {
     setGroups(prev => prev.map(g => ({
       ...g,
       items: g.items.filter(p => !personIds.includes(p.id))
-    })).filter(g => g.items.length > 0));
+    })).filter(g => g.items.some(p => p.avatar && p.avatar !== '😋')));
     showUndoToast(`${personIds.length}명을 삭제했습니다.`);
   };
 
@@ -575,6 +575,28 @@ function App() {
     });
   };
 
+  const reversedGroups = useMemo(() => [...groups].reverse(), [groups]);
+  const activeGroupIndex = reversedGroups.findIndex(g => g.id === activeGroupId);
+  const activeGroup = reversedGroups[activeGroupIndex];
+
+  const handlePrevTable = () => {
+    const prevIdx = activeGroupIndex - 1;
+    if (prevIdx >= 0) {
+      const prev = reversedGroups[prevIdx];
+      setActiveGroupId(prev.id);
+      scrollToTable(prev.id);
+    }
+  };
+
+  const handleNextTable = () => {
+    const nextIdx = activeGroupIndex + 1;
+    if (nextIdx < reversedGroups.length) {
+      const next = reversedGroups[nextIdx];
+      setActiveGroupId(next.id);
+      scrollToTable(next.id);
+    }
+  };
+
   const collapsedBottomBarNode = (
     <div className="flex items-center w-full gap-2">
       <button onClick={() => setIsMainMenuOpen(true)} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-[18px] flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all">
@@ -585,7 +607,7 @@ function App() {
       </button>
 
       <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto relative">
-        {[...groups].reverse().map(group => {
+        {reversedGroups.map(group => {
           const isActive = activeGroupId === group.id;
           const firstChar = group.name.trim().charAt(0) || '?';
           const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
@@ -604,7 +626,7 @@ function App() {
                 className={`min-w-[40px] h-10 px-3.5 rounded-[16px] flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
               >
                 {firstChar}
-                {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse"></div>}
+                {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse" />}
               </motion.button>
             </div>
           );
@@ -696,7 +718,7 @@ function App() {
         {/* 테이블 네비게이션이 하단 주문요약 탭으로 이동하였습니다 */}
 
         {groups.length > 0 ? (
-          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2">
+          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
             {[...groups].reverse().map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
                 <OrderGroupSection
