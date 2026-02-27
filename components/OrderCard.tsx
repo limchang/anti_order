@@ -363,12 +363,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.9, y: -4 }}
                           transition={{ duration: 0.12 }}
-                          className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[70px] py-0.5"
+                          className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[80px] py-0.5"
                         >
                           {(isDecided || isNotEating) && (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleUndoOrder(); setShowMoreMenu(false); }}
-                              className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 transition-colors"
+                              className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-grey-700 hover:bg-toss-grey-50 transition-colors whitespace-nowrap"
                             >
                               <RotateCcw size={11} strokeWidth={2.5} className="text-toss-grey-400" />
                               되돌리기
@@ -376,7 +376,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           )}
                           <button
                             onClick={(e) => { e.stopPropagation(); onRemove(order.id); setShowMoreMenu(false); }}
-                            className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-red hover:bg-toss-redLight transition-colors border-t border-toss-grey-100"
+                            className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-bold text-toss-red hover:bg-toss-redLight transition-colors border-t border-toss-grey-100 whitespace-nowrap"
                           >
                             <Trash2 size={11} strokeWidth={2.5} />
                             삭제
