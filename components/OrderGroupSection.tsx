@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, OrderItem, ItemType, AppSettings } from '../types.ts';
 import { OrderCard } from './OrderCard.tsx';
@@ -23,6 +23,7 @@ interface OrderGroupSectionProps {
   onDeleteGroupItemFromAll: (orderId: string) => void;
   appSettings: AppSettings & { isSharedSyncActive?: boolean };
   onRemoveGroup: () => void;
+  onOpenSettings: () => void;
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
 }
@@ -44,6 +45,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   onCopyGroupItemToAll,
   onDeleteGroupItemFromAll,
   appSettings,
+  onOpenSettings,
   onInputModeChange,
   onUpdateCheckedItems
 }) => {
@@ -86,26 +88,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
     });
   };
 
-  // 반반 선택 (절반은 HOT 아메리카노, 절반은 ICE 아메리카노)
-  const handleHalfHalf = () => {
-    const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
-    const half = Math.ceil(individualItems.length / 2);
-    individualItems.forEach((item, idx) => {
-      const avatar = item.avatar || emojis[Math.floor(Math.random() * emojis.length)];
-      updateOrder(item.id, {
-        avatar,
-        subItems: [{
-          id: uuidv4(),
-          type: 'DRINK',
-          itemName: '아메리카노',
-          temperature: idx < half ? 'HOT' : 'ICE',
-          size: 'Tall',
-          quantity: 1
-        }]
-      });
-    });
-  };
-
   const quickActions = [
     {
       label: '이모지\n랜덤',
@@ -132,12 +114,13 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       textColor: 'text-amber-700',
     },
     {
-      label: '반반\nHOT/ICE',
-      icon: '🔀',
-      onClick: handleHalfHalf,
-      title: '절반은 HOT, 절반은 ICE 아메리카노로 설정',
-      iconBg: 'bg-teal-100',
-      textColor: 'text-teal-700',
+      label: '테이블\n설정',
+      icon: null, // lucide icon 사용
+      onClick: onOpenSettings,
+      title: '테이블 이름 변경 및 삭제',
+      iconBg: 'bg-toss-grey-100',
+      textColor: 'text-toss-grey-600',
+      isSettings: true,
     },
   ];
 
@@ -153,7 +136,9 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
             className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-2xl bg-toss-grey-50 border border-toss-grey-100 hover:bg-toss-grey-100 active:scale-95 transition-all"
           >
             <div className={`w-7 h-7 rounded-xl ${action.iconBg} flex items-center justify-center text-[15px] leading-none`}>
-              {action.icon}
+              {action.isSettings
+                ? <Settings size={15} strokeWidth={2.5} className="text-toss-grey-500" />
+                : action.icon}
             </div>
             <span className={`text-[8.5px] font-black ${action.textColor} leading-tight text-center whitespace-pre-line`}>{action.label}</span>
           </button>

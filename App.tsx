@@ -740,6 +740,7 @@ function App() {
                   onDeleteGroupItemFromAll={() => { }}
                   appSettings={{ ...appSettings, isSharedSyncActive }}
                   onRemoveGroup={() => openManageSheet(group.id)}
+                  onOpenSettings={() => openManageSheet(group.id)}
                   onInputModeChange={handleInputModeChange}
                   onUpdateCheckedItems={handleUpdateCheckedItems}
                 />

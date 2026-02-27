@@ -314,9 +314,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 <div className="flex items-center">
                   <AnimatePresence mode="popLayout">
                     {isUndecided && (
-                      <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-7 px-2.5 bg-yellow-400 text-yellow-900 rounded-lg shadow-sm flex items-center justify-center gap-1.5 border border-yellow-500/20">
-                        <Clock size={12} strokeWidth={3} />
-                        <span className="text-[10px] font-black tracking-tight leading-none pt-[1px]">고민 중</span>
+                      <motion.div key="status-undecided" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="h-8 px-3 bg-amber-400 text-amber-900 rounded-xl shadow-lg shadow-amber-400/40 flex items-center justify-center gap-1.5 border-2 border-amber-500 ring-2 ring-amber-300/50">
+                        <Clock size={13} strokeWidth={3} className="animate-pulse" />
+                        <span className="text-[11px] font-black tracking-tight leading-none">고민 중</span>
                       </motion.div>
                     )}
                     {isNotEating && (
