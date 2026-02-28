@@ -427,7 +427,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     </motion.div>
                   )}
                 </button>
-                {isRandomEmoji && (
+                {!!order.avatar && order.avatar !== '😋' && (
                   <motion.button
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}

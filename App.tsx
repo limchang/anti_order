@@ -458,31 +458,9 @@ function App() {
           const beforeAvatar = newItems[targetIdx].avatar;
           newItems[targetIdx] = { ...newItems[targetIdx], ...updates };
 
-          if (!beforeAvatar && updates.avatar === "◰") {
-            const tableEmojis = ["◱", "◳", "◲"];
-            let idx = 0;
-            for (let i = 0; i < newItems.length; i++) {
-              if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋' && idx < tableEmojis.length) {
-                newItems[i] = { ...newItems[i], avatar: tableEmojis[idx] };
-                idx++;
-              }
-            }
-          } else if (updates.avatar === "🎲") {
+          if (updates.avatar === "🎲") {
             const emojis = CATEGORY_EMOJIS[appSettings.randomCategory] || CATEGORY_EMOJIS['ANIMALS'];
             newItems[targetIdx] = { ...newItems[targetIdx], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
-
-            if (!beforeAvatar) {
-              const firstEmptyIdx = newItems.findIndex(i => !i.avatar && i.avatar !== '😋' && i.id !== id);
-              const isFirst = targetIdx === 0 || targetIdx < firstEmptyIdx || firstEmptyIdx === -1;
-
-              if (isFirst) {
-                for (let i = 0; i < newItems.length; i++) {
-                  if (i !== targetIdx && !newItems[i].avatar && newItems[i].avatar !== '😋') {
-                    newItems[i] = { ...newItems[i], avatar: emojis[Math.floor(Math.random() * emojis.length)] };
-                  }
-                }
-              }
-            }
           }
           return { ...g, items: newItems };
         }
