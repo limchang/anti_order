@@ -13,10 +13,9 @@ interface TutorialStep {
 
 const steps: TutorialStep[] = [
     { selector: '[data-tutorial="add-group"]', text: '하단의 + 버튼을 눌러\n새로운 테이블을 추가해 보세요!' },
-    { selector: '[data-tutorial="avatar"]', text: '4명의 일행이 자동으로 생겼어요.\n아바타를 눌러 이모지를 변경해 보세요!' },
-    { selector: '.z-\\[100\\] button', text: '다양한 이모지로 일행을 쉽게 구별해 보세요.\n마음에 드는 이모지를 선택하세요!' },
+    { selector: '[data-tutorial="emoji-picker-btn"]', text: '4명의 일행이 자동으로 생겼어요.\n마음에 드는 이모지를 선택하세요!' },
     { selector: '[data-tutorial="menu-badge"]', text: '이제 주문할 메뉴를 추가해볼까요?\n[더보기] 버튼을 눌러보세요.' },
-    { selector: '[data-tutorial="quick-all"]', text: '공통 메뉴는 한 번에 일괄 적용할 수 있어요.\n"모두 아메리카노" 클릭!' },
+    { selector: '[data-tutorial="quick-all"]', text: '공통 메뉴는 한 번에 일괄 적용할 수 있어요.\n상단 "모두 아메리카노" 클릭!' },
     { selector: '[data-tutorial="memo-btn"]', text: '추가 요청사항이 있다면\n우측 상단 메모지 아이콘을 누르세요.' },
     { selector: '[data-tutorial="summary-btn"]', text: '수집이 아주 빠르고 쉽게 끝났습니다!\n아래 [주문 확인] 탭을 올려 취합된 표를 확인하세요.' },
 ];
