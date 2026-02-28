@@ -333,7 +333,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 </button>
               ))}
             </div>
-            <button onClick={() => onRemove(order.id)} className="w-full h-9 mt-1 rounded-xl text-[10px] font-black text-white bg-toss-grey-400 hover:bg-toss-red transition-all shadow-sm shrink-0">인원 삭제</button>
+            <button onClick={() => onRemove(order.id)} className="w-full h-9 mt-1 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5 shrink-0"><UserMinus size={13} strokeWidth={2.5} />인원 삭제</button>
           </motion.div>
         ) : (
           /* 주문 상세 화면 */
@@ -345,7 +345,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             className="flex-1 flex flex-col items-center justify-start h-full relative overflow-visible"
           >
             {/* 꽉 찬 상태 셀: 상태 뱃지 및 ... 메뉴 통합 */}
-            <div className="w-full flex items-center justify-between mb-2 shrink-0 h-7 z-[50]">
+            <div className="w-full flex items-center justify-between mb-2 shrink-0 h-9 z-[50]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={isUndecided ? 'undecided' : isNotEating ? 'noteating' : isDecided ? 'decided' : 'empty'}
@@ -539,7 +539,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     {order.subItems.map((si, idx) => (
                       <div key={si.id} className="flex flex-col gap-1.5 animate-in fade-in duration-300 overflow-visible">
                         {idx > 0 && <div className="w-full h-[1px] bg-toss-grey-100 my-0.5" />}
-                        <div className="relative w-full h-7 flex items-center justify-center">
+                        <div className="relative w-full h-9 flex items-center justify-center">
                           <button onClick={() => onOpenMenuModal(order.id, si.itemName, si.id, si.type)} className="w-full h-full bg-toss-grey-100 rounded-lg flex items-center justify-center border border-toss-grey-200 shadow-sm active:scale-95 transition-all px-8">
                             <span className="text-[11px] font-black text-toss-grey-800 truncate text-center w-full">{si.itemName}</span>
                           </button>
@@ -550,12 +550,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
                         {si.itemName !== '미정' && si.itemName !== '안 먹음' && si.type === 'DRINK' && (
                           <div className="flex flex-col gap-1.5">
-                            <div className="flex gap-1.5 h-7">
+                            <div className="flex gap-1.5 h-9">
                               <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'HOT' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'HOT' ? 'bg-toss-redLight border-toss-red text-toss-red' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Flame size={10} strokeWidth={3} /><span className="text-[8px] font-black">HOT</span></button>
                               <button onClick={() => onUpdate(order.id, { subItems: order.subItems.map(s => s.id === si.id ? { ...s, temperature: 'ICE' } : s) })} className={`flex-1 flex items-center justify-center gap-1 rounded-lg transition-all border ${si.temperature === 'ICE' ? 'bg-toss-blueLight border-toss-blue text-toss-blue' : 'bg-white border-toss-grey-100 text-toss-grey-300'}`}><Snowflake size={10} strokeWidth={3} /><span className="text-[8px] font-black">ICE</span></button>
                             </div>
                             {appSettings.showDrinkSize && (
-                              <div className="flex gap-1.5 h-7">
+                              <div className="flex gap-1.5 h-9">
                                 {(['Tall', 'Grande', 'Venti'] as DrinkSize[]).map((sz) => {
                                   const isSizeSelected = (si.size || 'Tall') === sz;
                                   return (

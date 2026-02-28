@@ -115,7 +115,7 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
             <motion.div
                 animate={{ top: captionYPos }}
                 transition={{ type: 'spring', damping: 25, stiffness: 180 }}
-                className="absolute left-4 right-4 bg-white/95 backdrop-blur-md border border-toss-blue/20 rounded-2xl p-5 shadow-2xl flex flex-col items-center justify-center text-center pointer-events-auto"
+                className="absolute left-4 right-4 z-[10000] bg-white/95 backdrop-blur-md border border-toss-blue/20 rounded-2xl p-5 shadow-2xl flex flex-col items-center justify-center text-center pointer-events-auto"
             >
                 <h3 className="text-[16px] font-black text-toss-blue mb-2">카페싱크 사용 가이드 🧭</h3>
                 <p className="text-[14px] font-bold text-toss-grey-800 leading-relaxed whitespace-pre-wrap">
