@@ -27,6 +27,32 @@ const createEmptyOrder = (): OrderItem => ({
   memo: ''
 });
 
+const CoupangAd = () => {
+  return (
+    <div className="w-full h-[50px] flex items-center justify-center pointer-events-auto mb-2 overflow-hidden bg-transparent rounded-lg">
+      <iframe
+        srcDoc={`
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;}</style></head>
+            <body>
+              <script src="https://ads-partners.coupang.com/g.js"></script>
+              <script>
+                new PartnersCoupang.G({"id":968136,"template":"carousel","trackingCode":"AF9552419","width":"400","height":"50","tsource":""});
+              </script>
+            </body>
+          </html>
+        `}
+        width="100%"
+        height="50"
+        style={{ border: 'none', maxWidth: '400px', display: 'block' }}
+        title="Coupang Partners Ad"
+        scrolling="no"
+      />
+    </div>
+  );
+};
+
 function App() {
   const [drinkMenuItems, setDrinkMenuItems] = useState<string[]>(["미정", "아메리카노", "카페라떼", "카라멜마끼아또", "복숭아 아이스티"]);
   const [dessertMenuItems, setDessertMenuItems] = useState<string[]>(["케이크", "스콘", "크로와상", "마카롱"]);
@@ -830,6 +856,9 @@ function App() {
       <AnimatePresence>
         {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
           <>
+            <div className="fixed bottom-[85px] w-full flex justify-center z-[1500] pointer-events-none px-4">
+              <CoupangAd />
+            </div>
             <OrderSummary
               collapsedBottomBarNode={collapsedBottomBarNode}
               groups={groups} onSaveHistory={handleSaveOrder}
