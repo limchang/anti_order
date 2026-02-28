@@ -38,14 +38,14 @@ const CoupangAd = () => {
             <body>
               <script src="https://ads-partners.coupang.com/g.js"></script>
               <script>
-                new PartnersCoupang.G({"id":968136,"template":"carousel","trackingCode":"AF9552419","width":"400","height":"50","tsource":""});
+                new PartnersCoupang.G({"id":968153,"template":"banner","trackingCode":"AF9552419","width":"320","height":"50"});
               </script>
             </body>
           </html>
         `}
         width="100%"
         height="50"
-        style={{ border: 'none', maxWidth: '400px', display: 'block' }}
+        style={{ border: 'none', maxWidth: '320px', display: 'block' }}
         title="Coupang Partners Ad"
         scrolling="no"
       />
