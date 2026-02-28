@@ -92,17 +92,25 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
 
     // 안내창의 대략적인 높이와 하단 기본 위치
     const captionHeight = 150;
-    let captionYPos = window.innerHeight - 90 - captionHeight; // 기본 위치: 하단 탭바(약 70px) 약간 위쪽
+    let captionYPos = window.innerHeight / 2 - captionHeight / 2;
 
-    // 타겟이 너무 아래쪽에 있어서 안내창과 겹치거나 가려질 위험이 있으면 안내창을 윗쪽(80px)으로 올림
-    if (targetRect && targetRect.bottom > window.innerHeight - 300) {
-        captionYPos = 80;
+    if (targetRect) {
+        const targetCenterY = targetRect.top + targetRect.height / 2;
+        if (targetCenterY < window.innerHeight / 2) {
+            captionYPos = targetRect.bottom + 24;
+        } else {
+            captionYPos = targetRect.top - captionHeight - 24;
+        }
+
+        // 화면 밖으로 나가지 않도록 최소/최대값 보정
+        if (captionYPos < 20) captionYPos = 20;
+        if (captionYPos + captionHeight > window.innerHeight - 60) {
+            captionYPos = window.innerHeight - captionHeight - 60;
+        }
     }
 
     return (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
-            <div className="absolute inset-0 bg-toss-blue/5 backdrop-blur-[1px]" />
-
             {/* 상단/하단 유동적 안내 메시지 */}
             <motion.div
                 animate={{ top: captionYPos }}
@@ -128,9 +136,9 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
                         height: targetRect.height + 16
                     }}
                     transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                    className="absolute border-[3px] border-toss-blue rounded-2xl shadow-[0_0_0_9999px_rgba(49,130,246,0.1)] pointer-events-none"
+                    className="absolute border-[3px] border-toss-blue rounded-2xl shadow-[0_0_0_9999px_rgba(0,0,0,0.3)] pointer-events-none"
                 >
-                    <span className="absolute -top-3 -right-3 flex h-7 w-7">
+                    <span className="absolute -bottom-3 -right-3 flex h-7 w-7">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-toss-blue opacity-75"></span>
                         <span className="relative inline-flex flex-col items-center justify-center rounded-full h-7 w-7 bg-toss-blue text-white shadow-lg">
                             <Pointer size={14} fill="white" className="mt-0.5 ml-0.5" />
