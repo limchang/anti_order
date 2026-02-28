@@ -614,33 +614,35 @@ function App() {
         <Plus size={20} strokeWidth={2.5} />
       </button>
 
-      <div ref={navContainerRef} className="flex-1 overflow-x-auto no-scrollbar flex items-center justify-start gap-2 h-[44px] scroll-smooth pointer-events-auto relative">
-        {reversedGroups.map(group => {
-          const isActive = activeGroupId === group.id;
-          const firstChar = group.name.trim().charAt(0) || '?';
-          const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
-          return (
-            <div key={group.id} className="relative shrink-0 py-1">
-              <motion.button
-                id={`nav-btn-${group.id}`}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  if (activeGroupId === group.id) openManageSheet(group.id);
-                  else {
-                    setActiveGroupId(group.id);
-                    scrollToTable(group.id);
-                  }
-                }}
-                className={`min-w-[40px] h-10 px-3.5 rounded-xl flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
-              >
-                {firstChar}
-                {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse" />}
-              </motion.button>
-            </div>
-          );
-        })}
-        <div className="shrink-0 w-4 h-full" />
-        <div className="absolute top-0 right-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+      <div className="flex-1 relative overflow-hidden h-[44px]">
+        <div ref={navContainerRef} className="w-full h-full overflow-x-auto no-scrollbar flex items-center justify-start gap-2 scroll-smooth pointer-events-auto">
+          {reversedGroups.map(group => {
+            const isActive = activeGroupId === group.id;
+            const firstChar = group.name.trim().charAt(0) || '?';
+            const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
+            return (
+              <div key={group.id} className="relative shrink-0 py-1">
+                <motion.button
+                  id={`nav-btn-${group.id}`}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    if (activeGroupId === group.id) openManageSheet(group.id);
+                    else {
+                      setActiveGroupId(group.id);
+                      scrollToTable(group.id);
+                    }
+                  }}
+                  className={`min-w-[40px] h-10 px-3.5 rounded-xl flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
+                >
+                  {firstChar}
+                  {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse" />}
+                </motion.button>
+              </div>
+            );
+          })}
+          <div className="shrink-0 w-4 h-full" />
+        </div>
+        <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
       </div>
     </div>
   );
