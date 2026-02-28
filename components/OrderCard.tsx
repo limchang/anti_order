@@ -530,8 +530,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   </AnimatePresence>
                 </motion.div>
               ) : isNotEating ? (
-                <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[80px]">
+                <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[80px] gap-2.5">
                   <p className="text-[12px] font-black text-toss-grey-600">먹지 않겠대요</p>
+                  <button onClick={() => onUpdate(order.id, { subItems: [{ id: uuidv4(), itemName: '미정', type: 'DRINK', temperature: 'HOT', quantity: 1, size: 'Tall' }] })} className="w-[85%] h-9 bg-white border border-toss-grey-200 text-toss-grey-700 rounded-lg font-black text-[11px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all mx-auto"><RotateCcw size={13} strokeWidth={2.5} /> 다시 선택하기</button>
                 </div>
               ) : (
                 <div className="w-full flex-1 flex flex-col overflow-visible pt-1">

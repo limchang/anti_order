@@ -646,10 +646,10 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden pt-7">
+    <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden pt-8">
       {/* 최상단 공지사항 스크롤 배너 */}
-      <div className="absolute top-0 w-full h-7 bg-toss-blue text-white flex items-center overflow-hidden z-20">
-        <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[11px] font-bold">
+      <div className="absolute top-0 w-full h-8 bg-toss-blue text-white flex items-center overflow-hidden z-20">
+        <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[13px] font-bold">
           이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
         </div>
       </div>
