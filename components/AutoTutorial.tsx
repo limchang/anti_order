@@ -91,12 +91,25 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
     const currentStep = steps[stepIndex];
     if (!currentStep) return null;
 
+    // 안내창의 대략적인 높이와 하단 기본 위치
+    const captionHeight = 150;
+    let captionYPos = window.innerHeight - 90 - captionHeight; // 기본 위치: 하단 탭바(약 70px) 약간 위쪽
+
+    // 타겟이 너무 아래쪽에 있어서 안내창과 겹치거나 가려질 위험이 있으면 안내창을 윗쪽(80px)으로 올림
+    if (targetRect && targetRect.bottom > window.innerHeight - 300) {
+        captionYPos = 80;
+    }
+
     return (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
             <div className="absolute inset-0 bg-toss-blue/5 backdrop-blur-[1px]" />
 
-            {/* 상단 안내 메시지 */}
-            <div className="absolute top-[80px] left-4 right-4 bg-white/95 backdrop-blur-md border border-toss-blue/20 rounded-2xl p-5 shadow-2xl flex flex-col items-center justify-center text-center animate-fade-in-down pointer-events-auto">
+            {/* 상단/하단 유동적 안내 메시지 */}
+            <motion.div
+                animate={{ top: captionYPos }}
+                transition={{ type: 'spring', damping: 25, stiffness: 180 }}
+                className="absolute left-4 right-4 bg-white/95 backdrop-blur-md border border-toss-blue/20 rounded-2xl p-5 shadow-2xl flex flex-col items-center justify-center text-center pointer-events-auto"
+            >
                 <h3 className="text-[16px] font-black text-toss-blue mb-2">카페싱크 사용 가이드 🧭</h3>
                 <p className="text-[14px] font-bold text-toss-grey-800 leading-relaxed whitespace-pre-wrap">
                     {currentStep.text}
@@ -104,7 +117,7 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
                 <button id="tutorial-close-btn" onClick={onComplete} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-500 active:scale-95 transition-all outline-none">
                     <X size={16} />
                 </button>
-            </div>
+            </motion.div>
 
             {/* 타겟 하이라이트 */}
             {targetRect && (
