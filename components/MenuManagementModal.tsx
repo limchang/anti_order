@@ -22,6 +22,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { ItemType } from '../types';
 import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
+import { CoupangAd } from './CoupangAd.tsx';
 
 interface MenuManagementModalProps {
   isOpen: boolean;
@@ -146,14 +147,17 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
         )}
       </AnimatePresence>
 
+
       {/* 네비게이션 바에서 확장되는 카드 */}
       <div
-        className="fixed left-0 right-0 z-[10000] flex flex-col items-center justify-end pointer-events-none px-3"
-        style={{ bottom: kbOffset + 20, transition: 'bottom 0.15s ease-out' }}
+        className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3"
+        style={{ transform: `translateY(-${kbOffset}px)`, transition: 'transform 0.15s ease-out' }}
       >
+        {isOpen && <CoupangAd />}
         <motion.div
           initial={false}
-          animate={{ height: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0, opacity: isOpen ? 1 : 0 }}
+          animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+          style={{ maxHeight: isOpen ? 'calc(100dvh - 130px)' : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
