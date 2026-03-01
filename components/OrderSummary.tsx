@@ -330,7 +330,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className={`flex flex-col h-full overflow-hidden ${showAdPopup ? 'blur-md pointer-events-none select-none' : ''}`}
+                className="flex flex-col h-full overflow-hidden"
               >
                 <div className="px-5 pt-4 mb-4 space-y-2.5 shrink-0 overflow-visible">
                   {undecidedCount > 0 && (
@@ -466,7 +466,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   <div
                     ref={scrollRef}
                     onScroll={checkShadows}
-                    className="h-full overflow-y-auto custom-scrollbar px-6 space-y-2.5 pb-12 overscroll-contain"
+                    className={`h-full overflow-y-auto custom-scrollbar px-6 space-y-2.5 pb-12 overscroll-contain transition-all duration-500 ${showAdPopup ? 'blur-[2.5px] pointer-events-none select-none' : ''}`}
                   >
                     {viewMode === 'all' ? (
                       aggregatedOrders.length === 0 ? (
@@ -703,7 +703,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                 <div onClick={handleAdClick} className="flex-1 bg-toss-grey-50 p-4 min-h-[300px] flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <CoupangAd />
+                    <CoupangAd id={968136} template="carousel" />
                     <p className="text-[13px] font-bold text-toss-grey-400 mt-4 leading-relaxed">
                       광고를 누르면 1시간 동안<br />
                       <span className="text-toss-blue font-black underline decoration-2 underline-offset-4">대기시간 없이 바로 이용</span>할 수 있습니다!
