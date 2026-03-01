@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { CoupangAd } from './components/CoupangAd.tsx';
 import { v4 as uuidv4 } from 'uuid';
 import { Plus, Menu, X, StickyNote, Smile, UtensilsCrossed, Pencil, Trash2, ChevronRight, ChevronLeft, Check, History, Bell, RefreshCw, LayoutGrid, RotateCcw, Pointer } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -27,31 +28,6 @@ const createEmptyOrder = (): OrderItem => ({
   memo: ''
 });
 
-const CoupangAd = () => {
-  return (
-    <div className="w-full h-[50px] flex items-center justify-center pointer-events-auto mb-2 overflow-hidden bg-transparent rounded-lg">
-      <iframe
-        srcDoc={`
-          <!DOCTYPE html>
-          <html>
-            <head><meta charset="utf-8"><style>body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;}</style></head>
-            <body>
-              <script src="https://ads-partners.coupang.com/g.js"></script>
-              <script>
-                new PartnersCoupang.G({"id":968153,"template":"banner","trackingCode":"AF9552419","width":"320","height":"50"});
-              </script>
-            </body>
-          </html>
-        `}
-        width="100%"
-        height="50"
-        style={{ border: 'none', maxWidth: '320px', display: 'block' }}
-        title="Coupang Partners Ad"
-        scrolling="no"
-      />
-    </div>
-  );
-};
 
 function App() {
   const [drinkMenuItems, setDrinkMenuItems] = useState<string[]>(["미정", "아메리카노", "카페라떼", "카라멜마끼아또", "복숭아 아이스티"]);
@@ -673,6 +649,7 @@ function App() {
         )}
       </AnimatePresence>
       <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        {isMainMenuOpen && <CoupangAd />}
         <motion.div
           initial={false}
           animate={{ height: isMainMenuOpen ? 'auto' : 0, opacity: isMainMenuOpen ? 1 : 0 }}
@@ -819,6 +796,7 @@ function App() {
         )}
       </AnimatePresence>
       <div className="fixed left-0 right-0 bottom-0 z-[2003] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        {managingGroupId && <CoupangAd />}
         <motion.div
           initial={false}
           animate={{ height: managingGroupId ? 'auto' : 0, opacity: managingGroupId ? 1 : 0 }}
@@ -897,9 +875,6 @@ function App() {
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-[85px] w-full flex justify-center z-[1500] pointer-events-none px-4">
-        <CoupangAd />
-      </div>
 
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setIsMainMenuOpen(true); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
       <MenuManagementModal

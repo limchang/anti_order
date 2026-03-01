@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, AggregatedOrder, AppSettings, ItemType } from '../types.ts';
 import { ChevronUp, ChevronDown, Coffee, Users, LayoutGrid, List, CheckCircle2, Save, UserMinus, Pencil, Check, Copy, Trash2, X, UtensilsCrossed, Clock } from 'lucide-react';
 import { EmojiRenderer } from './EmojiRenderer.tsx';
+import { CoupangAd } from './CoupangAd.tsx';
 
 interface OrderSummaryProps {
   groups: OrderGroup[];
@@ -255,6 +256,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
       </AnimatePresence>
 
       <div className={`fixed left-0 right-0 z-[2001] flex flex-col items-center justify-end pointer-events-none transition-all duration-300 ease-in-out ${isExpanded ? 'bottom-0 pb-5 px-3' : 'bottom-0 pb-4 px-3'}`}>
+        <CoupangAd />
         <motion.div
           initial={false}
           animate={{
