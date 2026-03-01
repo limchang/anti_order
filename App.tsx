@@ -81,7 +81,7 @@ function App() {
     defaultEmojis: [...DEFAULT_EMOJIS],
     randomCategory: 'ANIMALS',
     checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"],
-    highlightOrderCard: false,
+    highlightOrderCard: true,
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
@@ -748,17 +748,17 @@ function App() {
                         </button>
                       </div>
                     </div>
+                    <div className="mt-4 flex flex-col items-center gap-0.5 opacity-30">
+                      <span className="text-[9px] font-bold text-toss-grey-400">Version 1.0.0</span>
+                      <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-01 17:15</span>
+                    </div>
                   </div>
                 </div>
-                {/* 하단 초기화 버튼 및 버전 정보 */}
+                {/* 하단 초기화 버튼 */}
                 <div className="px-4 pt-2 pb-5 bg-white border-t border-toss-grey-100 rounded-b-[32px] flex flex-col items-center gap-3">
                   <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
                     <RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화
                   </button>
-                  <div className="text-[10px] font-bold text-toss-grey-400 flex flex-col items-center gap-0.5 opacity-60">
-                    <span>Version 1.0.0</span>
-                    <span>Last Updated: 2026-03-01 16:51</span>
-                  </div>
                 </div>
               </motion.div>
             )}
