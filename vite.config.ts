@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
           short_name: '카페싱크',
           description: '모두의 메뉴를 한눈에 정리하는 다가치 주문앱',
           theme_color: '#3182F6',
+          background_color: '#F2F4F6',
+          display: 'standalone',
+          orientation: 'portrait',
           icons: [
             {
               src: 'icon-192x192.png',
