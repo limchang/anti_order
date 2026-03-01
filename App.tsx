@@ -655,13 +655,15 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden pt-8">
+    <div className={`min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden ${appSettings.showAds ? 'pt-8' : 'pt-0'}`}>
       {/* 최상단 공지사항 스크롤 배너 */}
-      <div className="absolute top-0 w-full h-8 bg-toss-blue text-white flex items-center overflow-hidden z-20">
-        <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[13px] font-bold">
-          쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      {appSettings.showAds && (
+        <div className="absolute top-0 w-full h-8 bg-toss-blue text-white flex items-center overflow-hidden z-20">
+          <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[13px] font-bold">
+            쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
         </div>
-      </div>
+      )}
       {/* 전체 메뉴 - expand-from-navbar */}
       <AnimatePresence>
         {isMainMenuOpen && (
