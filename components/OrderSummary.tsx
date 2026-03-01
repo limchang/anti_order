@@ -289,6 +289,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
       <div className={`fixed left-0 right-0 z-[2001] flex flex-col items-center justify-end pointer-events-none transition-all duration-300 ease-in-out ${isExpanded ? 'bottom-0 pb-5 px-3' : 'bottom-0 pb-4 px-3'}`}>
         <CoupangAd />
         <motion.div
+          id="summary-container"
           initial={false}
           animate={{
             height: isExpanded ? 'calc(100dvh - 130px)' : 72,
@@ -299,7 +300,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         >
           {/* 헤더 */}
           {isExpanded ? (
-            <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2">
+            <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2 relative z-[3002]">
               <div className="w-8 shrink-0" />
               <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">주문 확인</h2>
               <button
@@ -680,7 +681,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed inset-0 z-[3000] flex items-center justify-center p-6 pointer-events-auto"
+              className="absolute inset-x-0 bottom-0 top-[68px] z-[3000] flex items-center justify-center p-6 pointer-events-auto bg-white/20 backdrop-blur-sm"
             >
               <div className="w-full max-w-sm bg-white rounded-[32px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-toss-grey-100 flex flex-col">
                 <div className="p-6 pb-4 border-b border-toss-grey-100 flex items-center justify-between">
