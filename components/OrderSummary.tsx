@@ -330,9 +330,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className={`flex flex-col h-full overflow-hidden ${showAdPopup ? 'pointer-events-none select-none' : ''}`}
+                className="flex flex-col h-full overflow-hidden"
               >
-                <div className={`${showAdPopup ? 'blur-[2px]' : ''} transition-all duration-500 flex-1 overflow-hidden flex flex-col`}>
+                <div className={`${showAdPopup ? 'blur-[2px] pointer-events-none select-none' : ''} transition-all duration-500 flex-1 overflow-hidden flex flex-col`}>
                   <div className="px-5 pt-4 mb-4 space-y-2.5 shrink-0 overflow-visible">
                     {undecidedCount > 0 && (
                       <motion.div
@@ -636,7 +636,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   </div>
                 </div>
 
-                <div className="px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]">
+                <div className={`px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)] ${showAdPopup ? 'pointer-events-none select-none overflow-hidden' : ''}`}>
                   <div className="grid grid-cols-4 gap-1 bg-toss-grey-50/50 py-3 rounded-2xl border border-toss-grey-100 shadow-sm text-center">
                     <div className="flex flex-col items-center justify-center relative">
                       <span className="text-[11px] font-black text-toss-grey-500 mb-0.5">총원</span>
@@ -703,12 +703,17 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   )}
                 </div>
 
-                <div onClick={handleAdClick} className="flex-1 bg-toss-grey-50 p-4 min-h-[300px] flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
+                <div className="flex-1 bg-toss-grey-50 p-4 min-h-[300px] flex items-center justify-center relative hover:opacity-90 transition-opacity">
+                  <div
+                    onClick={handleAdClick}
+                    className="absolute inset-0 z-10 cursor-pointer"
+                    title="광고 확인 (1시간 대기 시간 제거)"
+                  />
                   <div className="flex flex-col items-center gap-4 text-center">
                     <CoupangAd id={968136} template="carousel" />
-                    <p className="text-[13px] font-bold text-toss-grey-400 mt-4 leading-relaxed">
+                    <p className="text-[13px] font-bold text-toss-grey-400 mt-4 leading-relaxed relative z-20 pointer-events-none">
                       광고를 누르면 1시간 동안<br />
-                      <span className="text-toss-blue font-black underline decoration-2 underline-offset-4">대기시간 없이 바로 이용</span>할 수 있습니다!
+                      <span className="text-toss-blue font-black underline decoration-2 underline-offset-4 pointer-events-none">대기시간 없이 바로 이용</span>할 수 있습니다!
                     </p>
                   </div>
                 </div>
