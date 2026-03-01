@@ -246,6 +246,17 @@ function App() {
     }
   }, []);
 
+  // Haptic Feedback Logic
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      if (window.navigator?.vibrate) {
+        window.navigator.vibrate(10);
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
+
   // Persistence: Save Groups
   useEffect(() => {
     if (!isInitialMount.current) {
@@ -652,7 +663,7 @@ function App() {
       {/* 최상단 공지사항 스크롤 배너 */}
       <div className="absolute top-0 w-full h-8 bg-toss-blue text-white flex items-center overflow-hidden z-20">
         <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[13px] font-bold">
-          이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+          쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
       </div>
       {/* 전체 메뉴 - expand-from-navbar */}
@@ -861,30 +872,31 @@ function App() {
         </motion.div>
       </div>
 
+
       <AnimatePresence>
         {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
-          <>
-            <div className="fixed bottom-[85px] w-full flex justify-center z-[1500] pointer-events-none px-4">
-              <CoupangAd />
-            </div>
-            <OrderSummary
-              collapsedBottomBarNode={collapsedBottomBarNode}
-              groups={groups} onSaveHistory={handleSaveOrder}
-              onJumpToOrder={(gid, pid) => {
-                scrollToTable(gid);
-                setHighlightedItemId(pid);
-                setSummaryState('collapsed');
-                setTimeout(() => setHighlightedItemId(null), 2000);
-              }}
-              onUpdateGroupName={updateGroupName}
-              onSetNotEating={handleSetNotEating}
-              onRemoveUndecided={handleRemoveUndecided}
-              onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))}
-              appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
-            />
-          </>
+          <OrderSummary
+            collapsedBottomBarNode={collapsedBottomBarNode}
+            groups={groups} onSaveHistory={handleSaveOrder}
+            onJumpToOrder={(gid, pid) => {
+              scrollToTable(gid);
+              setHighlightedItemId(pid);
+              setSummaryState('collapsed');
+              setTimeout(() => setHighlightedItemId(null), 2000);
+            }}
+            onUpdateGroupName={updateGroupName}
+            onSetNotEating={handleSetNotEating}
+            onRemoveUndecided={handleRemoveUndecided}
+            onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))}
+            appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState}
+          />
         )}
       </AnimatePresence>
+
+      <div className="fixed bottom-[85px] w-full flex justify-center z-[1500] pointer-events-none px-4">
+        <CoupangAd />
+      </div>
+
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setIsMainMenuOpen(true); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
       <MenuManagementModal
         isOpen={isMenuMgmtModalOpen}
@@ -1007,7 +1019,7 @@ function App() {
           </div>
         )}
       </AnimatePresence>
-    </div >
+    </div>
   );
 }
 export default App;
