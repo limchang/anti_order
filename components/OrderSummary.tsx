@@ -260,7 +260,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <motion.div
           initial={false}
           animate={{
-            height: isExpanded ? 'calc(100dvh - 70px)' : 72,
+            height: isExpanded ? 'calc(100dvh - 130px)' : 72,
             borderRadius: isExpanded ? '32px' : '36px',
           }}
           transition={{ type: "spring", damping: 25, stiffness: 220, mass: 0.9 }}

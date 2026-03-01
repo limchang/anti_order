@@ -22,6 +22,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ItemType, DrinkSize, AppSettings, OrderSubItem } from '../types';
+import { CoupangAd } from './CoupangAd.tsx';
 
 interface SelectionItem {
   itemName: string;
@@ -227,13 +228,14 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
         className="fixed left-0 right-0 z-[10000] flex flex-col items-center justify-end pointer-events-none px-3"
         style={{ bottom: kbOffset + 20, transition: 'bottom 0.15s ease-out' }}
       >
+        {isOpen && <CoupangAd />}
         <motion.div
           initial={false}
           animate={{
             height: isOpen ? 'auto' : 0,
             opacity: isOpen ? 1 : 0,
           }}
-          style={{ maxHeight: isOpen ? `calc(100dvh - ${kbOffset + 70}px)` : 0 }}
+          style={{ maxHeight: isOpen ? `calc(100dvh - ${kbOffset + 130}px)` : 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }}
           className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto"
         >
