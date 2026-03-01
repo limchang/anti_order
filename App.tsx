@@ -14,6 +14,7 @@ import { MenuManagementModal } from './components/MenuManagementModal.tsx';
 import { HistoryModal } from './components/HistoryModal.tsx';
 import { SettingsModal } from './components/SettingsModal';
 import { AutoTutorial } from './components/AutoTutorial';
+import { GuidePopup } from './components/GuidePopup.tsx';
 import { CATEGORY_EMOJIS } from './components/OrderCard';
 
 const SETTINGS_STORAGE_KEY = 'cafesync_settings_v1';
@@ -69,6 +70,9 @@ function App() {
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [isTutorialRunning, setIsTutorialRunning] = useState(false);
 
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showSharedGuide, setShowSharedGuide] = useState(false);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
@@ -79,6 +83,17 @@ function App() {
     const hasEmpty = groups.some(g => g.items.length === 0);
     if (hasEmpty) {
       setGroups(prev => prev.filter(g => g.items.length > 0));
+    }
+
+    // 4명 다 주문 완료 상태가 된 테이블이 처음 나왔는지 확인
+    const hasFullTable = groups.some(g =>
+      g.items.length >= 4 &&
+      g.items.every(p => p.avatar && p.avatar !== '😋' && p.subItems.length > 0 && p.subItems.every(si => si.itemName !== '미정' && si.itemName !== '안 먹음'))
+    );
+
+    if (hasFullTable && !localStorage.getItem('cafesync_shared_guide_shown')) {
+      setShowSharedGuide(true);
+      localStorage.setItem('cafesync_shared_guide_shown', 'true');
     }
   }, [groups]);
 
@@ -165,6 +180,9 @@ function App() {
   useEffect(() => {
     const navContainer = navContainerRef.current;
     if (navContainer && activeGroupId) {
+      // 좌우 드래그시 스크롤 상단 복귀 (상시 적용)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       const btn = document.getElementById(`nav-btn-${activeGroupId}`);
       if (btn) {
         isInternalScrolling.current = true;
@@ -619,10 +637,10 @@ function App() {
                       scrollToTable(group.id);
                     }
                   }}
-                  className={`min-w-[40px] h-10 px-3.5 rounded-xl flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
+                  className={`min-w-[40px] h-10 px-3.5 rounded-2xl flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}
                 >
                   {firstChar}
-                  {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-full shadow-sm animate-pulse" />}
+                  {hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-2xl shadow-sm animate-pulse" />}
                 </motion.button>
               </div>
             );
@@ -787,6 +805,30 @@ function App() {
             </div>
           </div>
         )}
+
+        <GuidePopup
+          isOpen={showSizeGuide}
+          onClose={() => setShowSizeGuide(false)}
+          onConfirm={() => {
+            handleUpdateSettings({ ...appSettings, showDrinkSize: true });
+            setShowSizeGuide(false);
+            showToast('사이즈 설정 옵션이 켜졌습니다.');
+          }}
+          title="사이즈 설정이 필요하신가요?"
+          message="메뉴마다 'Tall, Grande, Venti' 같은 사이즈를 입력할 수 있는 옵션을 켤까요?"
+        />
+
+        <GuidePopup
+          isOpen={showSharedGuide}
+          onClose={() => setShowSharedGuide(false)}
+          onConfirm={() => {
+            handleUpdateSettings({ ...appSettings, showSharedMenu: true });
+            setShowSharedGuide(false);
+            showToast('공용 메뉴 추가가 켜졌습니다.');
+          }}
+          title="함께 먹는 메뉴도 있나요?"
+          message="테이블 인원이 가득 찼네요! 다함께 쉐어하는 공용 메뉴를 추가할 수 있는 옵션을 켤까요?"
+        />
       </main>
 
       {/* 테이블 관리 - expand-from-navbar */}
@@ -903,6 +945,12 @@ function App() {
         selectedItem={menuModalState.selectedItem}
         initialType={menuModalState.initialType}
         onAdd={addMenuItemToState}
+        onFirstSelect={() => {
+          if (!localStorage.getItem('cafesync_size_guide_shown')) {
+            setShowSizeGuide(true);
+            localStorage.setItem('cafesync_size_guide_shown', 'true');
+          }
+        }}
         onSelect={(s) => {
           const { orderId, subItemId } = menuModalState;
           if (!orderId) return;

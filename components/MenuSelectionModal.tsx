@@ -44,9 +44,9 @@ interface MenuSelectionModalProps {
   onAdd: (item: string, type: ItemType) => void;
   onRemove: (item: string, type: ItemType) => void;
   onUpdateChecked: (item: string, checked: boolean) => void;
-  onDeleteSelection?: () => void;
   onUpdateMenuList?: (newList: string[], type: ItemType) => void;
   appSettings: AppSettings;
+  onFirstSelect?: () => void;
 }
 
 const SortableMenuItem: React.FC<{
@@ -133,7 +133,7 @@ const SortableMenuItem: React.FC<{
 };
 
 export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
-  isOpen, onClose, title, drinkItems = [], dessertItems = [], checkedDrinkItems = [], initialSelections = [], selectedItem, initialType, onSelect, onAdd, onRemove, onUpdateChecked, onDeleteSelection, onUpdateMenuList, appSettings
+  isOpen, onClose, title, drinkItems = [], dessertItems = [], checkedDrinkItems = [], initialSelections = [], selectedItem, initialType, onSelect, onAdd, onRemove, onUpdateChecked, onDeleteSelection, onUpdateMenuList, appSettings, onFirstSelect
 }) => {
   const [activeTab, setActiveTab] = useState<ItemType>('DRINK');
   const [searchQuery, setSearchQuery] = useState("");
@@ -158,7 +158,19 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
     return () => { document.body.style.overflow = 'auto'; };
   }, [isOpen, initialType, selectedItem]);
 
-  const currentRawList = useMemo(() => activeTab === 'DRINK' ? drinkItems.filter(i => i !== '미정') : dessertItems, [activeTab, drinkItems, dessertItems]);
+  const currentRawList = useMemo(() => {
+    const list = activeTab === 'DRINK' ? drinkItems.filter(i => i !== '미정') : dessertItems;
+    if (activeTab === 'DRINK' && checkedDrinkItems.length > 0) {
+      return [...list].sort((a, b) => {
+        const aChecked = checkedDrinkItems.includes(a);
+        const bChecked = checkedDrinkItems.includes(b);
+        if (aChecked && !bChecked) return -1;
+        if (!aChecked && bChecked) return 1;
+        return 0;
+      });
+    }
+    return list;
+  }, [activeTab, drinkItems, dessertItems, checkedDrinkItems]);
 
   const filteredList = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -178,6 +190,7 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
 
   const handleItemClick = (name: string, type: ItemType, size?: DrinkSize) => {
     onSelect([{ itemName: name, type, size }]);
+    if (onFirstSelect) onFirstSelect();
     onClose();
   };
 

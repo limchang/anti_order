@@ -353,16 +353,19 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className={`relative w-full h-full px-2.5 rounded-lg shadow-sm flex items-center justify-center border ${statusStyle.bg}`}
+                  onClick={(e) => { e.stopPropagation(); setShowMoreMenu(prev => !prev); }}
+                  className={`relative w-full h-full px-2.5 rounded-lg shadow-sm flex items-center justify-center border cursor-pointer active:scale-95 transition-all ${statusStyle.bg}`}
                 >
-                  <span className={`relative text-[10px] font-black tracking-tight leading-none pt-[1px] ${statusStyle.text}`}>
+                  <div className="flex items-center justify-center gap-1.5 min-w-0">
                     {statusStyle.icon && (
-                      <span className="absolute right-full mr-1.5 top-1/2 -translate-y-1/2 flex items-center">
+                      <span className="flex items-center shrink-0">
                         {statusStyle.icon}
                       </span>
                     )}
-                    {statusStyle.label}
-                  </span>
+                    <span className={`text-[10px] font-black tracking-tight leading-none pt-[0.5px] truncate ${statusStyle.text}`}>
+                      {statusStyle.label}
+                    </span>
+                  </div>
 
                   {/* ... 더보기 버튼 - 되돌리기/삭제 */}
                   <div className={`absolute right-1 top-1/2 -translate-y-1/2 flex items-center ${!isUndecided && !isNotEating && !isDecided ? 'hidden' : ''}`} ref={moreMenuRef}>
@@ -608,8 +611,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                                           handleDeleteChip(si.id, memo);
                                         }
                                       }}
-                                      className={`h-7 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[9px] transition-colors ${isSelected
-                                        ? 'bg-amber-50 border-amber-200 text-amber-900'
+                                      className={`h-9 flex items-center justify-center rounded-lg border font-black shadow-sm active:scale-95 text-[11px] transition-colors px-2 ${isSelected
+                                        ? 'bg-amber-50 border-amber-200 text-amber-900 font-black'
                                         : 'bg-white border-toss-grey-100 text-toss-grey-700'
                                         } ${isFullWidth ? 'col-span-2' : ''}`}
                                     >
