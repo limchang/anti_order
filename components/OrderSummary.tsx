@@ -296,11 +296,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             borderRadius: isExpanded ? '32px' : '36px',
           }}
           transition={{ type: "spring", damping: 25, stiffness: 220, mass: 0.9 }}
-          className={`w-full max-w-lg shadow-[0_8px_40px_rgb(0,0,0,0.18)] border-toss-grey-200/60 flex flex-col items-stretch pointer-events-auto overflow-hidden ring-1 ring-black/5 border mx-auto ${isExpanded ? 'bg-[#f8f9fb]' : 'bg-white'}`}
+          className={`w-full max-w-lg shadow-[0_8px_40px_rgb(0,0,0,0.18)] border-toss-grey-200/60 flex flex-col items-stretch pointer-events-auto overflow-hidden ring-1 ring-black/5 border mx-auto relative ${isExpanded ? 'bg-[#f8f9fb]' : 'bg-white'}`}
         >
           {/* 헤더 */}
           {isExpanded ? (
-            <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2 relative z-[3002]">
+            <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2 relative z-[3010]">
               <div className="w-8 shrink-0" />
               <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">주문 확인</h2>
               <button
@@ -681,7 +681,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute inset-x-0 bottom-0 top-[68px] z-[3000] flex items-center justify-center p-6 pointer-events-auto bg-white/20 backdrop-blur-sm"
+              className="absolute inset-0 top-[72px] z-[3000] flex items-center justify-center p-6 pointer-events-auto bg-white/40 backdrop-blur-sm"
             >
               <div className="w-full max-w-sm bg-white rounded-[32px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-toss-grey-100 flex flex-col">
                 <div className="p-6 pb-4 border-b border-toss-grey-100 flex items-center justify-between">
