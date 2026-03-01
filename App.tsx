@@ -59,6 +59,8 @@ function App() {
     randomCategory: 'ANIMALS',
     checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"],
     highlightOrderCard: true,
+    showAds: true,
+    adFreeRewardEnabled: true,
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
@@ -667,7 +669,6 @@ function App() {
         )}
       </AnimatePresence>
       <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
-        {isMainMenuOpen && <CoupangAd />}
         <motion.div
           initial={false}
           animate={{ height: isMainMenuOpen ? 'auto' : 0, opacity: isMainMenuOpen ? 1 : 0 }}
@@ -743,6 +744,32 @@ function App() {
                         </button>
                       </div>
                     </div>
+
+                    <div className="p-1 mt-4 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
+                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+                      <div className="flex items-center justify-between px-4 py-3.5">
+                        <span className="text-[14px] font-black text-toss-grey-800">광고 표시 활성화</span>
+                        <button
+                          onClick={() => handleUpdateSettings({ ...appSettings, showAds: !appSettings.showAds })}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showAds ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}
+                        >
+                          <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showAds ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+                        <div>
+                          <span className="text-[14px] font-black text-toss-grey-800">광고 클릭 보너스 혜택</span>
+                          <p className="text-[11px] text-toss-grey-400 mt-0.5">클릭 시 1시간 대기 없이 바로 주문 확인</p>
+                        </div>
+                        <button
+                          onClick={() => handleUpdateSettings({ ...appSettings, adFreeRewardEnabled: !appSettings.adFreeRewardEnabled })}
+                          className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.adFreeRewardEnabled ? 'bg-toss-green' : 'bg-toss-grey-300'}`}
+                        >
+                          <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.adFreeRewardEnabled ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                        </button>
+                      </div>
+                    </div>
+
                     <div className="mt-4 flex flex-col items-center gap-0.5 opacity-30">
                       <span className="text-[9px] font-bold text-toss-grey-400">Version 1.0.0</span>
                       <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-01 17:15</span>
@@ -838,7 +865,6 @@ function App() {
         )}
       </AnimatePresence>
       <div className="fixed left-0 right-0 bottom-0 z-[2003] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
-        {managingGroupId && <CoupangAd />}
         <motion.div
           initial={false}
           animate={{ height: managingGroupId ? 'auto' : 0, opacity: managingGroupId ? 1 : 0 }}

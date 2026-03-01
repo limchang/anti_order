@@ -15,6 +15,8 @@ export interface AppSettings {
   isSharedSyncActive?: boolean;
   isQuantitySyncActive?: boolean;
   onToggleQuantitySync?: () => void;
+  showAds: boolean;
+  adFreeRewardEnabled: boolean;
 }
 
 export interface OrderSubItem {

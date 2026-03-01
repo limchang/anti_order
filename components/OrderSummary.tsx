@@ -105,8 +105,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   useEffect(() => {
     if (expandState !== 'collapsed') {
+      if (!appSettings.showAds) {
+        setShowAdPopup(false);
+        return;
+      }
+
       const now = Date.now();
-      if (now < adSkipTimestamp) {
+      const isAdFreeActive = appSettings.adFreeRewardEnabled && now < adSkipTimestamp;
+
+      if (isAdFreeActive) {
         setShowAdPopup(false);
       } else {
         setShowAdPopup(true);
@@ -287,7 +294,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
       </AnimatePresence>
 
       <div className={`fixed left-0 right-0 z-[2001] flex flex-col items-center justify-end pointer-events-none transition-all duration-300 ease-in-out ${isExpanded ? 'bottom-0 pb-5 px-3' : 'bottom-0 pb-4 px-3'}`}>
-        <CoupangAd />
         <motion.div
           id="summary-container"
           initial={false}
