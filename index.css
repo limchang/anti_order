@@ -33,6 +33,8 @@
   --animate-heart-beat: heart-beat 1.5s ease-in-out infinite;
   --animate-highlight-ping: highlight-ping 1s ease-in-out infinite;
   --animate-marquee: marquee 15s linear infinite;
+  --animate-bounce-slow: bounce-slow 2.5s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s infinite linear;
 
   @keyframes bounce-short {
 
@@ -119,6 +121,28 @@
 
     100% {
       transform: translateX(-100%);
+    }
+  }
+
+  @keyframes bounce-slow {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
     }
   }
 }

@@ -2,7 +2,7 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, AggregatedOrder, AppSettings, ItemType } from '../types.ts';
-import { ChevronUp, ChevronDown, Coffee, Users, LayoutGrid, List, CheckCircle2, Save, UserMinus, Pencil, Check, Copy, Trash2, X, UtensilsCrossed, Clock } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronRight, Coffee, Users, LayoutGrid, List, CheckCircle2, Save, UserMinus, Pencil, Check, Copy, Trash2, X, UtensilsCrossed, Clock } from 'lucide-react';
 import { EmojiRenderer } from './EmojiRenderer.tsx';
 import { CoupangAd } from './CoupangAd.tsx';
 
@@ -70,22 +70,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const undecidedScrollRef = useRef<HTMLDivElement>(null);
 
-  const [showAdPopup, setShowAdPopup] = useState(false);
-  const [adCountdown, setAdCountdown] = useState(15);
-  const [isAdLoading, setIsAdLoading] = useState(false);
   const [adSkipTimestamp, setAdSkipTimestamp] = useState<number>(() => Number(localStorage.getItem('cafesync_ad_skip_until') || 0));
 
   const handleCopySummary = () => {
     const text = viewMode === 'all' ? allSummary : tableSummary;
     navigator.clipboard.writeText(text);
     alert('주문 내역이 클립보드에 복사되었습니다!');
-  };
-
-  const handleAdClick = () => {
-    const until = Date.now() + (60 * 60 * 1000);
-    setAdSkipTimestamp(until);
-    localStorage.setItem('cafesync_ad_skip_until', until.toString());
-    setShowAdPopup(false);
   };
 
   const checkShadows = () => {
@@ -103,30 +93,41 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     }
   };
 
+  const [showAdPopup, setShowAdPopup] = useState(false);
+  const [adCountdown, setAdCountdown] = useState(15);
+
+  const handleCloseAd = () => {
+    // 광고를 닫으면 1시간 혜택 부여 (사용자 요구: 자동 꺼짐 삭제 및 닫기 활성화)
+    const until = Date.now() + (60 * 60 * 1000);
+    setAdSkipTimestamp(until);
+    localStorage.setItem('cafesync_ad_skip_until', until.toString());
+    setShowAdPopup(false);
+  };
+
   useEffect(() => {
     if (expandState !== 'collapsed') {
       if (!appSettings.showAds) {
         setShowAdPopup(false);
-        return;
-      }
-
-      const now = Date.now();
-      const isAdFreeActive = appSettings.adFreeRewardEnabled && now < adSkipTimestamp;
-
-      if (isAdFreeActive) {
-        setShowAdPopup(false);
       } else {
-        setShowAdPopup(true);
-        setAdCountdown(15);
-        const timer = setInterval(() => {
-          setAdCountdown(prev => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+        const now = Date.now();
+        const isAdFreeActive = appSettings.adFreeRewardEnabled && now < adSkipTimestamp;
+
+        if (isAdFreeActive) {
+          setShowAdPopup(false);
+        } else {
+          setShowAdPopup(true);
+          setAdCountdown(15);
+          const timer = setInterval(() => {
+            setAdCountdown(prev => {
+              if (prev <= 1) {
+                clearInterval(timer);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+          return () => clearInterval(timer);
+        }
       }
 
       setTimeout(() => {
@@ -136,7 +137,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     } else {
       setShowAdPopup(false);
     }
-  }, [expandState]);
+  }, [expandState, appSettings.showAds, adSkipTimestamp]);
 
   const personsWithGroup = useMemo(() =>
     groups.flatMap(g => g.items.filter(p => p.avatar !== '😋').map(p => ({ ...p, groupId: g.id, groupName: g.name }))),
@@ -339,7 +340,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex flex-col h-full overflow-hidden"
               >
-                <div className={`${showAdPopup ? 'blur-[2px] pointer-events-none select-none' : ''} transition-all duration-500 flex-1 overflow-hidden flex flex-col`}>
+                <div className="flex-1 overflow-hidden flex flex-col">
                   <div className="px-5 pt-4 mb-4 space-y-2.5 shrink-0 overflow-visible">
                     {undecidedCount > 0 && (
                       <motion.div
@@ -462,15 +463,75 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     </div>
                   </div>
 
-                  <div className="relative flex-1 overflow-hidden">
+                  <div className="relative flex-1 overflow-hidden flex flex-col">
                     <AnimatePresence>
-                      {showTopShadow && (
+                      {showAdPopup && (
                         <motion.div
-                          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                          className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none"
-                        />
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="absolute inset-0 z-[100] flex flex-col p-4 pointer-events-auto bg-[#f8f9fb]"
+                        >
+                          <div className="w-full bg-white rounded-[24px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.1)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
+                            {/* 사용자 요구: 주문 확인 바로 밑 광고 확인 중 창 */}
+                            <div className="px-5 py-3.5 border-b border-toss-grey-50 flex items-center justify-between bg-white/80">
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-full bg-toss-blueLight flex items-center justify-center text-toss-blue">
+                                  <Clock size={16} strokeWidth={3} />
+                                </div>
+                                <span className="text-[14px] font-black text-toss-grey-900">광고 확인 중...</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {adCountdown > 0 ? (
+                                  <span className="text-[11px] font-black text-toss-blue tabular-nums bg-toss-blueLight px-2 py-1 rounded-lg">{adCountdown}초</span>
+                                ) : (
+                                  <button
+                                    onClick={handleCloseAd}
+                                    className="px-3 py-1.5 bg-toss-grey-900 text-white rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all"
+                                  >
+                                    SKIP
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* 광고 본체 - 링크 이동 보장 (자동 닫기 기능 삭제) */}
+                            <div
+                              className="flex-1 bg-white p-3 min-h-[160px] flex flex-col items-center justify-center relative hover:opacity-95 transition-opacity"
+                            >
+                              <div className="w-full max-w-[280px] pointer-events-auto">
+                                <CoupangAd id={968136} template="carousel" />
+                              </div>
+
+                              <div className="mt-2 text-center pointer-events-none">
+                                <p className="text-[11px] font-bold text-toss-grey-400 leading-tight">
+                                  광고를 누르면 바로 이동하며<br />
+                                  <span className="text-toss-blue font-black underline underline-offset-2">1시간 동안 무제한 이용</span> 가능!
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* 사용자 요구: 검은색 버튼(h-16)보다 짧게 (h-12) */}
+                            <div className="p-3 bg-white border-t border-toss-grey-50">
+                              <button
+                                onClick={handleCloseAd}
+                                className={`w-full h-11 rounded-xl font-black text-[13px] transition-all flex items-center justify-center gap-2 bg-toss-blue text-white shadow-lg shadow-toss-blue/10 active:scale-95`}
+                              >
+                                광고 닫기
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* 안내 문구 */}
+                          <div className="mt-4 text-center">
+                            <p className="text-[10px] text-toss-grey-400 font-medium">
+                              위 광고창은 표시된 영역 안에서만 작동합니다.
+                            </p>
+                          </div>
+                        </motion.div>
                       )}
                     </AnimatePresence>
+
                     <div
                       ref={scrollRef}
                       onScroll={checkShadows}
@@ -624,6 +685,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                         })
                       )}
                     </div>
+
+                    {/* 인라인 광고 섹션 제거 (팝업으로 다시 통합) */}
+
                     <AnimatePresence>
                       {showBottomShadow && (
                         <motion.div
@@ -643,7 +707,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   </div>
                 </div>
 
-                <div className={`px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)] ${showAdPopup ? 'pointer-events-none select-none overflow-hidden' : ''}`}>
+                <div className={`px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 space-y-4 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]`}>
                   <div className="grid grid-cols-4 gap-1 bg-toss-grey-50/50 py-3 rounded-2xl border border-toss-grey-100 shadow-sm text-center">
                     <div className="flex flex-col items-center justify-center relative">
                       <span className="text-[11px] font-black text-toss-grey-500 mb-0.5">총원</span>
@@ -680,64 +744,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           </AnimatePresence>
         </motion.div >
 
-        {/* 광고 팝업 오버레이 */}
-        <AnimatePresence>
-          {showAdPopup && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute inset-0 top-[72px] z-[3000] flex items-center justify-center p-6 pointer-events-auto bg-white/40 backdrop-blur-sm"
-            >
-              <div className="w-full max-w-sm bg-white rounded-[32px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-toss-grey-100 flex flex-col">
-                <div className="p-6 pb-4 border-b border-toss-grey-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-toss-blueLight flex items-center justify-center text-toss-blue">
-                      <Clock size={18} strokeWidth={2.5} />
-                    </div>
-                    <span className="text-[15px] font-black text-toss-grey-900">광고 확인 중...</span>
-                  </div>
-                  {adCountdown === 0 && (
-                    <button
-                      onClick={() => setShowAdPopup(false)}
-                      className="px-4 py-2 bg-toss-grey-900 text-white rounded-xl text-[12px] font-black shadow-lg"
-                    >
-                      SKIP
-                    </button>
-                  )}
-                  {adCountdown > 0 && (
-                    <span className="text-[13px] font-black text-toss-blue tabular-nums">{adCountdown}초 후 건너뛰기</span>
-                  )}
-                </div>
-
-                <div className="flex-1 bg-toss-grey-50 p-4 min-h-[300px] flex items-center justify-center relative hover:opacity-90 transition-opacity">
-                  <div
-                    onClick={handleAdClick}
-                    className="absolute inset-0 z-10 cursor-pointer"
-                    title="광고 확인 (1시간 대기 시간 제거)"
-                  />
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <CoupangAd id={968136} template="carousel" />
-                    <p className="text-[13px] font-bold text-toss-grey-400 mt-4 leading-relaxed relative z-20 pointer-events-none">
-                      광고를 누르면 1시간 동안<br />
-                      <span className="text-toss-blue font-black underline decoration-2 underline-offset-4 pointer-events-none">대기시간 없이 바로 이용</span>할 수 있습니다!
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white">
-                  <button
-                    disabled={adCountdown > 0}
-                    onClick={() => setShowAdPopup(false)}
-                    className={`w-full h-14 rounded-2xl font-black text-[15px] transition-all flex items-center justify-center gap-2 ${adCountdown > 0 ? 'bg-toss-grey-100 text-toss-grey-400' : 'bg-toss-blue text-white shadow-lg shadow-toss-blue/20 active:scale-95'}`}
-                  >
-                    {adCountdown > 0 ? `${adCountdown}초 후에 닫을 수 있습니다` : '광고 닫기'}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* 광고 팝업 오버레이 제거됨 (인라인 형태로 변경) */}
       </div >
     </>
   );
