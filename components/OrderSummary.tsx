@@ -79,17 +79,17 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   };
 
   const [hasClickedAd, setHasClickedAd] = useState(false);
-  const [isMouseOverAd, setIsMouseOverAd] = useState(false);
+  const isMouseOverAdRef = useRef(false);
 
   useEffect(() => {
     const handleBlur = () => {
-      if (isMouseOverAd) {
+      if (isMouseOverAdRef.current) {
         setHasClickedAd(true);
       }
     };
     window.addEventListener('blur', handleBlur);
     return () => window.removeEventListener('blur', handleBlur);
-  }, [isMouseOverAd]);
+  }, []); // Only once
 
   useEffect(() => {
     if (expandState === 'collapsed') {
@@ -498,13 +498,16 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                           <div className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
                             {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
-                            {/* 광고 본체 - 클릭 감지를 위해 이벤트 추가 */}
+                            {/* 광고 본체 - 클릭 감지 신뢰성 강화 (Ref 사용) */}
                             <div
-                              className="flex-1 bg-white px-5 py-4 min-h-[110px] flex flex-col items-center justify-center relative touch-none"
-                              onMouseEnter={() => setIsMouseOverAd(true)}
-                              onMouseLeave={() => setIsMouseOverAd(false)}
-                              onTouchStart={() => setIsMouseOverAd(true)}
-                              onTouchEnd={() => setTimeout(() => setIsMouseOverAd(false), 500)}
+                              className="flex-1 bg-white px-5 py-4 min-h-[110px] flex flex-col items-center justify-center relative"
+                              onMouseEnter={() => { isMouseOverAdRef.current = true; }}
+                              onMouseLeave={() => { isMouseOverAdRef.current = false; }}
+                              onTouchStart={() => { isMouseOverAdRef.current = true; }}
+                              onTouchEnd={() => {
+                                // 모바일 클릭 처리를 위해 지연 후 해제
+                                setTimeout(() => { isMouseOverAdRef.current = false; }, 1000);
+                              }}
                             >
                               <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-toss-blue/20 via-toss-blue/40 to-toss-blue/20" />
 
@@ -524,8 +527,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               <button
                                 onClick={hasClickedAd ? handleCloseAd : undefined}
                                 className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center group relative overflow-hidden ${hasClickedAd
-                                    ? 'bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95'
-                                    : 'bg-toss-grey-200 text-toss-grey-400 cursor-not-allowed'
+                                  ? 'bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95'
+                                  : 'bg-toss-grey-200 text-toss-grey-400 cursor-not-allowed'
                                   }`}
                               >
                                 <div className="flex items-center gap-2 z-10 pointer-events-none">
@@ -660,7 +663,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:28</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:32</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
