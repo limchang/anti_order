@@ -175,7 +175,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         setShowAdPopup(false);
       } else {
         const now = Date.now();
-        const isAdFreeActive = appSettings.adFreeRewardEnabled && now < adSkipTimestamp;
+        const isAdFreeActive = now < adSkipTimestamp;
 
         if (isAdFreeActive) {
           setShowAdPopup(false);

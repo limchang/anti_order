@@ -11,10 +11,10 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
+        { title: "광고 보너스 초기화 옵션 추가", desc: "이전 혜택 ON/OFF 옵션을 제거하고 원할 때 즉시 초기화하는 버튼으로 교체", icon: <CheckCircle2 size={16} className="text-amber-500" /> },
         { title: "광고 무한루프 버그 픽스", desc: "닫기를 누르면 되살아나던 광고 오작동(환경설정 충돌) 완벽 해결", icon: <CheckCircle2 size={16} className="text-amber-500" /> },
         { title: "비밀 공지 시스템 완전 가동", desc: "업데이트가 퍼블리싱될 때마다 버그 픽스/기능을 이 창으로 알려드립니다", icon: <Sparkles size={16} className="text-toss-blue" /> },
-        { title: "모바일 광고 클릭 100% 감지", desc: "외부 앱(쿠팡) 딥링크 이동 시 터치가 손실되는 현상 원천 차단", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "버전 정보 표시 위치 이관", desc: "전체 메뉴에서 불필요하게 차지하던 버전 정보를 '메뉴 추가' 아래로 이동했습니다", icon: <Sparkles size={16} className="text-purple-500" /> },
+        { title: "버전 정보 표시 위치 이관", desc: "불필요하게 차지하던 버전 정보를 삭제하고 테이블 목록 최하단으로 이동했습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
     ];
 
     return (
