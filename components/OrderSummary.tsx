@@ -157,7 +157,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   const [adCountdown, setAdCountdown] = useState(15);
 
-  const handleCloseAd = () => {
+  const handleCloseAd = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     // 광고를 닫으면 1시간 혜택 부여
     const until = Date.now() + (60 * 60 * 1000);
     setAdSkipTimestamp(until);
@@ -574,9 +578,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                             {/* 사용자 요구: 클릭 전 회색, 클릭 후 파란색 활성화 */}
                             <div className="p-4 bg-toss-grey-50/50">
                               <button
-                                onClick={hasClickedAd ? handleCloseAd : undefined}
+                                type="button"
+                                onClick={(e) => {
+                                  if (hasClickedAd) handleCloseAd(e);
+                                }}
                                 className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center group relative overflow-hidden ${hasClickedAd
-                                  ? 'bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95'
+                                  ? 'bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95 cursor-pointer'
                                   : 'bg-toss-grey-200 text-toss-grey-400 cursor-not-allowed'
                                   }`}
                               >
