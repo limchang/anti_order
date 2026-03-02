@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "테이블 관리 메뉴", desc: "각 테이블의 설정 버튼을 누르면 '테이블 초기화' 옵션이 추가되어 빈 테이블로 완벽하게 복귀할 수 있습니다.", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "광고2(서브 배너) 환경설정", desc: "단순 표기 버그로 동작하지 않던 하단 광고 ON/OFF 기능을 올바르게 고쳤습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "다시 선택하기 버튼 레이아웃", desc: "붕 떠 있던 다시선택하기(되돌리기) 버튼을 자연스럽게 주문카드 내부 하단에 정착시켰습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
+        { title: "테이블 관리 메뉴 디자인", desc: "각 테이블 관리 버튼들의 디자인을 앱 전체의 기조와 통일감 있게 세련된 리스트 형태로 변경했습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "자동 튜토리얼 개편", desc: "새로운 기능과 시나리오에 맞추어 처음부터 끝까지 물 흐르듯 체험할 수 있도록 튜토리얼을 개편했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "조작감 안정화", desc: "주문카드 세부항목 팝업의 가로폭을 넓혀 터치 실수 없이 쾌적하게 조작할 수 있도록 개선했습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (

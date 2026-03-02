@@ -17,6 +17,11 @@
 *   **버튼 디자인**:
     *   아이콘과 텍스트를 함께 배치하며 간격을 충분히 줍니다 (`flex items-center gap-2`).
     *   주요 액션 버튼은 크고 굵은 폰트를 사용합니다 (`font-black`, `h-14` 이상).
+*   **리스트 및 팝업/바텀시트 메뉴 일관성**:
+    *   전체 메뉴나 테이블 설정 등 목록(List) 형태의 메뉴 구성 시, 통일된 구조를 사용해야 합니다.
+    *   **컨테이너 클래스**: `bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm`
+    *   **개별 메뉴 아이템 클래스**: `w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95`
+    *   메뉴 아이템 내부는 `div className="flex items-center gap-4"` 로 아이콘과 텍스트(`text-[14px] font-black text-toss-grey-800`)를 묶고, 우측에 화살표 등을 배치하는 식으로 구성합니다.
 *   **색상 (Color Palette)**:
     *   `tailwind.config.js`에 정의된 `toss-*` 커스텀 색상을 사용합니다.
     *   기본 배경은 밝은 회색(`bg-toss-bg`), 주요 포인트 색상은 파란색(`text-toss-blue`)을 사용합니다.

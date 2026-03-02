@@ -75,7 +75,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.15';
+  const APP_VERSION = '1.0.17';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -556,10 +556,16 @@ function App() {
                 <div className="flex-1 overflow-y-auto px-5 py-5">
                   <AnimatePresence mode="wait">
                     {manageStep === 'menu' && (
-                      <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
-                        <button onClick={() => setManageStep('rename')} className="w-full bg-white border border-toss-grey-100 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all shadow-sm"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-toss-grey-50 flex items-center justify-center text-toss-grey-600 shadow-sm"><Pencil size={18} /></div><span className="font-black text-toss-grey-800 text-[15px]">이름 변경하기</span></div><ChevronRight size={18} className="text-toss-grey-300" /></button>
-                        <button onClick={() => setManageStep('reset')} className="w-full bg-white border border-toss-grey-100 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all shadow-sm"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-toss-grey-50 flex items-center justify-center text-toss-grey-600 shadow-sm"><RotateCcw size={18} /></div><span className="font-black text-toss-grey-800 text-[15px]">테이블 초기화하기</span></div><ChevronRight size={18} className="text-toss-grey-300" /></button>
-                        <button onClick={() => setManageStep('delete')} className="w-full bg-toss-redLight border border-toss-red/10 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-toss-red shadow-sm"><Trash2 size={18} /></div><span className="font-black text-toss-red text-[15px]">테이블 삭제하기</span></div><ChevronRight size={18} className="text-toss-red/30" /></button>
+                      <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+                        <button onClick={() => setManageStep('rename')} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95">
+                          <div className="flex items-center gap-4"><Pencil size={18} className="text-toss-grey-500" /><span className="text-[14px] font-black text-toss-grey-800">이름 변경하기</span></div><ChevronRight size={18} className="text-toss-grey-300" />
+                        </button>
+                        <button onClick={() => setManageStep('reset')} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95">
+                          <div className="flex items-center gap-4"><RotateCcw size={18} className="text-toss-grey-500" /><span className="text-[14px] font-black text-toss-grey-800">테이블 초기화하기</span></div><ChevronRight size={18} className="text-toss-grey-300" />
+                        </button>
+                        <button onClick={() => setManageStep('delete')} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-redLight/50 rounded-2xl transition-colors active:scale-95">
+                          <div className="flex items-center gap-4"><Trash2 size={18} className="text-toss-red" /><span className="text-[14px] font-black text-toss-red">테이블 삭제하기</span></div><ChevronRight size={18} className="text-toss-red/30" />
+                        </button>
                       </motion.div>
                     )}
                     {manageStep === 'rename' && (
