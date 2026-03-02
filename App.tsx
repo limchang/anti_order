@@ -560,6 +560,12 @@ function App() {
                         <button onClick={() => setManageStep('rename')} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95">
                           <div className="flex items-center gap-4"><Pencil size={18} className="text-toss-grey-500" /><span className="text-[14px] font-black text-toss-grey-800">이름 변경하기</span></div><ChevronRight size={18} className="text-toss-grey-300" />
                         </button>
+                        <div className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors">
+                          <div className="flex items-center gap-4"><UtensilsCrossed size={18} className="text-toss-grey-500" /><span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (쉐어) 기능</span></div>
+                          <button onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}>
+                            <div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                          </button>
+                        </div>
                         <button onClick={() => setManageStep('reset')} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95">
                           <div className="flex items-center gap-4"><RotateCcw size={18} className="text-toss-grey-500" /><span className="text-[14px] font-black text-toss-grey-800">테이블 초기화하기</span></div><ChevronRight size={18} className="text-toss-grey-300" />
                         </button>
