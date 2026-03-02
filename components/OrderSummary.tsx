@@ -63,7 +63,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [isUndecidedExpanded, setIsUndecidedExpanded] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.3';
+  const APP_VERSION = '1.0.4';
   const [showTopShadow, setShowTopShadow] = useState(false);
   const [showBottomShadow, setShowBottomShadow] = useState(false);
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -84,35 +84,47 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [hasClickedAd, setHasClickedAd] = useState(false);
   const isMouseOverAdRef = useRef(false);
 
+
   useEffect(() => {
-    // 1. Blur 이벤트 방식 (iframe 클릭 감지)
+    // 1. Blur 이벤트 방식 (PC 및 일반 모바일 브라우저 iframe 클릭 감지)
     const handleBlur = () => {
-      if (isMouseOverAdRef.current) {
+      if (document.activeElement?.tagName === 'IFRAME' || isMouseOverAdRef.current) {
         setHasClickedAd(true);
       }
     };
 
-    // 2. Page Visibility 방식 (다른 앱/탭 이동 감지)
+    // 2. Page Visibility (모바일 앱 전환 감지 - 핵심 해결책)
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden' && isMouseOverAdRef.current) {
-        setHasClickedAd(true);
-      }
-    };
-
-    // 3. activeElement 폴링 방식 (안정적인 백업)
-    const pollInterval = setInterval(() => {
-      if (typeof document !== 'undefined' && document.activeElement?.tagName === 'IFRAME') {
-        if (isMouseOverAdRef.current) {
+      if (document.visibilityState === 'hidden') {
+        // 모바일에서 사용자가 IFRAME을 터치하여 쿠팡 앱(외부 앱)이 켜지면 브라우저는 hidden 상태가 됩니다.
+        // 이때 광고 팝업이 떠 있는 상태였다면, 그 터치는 99% 광고 클릭입니다. (휴리스틱 판단)
+        if (showAdPopupRef.current || document.activeElement?.tagName === 'IFRAME' || isMouseOverAdRef.current) {
           setHasClickedAd(true);
         }
       }
-    }, 500);
+    };
+
+    // 3. Focus 이벤트 방식 (다른 앱에서 돌아올 때 상태 보장)
+    const handleFocus = () => {
+      if (document.activeElement?.tagName === 'IFRAME' || isMouseOverAdRef.current) {
+        setHasClickedAd(true);
+      }
+    };
+
+    // 4. activeElement 폴링 (iOS Safari 등 blur 지연 방지 기법)
+    const pollInterval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.activeElement?.tagName === 'IFRAME') {
+        setHasClickedAd(true);
+      }
+    }, 400);
 
     window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearInterval(pollInterval);
     };
@@ -140,15 +152,17 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   };
 
   const [showAdPopup, setShowAdPopup] = useState(false);
+  const showAdPopupRef = useRef(false);
+  useEffect(() => { showAdPopupRef.current = showAdPopup; }, [showAdPopup]);
+
   const [adCountdown, setAdCountdown] = useState(15);
 
   const handleCloseAd = () => {
-    // 광고를 닫으면 1시간 혜택 부여 및 전체 창 닫기
+    // 광고를 닫으면 1시간 혜택 부여
     const until = Date.now() + (60 * 60 * 1000);
     setAdSkipTimestamp(until);
     localStorage.setItem('cafesync_ad_skip_until', until.toString());
     setShowAdPopup(false);
-    onSetExpandState('collapsed'); // 사용자가 닫기를 누르면 전체 요약 창을 닫음
   };
 
   useEffect(() => {
@@ -530,7 +544,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-toss-blue/20 via-toss-blue/40 to-toss-blue/20" />
 
                               <div
-                                className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01]"
+                                className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01] flex justify-center"
                                 onMouseEnter={() => { isMouseOverAdRef.current = true; }}
                                 onMouseLeave={() => { isMouseOverAdRef.current = false; }}
                                 onTouchStart={() => { isMouseOverAdRef.current = true; }}
@@ -539,7 +553,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                   setTimeout(() => { isMouseOverAdRef.current = false; }, 2000);
                                 }}
                               >
-                                <CoupangAd id={968136} template="carousel" />
+                                <iframe
+                                  src="https://ads-partners.coupang.com/widgets.html?id=968136&template=carousel&trackingCode=AF9552419&subId=&width=300&height=300&tsource="
+                                  width="300"
+                                  height="300"
+                                  frameBorder="0"
+                                  scrolling="no"
+                                  referrerPolicy="unsafe-url"
+                                  style={{ maxWidth: '100%' }}
+                                ></iframe>
                               </div>
 
                               <div className="mt-2.5 text-center pointer-events-none">
@@ -690,7 +712,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:44</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:50</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">

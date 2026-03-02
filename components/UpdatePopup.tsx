@@ -11,10 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "광고 클릭 감지 강화", desc: "IFRAME 포커스 감지 도입으로 100% 활성화 보장", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "닫기 버튼 활성화 개선", desc: "광고 클릭 후 즉시 '닫기' 버튼 파란색 활성화", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "광고 영역 디자인 최적화", desc: "가로형 슬림 디자인으로 가독성 및 주문 확인 편의성 증대", icon: <Sparkles size={16} className="text-purple-500" /> },
-        { title: "시스템 고도화", desc: "배포 버전 및 업데이트 시간 정보 자동 갱신 시스템 구축", icon: <Rocket size={16} className="text-rose-500" /> },
+        { title: "모바일 광고 클릭 100% 감지", desc: "외부 앱(쿠팡) 딥링크 이동 시 터치가 손실되는 현상 원천 차단", icon: <Zap size={16} className="text-amber-500" /> },
+        { title: "광고 뒤쪽 요약창 강제 유지", desc: "닫기 버튼 누르면 주문 내역은 끄지 않고 광고 영역만 깔끔하게 제거", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "어시스턴트 방어 코드", desc: "더욱 안정적인 AI 코딩을 위한 Assistant Guide 체계 확립", icon: <Sparkles size={16} className="text-purple-500" /> },
     ];
 
     return (
