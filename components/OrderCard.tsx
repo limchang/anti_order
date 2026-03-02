@@ -383,7 +383,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.9, y: -4 }}
                           transition={{ duration: 0.12 }}
-                          className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[80px] py-0.5"
+                          className="absolute right-0 top-6 z-[100] bg-white rounded-xl shadow-xl border border-toss-grey-100 overflow-hidden min-w-[120px] py-1"
                         >
                           <button
                             onClick={(e) => { e.stopPropagation(); onOpenMenuModal(order.id, '미정', null, 'DESSERT'); setShowMoreMenu(false); }}
