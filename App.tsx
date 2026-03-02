@@ -75,7 +75,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.6';
+  const APP_VERSION = '1.0.7';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -499,10 +499,6 @@ function App() {
                     </div>
                   </div>
                   <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
-                  <div className="mt-4 flex flex-col items-center gap-0.5 opacity-30">
-                    <span className="text-[9px] font-bold text-toss-grey-400">Version {APP_VERSION}</span>
-                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 18:25</span>
-                  </div>
                 </div>
               </motion.div>
             )}
@@ -515,7 +511,7 @@ function App() {
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
             {reversedGroups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
-                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} />
+                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} appVersion={APP_VERSION} />
               </div>
             ))}
           </div>

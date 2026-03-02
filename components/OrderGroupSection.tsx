@@ -26,6 +26,7 @@ interface OrderGroupSectionProps {
   onOpenSettings: () => void;
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
+  appVersion?: string;
 }
 
 const TABLE_EMOJIS = ['◰', '◱', '◳', '◲'];
@@ -47,7 +48,8 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   appSettings,
   onOpenSettings,
   onInputModeChange,
-  onUpdateCheckedItems
+  onUpdateCheckedItems,
+  appVersion
 }) => {
   const individualItems = useMemo(() => group.items.filter(item => item.avatar !== '😋'), [group.items]);
   const sharedItem = useMemo(() => group.items.find(item => item.avatar === '😋'), [group.items]);
@@ -220,6 +222,13 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
           </div>
         )}
       </div>
+
+      {appVersion && (
+        <div className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1">
+          <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 19:35</span>
+        </div>
+      )}
     </section>
   );
 };
