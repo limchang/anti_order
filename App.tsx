@@ -15,6 +15,7 @@ import { HistoryModal } from './components/HistoryModal.tsx';
 import { SettingsModal } from './components/SettingsModal';
 import { AutoTutorial } from './components/AutoTutorial';
 import { GuidePopup } from './components/GuidePopup.tsx';
+import { UpdatePopup } from './components/UpdatePopup.tsx';
 import { CATEGORY_EMOJIS } from './components/OrderCard';
 
 const SETTINGS_STORAGE_KEY = 'cafesync_settings_v1';
@@ -74,6 +75,8 @@ function App() {
 
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const APP_VERSION = '1.0.2';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -98,6 +101,19 @@ function App() {
       localStorage.setItem('cafesync_shared_guide_shown', 'true');
     }
   }, [groups]);
+
+  // 업데이트 팝업 로직 추가
+  useEffect(() => {
+    const lastSeenVersion = localStorage.getItem('cafesync_last_seen_version');
+    if (lastSeenVersion !== APP_VERSION) {
+      setShowUpdatePopup(true);
+    }
+  }, []);
+
+  const handleCloseUpdatePopup = () => {
+    setShowUpdatePopup(false);
+    localStorage.setItem('cafesync_last_seen_version', APP_VERSION);
+  };
 
   const showToast = (message: string) => {
     const id = uuidv4();
@@ -1074,6 +1090,11 @@ function App() {
           </div>
         )}
       </AnimatePresence>
+      <UpdatePopup
+        isOpen={showUpdatePopup}
+        onClose={handleCloseUpdatePopup}
+        version={APP_VERSION}
+      />
     </div>
   );
 }
