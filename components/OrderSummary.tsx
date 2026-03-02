@@ -97,7 +97,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [adCountdown, setAdCountdown] = useState(15);
 
   const handleCloseAd = () => {
-    // 광고를 닫으면 1시간 혜택 부여 (사용자 요구: 자동 꺼짐 삭제 및 닫기 활성화)
+    // 카운트다운 중에도 닫을 수 있게 하되, 혜택은 카운트다운이 끝난 후에만 부여하거나
+    // 혹은 사용자 편의를 위해 즉시 부여하도록 수정 (현재는 즉시 부여 및 닫기)
     const until = Date.now() + (60 * 60 * 1000);
     setAdSkipTimestamp(until);
     localStorage.setItem('cafesync_ad_skip_until', until.toString());
@@ -501,9 +502,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                 onClick={handleCloseAd}
                                 className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95 group relative overflow-hidden`}
                               >
-                                <div className="flex items-center gap-2 z-10">
+                                <div className="flex items-center gap-2 z-10 pointer-events-none">
                                   {adCountdown > 0 ? (
-                                    <span className="opacity-70">{adCountdown}초 후 닫기</span>
+                                    <span className="opacity-70">{adCountdown}초 후 닫기 가능</span>
                                   ) : (
                                     <>
                                       광고 닫고 혜택 받기
