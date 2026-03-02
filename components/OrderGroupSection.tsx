@@ -226,7 +226,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       {appVersion && (
         <div className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 19:35</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 20:15</span>
         </div>
       )}
     </section>

@@ -153,15 +153,15 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   const [showAdPopup, setShowAdPopup] = useState(false);
   const showAdPopupRef = useRef(false);
+  const isAdManuallyClosedRef = useRef(false);
   useEffect(() => { showAdPopupRef.current = showAdPopup; }, [showAdPopup]);
-
-  const [adCountdown, setAdCountdown] = useState(15);
 
   const handleCloseAd = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    isAdManuallyClosedRef.current = true;
     // 광고를 닫으면 1시간 혜택 부여
     const until = Date.now() + (60 * 60 * 1000);
     setAdSkipTimestamp(until);
@@ -179,22 +179,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
         if (isAdFreeActive) {
           setShowAdPopup(false);
-        } else {
+        } else if (!isAdManuallyClosedRef.current && !showAdPopupRef.current) {
           setShowAdPopup(true);
-          setAdCountdown(15);
           // 혜택 활성화를 위해 클릭 여부 초기화
           setHasClickedAd(false);
-
-          const timer = setInterval(() => {
-            setAdCountdown(prev => {
-              if (prev <= 1) {
-                clearInterval(timer);
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
-          return () => clearInterval(timer);
         }
       }
 
@@ -203,7 +191,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         checkUndecidedShadow();
       }, 100);
     } else {
+      isAdManuallyClosedRef.current = false;
       setShowAdPopup(false);
+      setHasClickedAd(false);
     }
   }, [expandState, appSettings.showAds, adSkipTimestamp]);
 
