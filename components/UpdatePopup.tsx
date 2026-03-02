@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "테이블 하단 서브 광고 신설", desc: "네비게이션 메뉴 위쪽에 새로운 디자인의 배너를 추가했습니다. 환경설정에서 자유롭게 켜고 끌 수 있습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "주문 완료 상태 기능 개선", desc: "완료된 주문창 하단에서도 언제든지 '다시 선택하기'가 가능하도록 버튼 위치를 신설했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "디자인 미세 튜닝", desc: "광고 영역의 불필요한 테두리를 없애고 네비게이션 버튼을 좀더 둥근 사각형태로 다듬었습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
+        { title: "테이블 관리 메뉴", desc: "각 테이블의 설정 버튼을 누르면 '테이블 초기화' 옵션이 추가되어 빈 테이블로 완벽하게 복귀할 수 있습니다.", icon: <Zap size={16} className="text-amber-500" /> },
+        { title: "광고2(서브 배너) 환경설정", desc: "단순 표기 버그로 동작하지 않던 하단 광고 ON/OFF 기능을 올바르게 고쳤습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "다시 선택하기 버튼 레이아웃", desc: "붕 떠 있던 다시선택하기(되돌리기) 버튼을 자연스럽게 주문카드 내부 하단에 정착시켰습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
     ];
 
     return (

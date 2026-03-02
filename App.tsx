@@ -44,7 +44,7 @@ function App() {
   const [toast, setToast] = useState<{ message: string; id: string } | null>(null);
 
   const [managingGroupId, setManagingGroupId] = useState<string | null>(null);
-  const [manageStep, setManageStep] = useState<'menu' | 'rename' | 'delete'>('menu');
+  const [manageStep, setManageStep] = useState<'menu' | 'rename' | 'delete' | 'reset'>('menu');
   const [tempName, setTempName] = useState("");
   const renameInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +75,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.14';
+  const APP_VERSION = '1.0.15';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -276,6 +276,17 @@ function App() {
     updateGroupName(managingGroupId, finalName);
     closeManageSheet();
     showUndoToast("테이블 이름이 변경되었습니다.");
+  };
+
+  const resetGroup = (groupId: string) => {
+    setLastGroupsSnapshot([...groups]);
+    setGroups(prev => prev.map(g => {
+      if (g.id !== groupId) return g;
+      const initialItems = [...Array.from({ length: 4 }, createEmptyOrder), { id: uuidv4(), avatar: '😋', subItems: [] as OrderSubItem[] }];
+      return { ...g, items: initialItems };
+    }));
+    closeManageSheet();
+    showUndoToast("테이블이 초기화되었습니다.");
   };
 
   const handleUndoAction = () => {
@@ -547,6 +558,7 @@ function App() {
                     {manageStep === 'menu' && (
                       <motion.div key="menu" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
                         <button onClick={() => setManageStep('rename')} className="w-full bg-white border border-toss-grey-100 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all shadow-sm"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-toss-grey-50 flex items-center justify-center text-toss-grey-600 shadow-sm"><Pencil size={18} /></div><span className="font-black text-toss-grey-800 text-[15px]">이름 변경하기</span></div><ChevronRight size={18} className="text-toss-grey-300" /></button>
+                        <button onClick={() => setManageStep('reset')} className="w-full bg-white border border-toss-grey-100 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all shadow-sm"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-toss-grey-50 flex items-center justify-center text-toss-grey-600 shadow-sm"><RotateCcw size={18} /></div><span className="font-black text-toss-grey-800 text-[15px]">테이블 초기화하기</span></div><ChevronRight size={18} className="text-toss-grey-300" /></button>
                         <button onClick={() => setManageStep('delete')} className="w-full bg-toss-redLight border border-toss-red/10 p-4 rounded-xl flex items-center justify-between active:scale-[0.97] transition-all"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-toss-red shadow-sm"><Trash2 size={18} /></div><span className="font-black text-toss-red text-[15px]">테이블 삭제하기</span></div><ChevronRight size={18} className="text-toss-red/30" /></button>
                       </motion.div>
                     )}
@@ -554,6 +566,13 @@ function App() {
                       <motion.div key="rename" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                         <input ref={renameInputRef} autoFocus type="text" value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder={currentManagingGroup?.name} onKeyDown={(e) => e.key === 'Enter' && renameGroup()} className="w-full bg-toss-grey-50 border border-toss-grey-100 rounded-2xl px-4 py-3.5 text-[14px] font-black text-toss-grey-900" />
                         <div className="flex gap-2"><button onClick={() => setManageStep('menu')} className="flex-1 py-3.5 rounded-2xl font-black text-toss-grey-500 bg-toss-grey-100 text-[13px]">뒤로</button><button onClick={renameGroup} className="flex-[2] py-3.5 rounded-2xl font-black text-white bg-toss-blue text-[13px]">저장</button></div>
+                      </motion.div>
+                    )}
+                    {manageStep === 'reset' && (
+                      <motion.div key="reset" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-2">
+                        <div className="text-center mb-4"><h3 className="text-[18px] font-black text-toss-grey-800">이 테이블의 모든 주문을 비울까요?</h3></div>
+                        <button onClick={() => resetGroup(currentManagingGroup!.id)} className="w-full py-4 bg-toss-blue text-white rounded-xl font-black active:scale-95 transition-all">네, 비우겠습니다</button>
+                        <button onClick={() => setManageStep('menu')} className="w-full h-14 bg-toss-grey-800 text-white rounded-xl font-black">취소</button>
                       </motion.div>
                     )}
                     {manageStep === 'delete' && (
