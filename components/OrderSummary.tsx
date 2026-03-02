@@ -116,12 +116,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [adCountdown, setAdCountdown] = useState(15);
 
   const handleCloseAd = () => {
-    // 카운트다운 중에도 닫을 수 있게 하되, 혜택은 카운트다운이 끝난 후에만 부여하거나
-    // 혹은 사용자 편의를 위해 즉시 부여하도록 수정 (현재는 즉시 부여 및 닫기)
+    // 광고를 닫으면 1시간 혜택 부여 및 전체 창 닫기
     const until = Date.now() + (60 * 60 * 1000);
     setAdSkipTimestamp(until);
     localStorage.setItem('cafesync_ad_skip_until', until.toString());
     setShowAdPopup(false);
+    onSetExpandState('collapsed'); // 사용자가 닫기를 누르면 전체 요약 창을 닫음
   };
 
   useEffect(() => {
@@ -663,7 +663,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:32</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:35</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
