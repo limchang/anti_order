@@ -789,8 +789,8 @@ function App() {
                     </div>
 
                     <div className="mt-4 flex flex-col items-center gap-0.5 opacity-30">
-                      <span className="text-[9px] font-bold text-toss-grey-400">Version 1.0.2</span>
-                      <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:40</span>
+                      <span className="text-[9px] font-bold text-toss-grey-400">Version 1.0.3</span>
+                      <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:45</span>
                     </div>
                   </div>
                 </div>
