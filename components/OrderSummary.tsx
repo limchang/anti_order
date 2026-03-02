@@ -476,22 +476,21 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                           <div className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
                             {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
-                            {/* 광고 본체 - 더 세련된 레이아웃 */}
-                            <div className="flex-1 bg-white p-5 min-h-[180px] flex flex-col items-center justify-center relative">
-                              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-toss-blue via-toss-blueLight to-toss-blue animate-pulse opacity-30" />
+                            {/* 광고 본체 - 높이를 더 줄여서 정보 집중 */}
+                            <div className="flex-1 bg-white px-5 py-3 min-h-[140px] flex flex-col items-center justify-center relative">
+                              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-toss-blue/20 via-toss-blue/40 to-toss-blue/20" />
 
                               <div className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01]">
                                 <CoupangAd id={968136} template="carousel" />
                               </div>
 
-                              <div className="mt-5 text-center pointer-events-none">
-                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-toss-blueLight rounded-lg mb-2">
-                                  <Clock size={12} className="text-toss-blue" />
-                                  <span className="text-[10px] font-black text-toss-blue uppercase tracking-tight">VIP Reward Active</span>
+                              <div className="mt-3 text-center pointer-events-none">
+                                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-toss-blueLight rounded-md mb-1.5">
+                                  <Clock size={11} className="text-toss-blue" />
+                                  <span className="text-[9px] font-black text-toss-blue uppercase tracking-tight">VIP Reward</span>
                                 </div>
-                                <p className="text-[12px] font-bold text-toss-grey-700 leading-snug">
-                                  광고 확인 후 <span className="text-toss-blue font-black underline underline-offset-2">닫기</span>를 누르면<br />
-                                  <span className="text-toss-grey-900 font-black">1시간 동안 무제한 이용</span> 가능합니다
+                                <p className="text-[11px] font-bold text-toss-grey-700 leading-tight">
+                                  광고 확인 후 <span className="text-toss-blue font-black underline underline-offset-2">닫기</span>를 누르면 <span className="text-toss-grey-900 font-black">1시간 무제한 이용</span>
                                 </p>
                               </div>
                             </div>
@@ -516,14 +515,14 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                   <div className="absolute inset-0 bg-white/10 translate-x-[-100%] animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(110deg, transparent, 45%, rgba(255,255,255,0.4), 55%, transparent)' }} />
                                 )}
                               </button>
+                              {/* 광고 하단 안내 (카드 내부로 통합) */}
+                              <div className="px-4 pb-4 pt-1 bg-white flex flex-col items-center">
+                                <p className="text-[10px] text-toss-grey-400 font-medium text-center opacity-80 leading-tight">
+                                  위 광고창은 표시된 영역 안에서 작동하며,<br />
+                                  클릭 시 외부 페이지로 연결됩니다.
+                                </p>
+                              </div>
                             </div>
-                          </div>
-
-                          {/* 안내 문구 */}
-                          <div className="mt-4 text-center">
-                            <p className="text-[10px] text-toss-grey-400 font-medium">
-                              위 광고창은 표시된 영역 안에서만 작동합니다.
-                            </p>
                           </div>
                         </motion.div>
                       )}
@@ -641,7 +640,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 09:56</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:10</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
