@@ -472,52 +472,48 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                           exit={{ opacity: 0, scale: 0.95 }}
                           className="absolute inset-0 z-[100] flex flex-col p-4 pointer-events-auto bg-[#f8f9fb]"
                         >
-                          <div className="w-full bg-white rounded-[24px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.1)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
-                            {/* 사용자 요구: 주문 확인 바로 밑 광고 확인 중 창 */}
-                            <div className="px-5 py-3.5 border-b border-toss-grey-50 flex items-center justify-between bg-white/80">
-                              <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-full bg-toss-blueLight flex items-center justify-center text-toss-blue">
-                                  <Clock size={16} strokeWidth={3} />
-                                </div>
-                                <span className="text-[14px] font-black text-toss-grey-900">광고 확인 중...</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {adCountdown > 0 ? (
-                                  <span className="text-[11px] font-black text-toss-blue tabular-nums bg-toss-blueLight px-2 py-1 rounded-lg">{adCountdown}초</span>
-                                ) : (
-                                  <button
-                                    onClick={handleCloseAd}
-                                    className="px-3 py-1.5 bg-toss-grey-900 text-white rounded-lg text-[11px] font-black shadow-sm active:scale-95 transition-all"
-                                  >
-                                    SKIP
-                                  </button>
-                                )}
-                              </div>
-                            </div>
+                          <div className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
+                            {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
-                            {/* 광고 본체 - 링크 이동 보장 (자동 닫기 기능 삭제) */}
-                            <div
-                              className="flex-1 bg-white p-3 min-h-[160px] flex flex-col items-center justify-center relative hover:opacity-95 transition-opacity"
-                            >
-                              <div className="w-full max-w-[280px] pointer-events-auto">
+                            {/* 광고 본체 - 더 세련된 레이아웃 */}
+                            <div className="flex-1 bg-white p-5 min-h-[180px] flex flex-col items-center justify-center relative">
+                              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-toss-blue via-toss-blueLight to-toss-blue animate-pulse opacity-30" />
+
+                              <div className="w-full max-w-[280px] pointer-events-auto transform transition-transform hover:scale-[1.02]">
                                 <CoupangAd id={968136} template="carousel" />
                               </div>
 
-                              <div className="mt-2 text-center pointer-events-none">
-                                <p className="text-[11px] font-bold text-toss-grey-400 leading-tight">
-                                  광고를 누르면 바로 이동하며<br />
-                                  <span className="text-toss-blue font-black underline underline-offset-2">1시간 동안 무제한 이용</span> 가능!
+                              <div className="mt-5 text-center pointer-events-none">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-toss-blueLight rounded-lg mb-2">
+                                  <Clock size={12} className="text-toss-blue" />
+                                  <span className="text-[10px] font-black text-toss-blue uppercase tracking-tight">VIP Reward Active</span>
+                                </div>
+                                <p className="text-[12px] font-bold text-toss-grey-700 leading-snug">
+                                  광고 확인 후 <span className="text-toss-blue font-black underline underline-offset-2">닫기</span>를 누르면<br />
+                                  <span className="text-toss-grey-900 font-black">1시간 동안 무제한 이용</span> 가능합니다
                                 </p>
                               </div>
                             </div>
 
-                            {/* 사용자 요구: 검은색 버튼(h-16)보다 짧게 (h-12) */}
-                            <div className="p-3 bg-white border-t border-toss-grey-50">
+                            {/* 사용자 요구에 맞춘 최적화된 하단 버튼 */}
+                            <div className="p-4 bg-toss-grey-50/50">
                               <button
                                 onClick={handleCloseAd}
-                                className={`w-full h-11 rounded-xl font-black text-[13px] transition-all flex items-center justify-center gap-2 bg-toss-blue text-white shadow-lg shadow-toss-blue/10 active:scale-95`}
+                                className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95 group relative overflow-hidden`}
                               >
-                                광고 닫기
+                                <div className="flex items-center gap-2 z-10">
+                                  {adCountdown > 0 ? (
+                                    <span className="opacity-70">{adCountdown}초 후 닫기</span>
+                                  ) : (
+                                    <>
+                                      광고 닫고 혜택 받기
+                                      <ChevronRight size={18} strokeWidth={3} className="text-white/70" />
+                                    </>
+                                  )}
+                                </div>
+                                {adCountdown === 0 && (
+                                  <div className="absolute inset-0 bg-white/10 translate-x-[-100%] animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(110deg, transparent, 45%, rgba(255,255,255,0.4), 55%, transparent)' }} />
+                                )}
                               </button>
                             </div>
                           </div>
@@ -644,7 +640,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[12px] font-bold text-toss-grey-400">{participantsCount}명 참여</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 09:56</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
