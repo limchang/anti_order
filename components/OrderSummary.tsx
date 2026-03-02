@@ -82,13 +82,27 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const isMouseOverAdRef = useRef(false);
 
   useEffect(() => {
+    // 1. 기존 Blur 이벤트 방식 (빠른 반응)
     const handleBlur = () => {
       if (isMouseOverAdRef.current) {
         setHasClickedAd(true);
       }
     };
+
+    // 2. document.activeElement 폴링 방식 (안정적인 백업)
+    const pollInterval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.activeElement?.tagName === 'IFRAME') {
+        if (isMouseOverAdRef.current) {
+          setHasClickedAd(true);
+        }
+      }
+    }, 500);
+
     window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
+    return () => {
+      window.removeEventListener('blur', handleBlur);
+      clearInterval(pollInterval);
+    };
   }, []); // Only once
 
   useEffect(() => {
@@ -663,7 +677,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:35</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:38</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
