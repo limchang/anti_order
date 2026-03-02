@@ -499,10 +499,10 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               >
                                 <div className="flex items-center gap-2 z-10 pointer-events-none">
                                   {adCountdown > 0 ? (
-                                    <span className="opacity-70">{adCountdown}초 후 닫기 가능</span>
+                                    <span className="opacity-70">광고 클릭하고 닫기 활성화 중... ({adCountdown})</span>
                                   ) : (
                                     <>
-                                      광고 클릭하고 닫기
+                                      광고 클릭하고 닫기 활성화
                                       <ChevronRight size={18} strokeWidth={3} className="text-white/70" />
                                     </>
                                   )}
