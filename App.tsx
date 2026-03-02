@@ -75,7 +75,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.11';
+  const APP_VERSION = '1.0.12';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -489,11 +489,15 @@ function App() {
                     <div className="p-1 mt-4 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
                     <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
                       <div className="flex items-center justify-between px-4 py-3.5">
-                        <span className="text-[14px] font-black text-toss-grey-800">광고 표시 활성화</span>
+                        <span className="text-[14px] font-black text-toss-grey-800">메인 광고 활성화</span>
                         <button onClick={() => handleUpdateSettings({ ...appSettings, showAds: !appSettings.showAds })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showAds ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showAds ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
                       </div>
                       <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-                        <div><span className="text-[14px] font-black text-toss-grey-800">광고 클릭 보너스 초기화</span><p className="text-[11px] text-toss-grey-400 mt-0.5">1시간 혜택을 삭제하고 다시 광고 띄우기</p></div>
+                        <span className="text-[14px] font-black text-toss-grey-800">하단 배너 광고 (광고2) 활성화</span>
+                        <button onClick={() => handleUpdateSettings({ ...appSettings, showBottomAd: appSettings.showBottomAd === false ? false : true })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showBottomAd !== false ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showBottomAd !== false ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+                      </div>
+                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+                        <div><span className="text-[14px] font-black text-toss-grey-800">광고 클릭 보너스 초기화</span><p className="text-[11px] text-toss-grey-400 mt-0.5">1시간 혜택을 삭제하고 다시 메인 광고 띄우기</p></div>
                         <button onClick={() => { localStorage.removeItem('cafesync_ad_skip_until'); window.location.reload(); }} className="px-3.5 py-1.5 bg-toss-grey-100 text-toss-grey-600 rounded-lg text-[13px] font-black active:scale-95 transition-all outline-none flex items-center gap-1.5 shadow-sm border border-toss-grey-200 hover:bg-white"><RotateCcw size={14} strokeWidth={2.5} /> 초기화</button>
                       </div>
                     </div>
