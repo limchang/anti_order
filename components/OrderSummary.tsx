@@ -78,6 +78,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     alert('주문 내역이 클립보드에 복사되었습니다!');
   };
 
+  const [hasClickedAd, setHasClickedAd] = useState(false);
+  const [isMouseOverAd, setIsMouseOverAd] = useState(false);
+
+  useEffect(() => {
+    const handleBlur = () => {
+      if (isMouseOverAd) {
+        setHasClickedAd(true);
+      }
+    };
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [isMouseOverAd]);
+
+  useEffect(() => {
+    if (expandState === 'collapsed') {
+      setHasClickedAd(false);
+    }
+  }, [expandState]);
+
   const checkShadows = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
@@ -118,6 +137,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         } else {
           setShowAdPopup(true);
           setAdCountdown(15);
+          // 혜택 활성화를 위해 클릭 여부 초기화
+          setHasClickedAd(false);
+
           const timer = setInterval(() => {
             setAdCountdown(prev => {
               if (prev <= 1) {
@@ -476,8 +498,14 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                           <div className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
                             {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
-                            {/* 광고 본체 - 높이를 극도로 줄여서 공간 확보 (빨간색 가이드 기준) */}
-                            <div className="flex-1 bg-white px-5 py-4 min-h-[110px] flex flex-col items-center justify-center relative">
+                            {/* 광고 본체 - 클릭 감지를 위해 이벤트 추가 */}
+                            <div
+                              className="flex-1 bg-white px-5 py-4 min-h-[110px] flex flex-col items-center justify-center relative touch-none"
+                              onMouseEnter={() => setIsMouseOverAd(true)}
+                              onMouseLeave={() => setIsMouseOverAd(false)}
+                              onTouchStart={() => setIsMouseOverAd(true)}
+                              onTouchEnd={() => setTimeout(() => setIsMouseOverAd(false), 500)}
+                            >
                               <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-toss-blue/20 via-toss-blue/40 to-toss-blue/20" />
 
                               <div className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01]">
@@ -486,28 +514,31 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                               <div className="mt-2.5 text-center pointer-events-none">
                                 <p className="text-[12px] font-black text-toss-grey-900 leading-tight">
-                                  <span className="text-toss-blue">1시간 동안 무제한 이용</span> 가능합니다
+                                  <span className="text-toss-blue">{hasClickedAd ? '광고 확인 완료!' : '위 광고를 클릭하면 닫기가 활성화됩니다'}</span>
                                 </p>
                               </div>
                             </div>
 
-                            {/* 사용자 요구에 맞춘 최적화된 하단 버튼 */}
+                            {/* 사용자 요구: 클릭 전 회색, 클릭 후 파란색 활성화 */}
                             <div className="p-4 bg-toss-grey-50/50">
                               <button
-                                onClick={handleCloseAd}
-                                className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95 group relative overflow-hidden`}
+                                onClick={hasClickedAd ? handleCloseAd : undefined}
+                                className={`w-full h-13 rounded-2xl font-black text-[15px] transition-all flex flex-col items-center justify-center group relative overflow-hidden ${hasClickedAd
+                                    ? 'bg-toss-blue text-white shadow-xl shadow-toss-blue/20 active:scale-95'
+                                    : 'bg-toss-grey-200 text-toss-grey-400 cursor-not-allowed'
+                                  }`}
                               >
                                 <div className="flex items-center gap-2 z-10 pointer-events-none">
-                                  {adCountdown > 0 ? (
-                                    <span className="opacity-70">광고 클릭하고 닫기 활성화 중... ({adCountdown})</span>
-                                  ) : (
+                                  {hasClickedAd ? (
                                     <>
-                                      광고 클릭하고 닫기 활성화
+                                      닫기 (1시간 혜택 적용)
                                       <ChevronRight size={18} strokeWidth={3} className="text-white/70" />
                                     </>
+                                  ) : (
+                                    <span className="opacity-70 italic">광고 클릭 시 활성화</span>
                                   )}
                                 </div>
-                                {adCountdown === 0 && (
+                                {hasClickedAd && (
                                   <div className="absolute inset-0 bg-white/10 translate-x-[-100%] animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(110deg, transparent, 45%, rgba(255,255,255,0.4), 55%, transparent)' }} />
                                 )}
                               </button>
@@ -629,7 +660,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     <span className="text-[15px] font-black text-toss-grey-900 tracking-tight">{group.name}</span>
                                     <button onClick={() => handleStartEditName(group.id, group.name)} className="p-1.5 text-toss-grey-300 hover:text-toss-blue transition-colors bg-white rounded-lg shadow-sm active:scale-90"><Pencil size={12} /></button>
                                     <div className="w-1 h-1 bg-toss-grey-300 rounded-full mx-1" />
-                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:18</span>
+                                    <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 10:28</span>
                                   </div>
                                 )}
                                 <div className="flex items-baseline gap-0.5 bg-white px-2.5 py-1 rounded-full shadow-sm border border-toss-grey-100">
