@@ -306,12 +306,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
-    <div className={`relative rounded-2xl flex flex-col p-2 pb-4 transition-all duration-500 overflow-visible z-10
+    <div className={`relative rounded-[20px] flex flex-col p-2 ${(!showAvatarPicker && (isNotEating || isDecided)) ? 'pb-9' : 'pb-4'} transition-all duration-500 overflow-visible z-10
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card border-2 border-toss-grey-100'}
       ${appSettings.highlightOrderCard
         ? (isUndecided ? 'bg-amber-50/50' :
-          isNotEating ? 'bg-toss-grey-100/50' :
-            isDecided ? 'bg-toss-blueLight/30' :
+          isNotEating ? 'bg-toss-grey-100/50 text-toss-grey-500' :
+            isDecided ? 'bg-toss-blueLight/30 text-toss-blue' :
               'bg-white')
         : 'bg-white'}
     `}>
@@ -535,7 +535,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               ) : isNotEating ? (
                 <div className="w-full flex-1 flex flex-col items-center justify-center py-2 animate-in fade-in duration-500 overflow-visible min-h-[80px] gap-2.5">
                   <p className="text-[12px] font-black text-toss-grey-600">먹지 않겠대요</p>
-                  <button onClick={() => onUpdate(order.id, { subItems: [{ id: uuidv4(), itemName: '미정', type: 'DRINK', temperature: 'HOT', quantity: 1, size: 'Tall' }] })} className="w-[85%] h-9 bg-white border border-toss-grey-200 text-toss-grey-700 rounded-lg font-black text-[11px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all mx-auto"><RotateCcw size={13} strokeWidth={2.5} /> 다시 선택하기</button>
                 </div>
               ) : (
                 <div className="w-full flex-1 flex flex-col overflow-visible pt-1">
@@ -647,18 +646,30 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     ))}
                   </div>
 
-                  <div className="w-full mt-2 pt-2 border-t border-toss-grey-100 flex justify-center pb-1">
-                    <button onClick={(e) => { e.stopPropagation(); handleUndoOrder(); }} className="w-[85%] h-9 bg-white hover:bg-toss-grey-50 border border-toss-grey-200 text-toss-grey-700 rounded-lg font-black text-[11px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all mx-auto">
-                      <RotateCcw size={13} strokeWidth={2.5} /> 다시 선택하기
-                    </button>
-                  </div>
-
                 </div>
               )}
             </div>
-          </motion.div >
+          </motion.div>
         )}
-      </AnimatePresence >
+      </AnimatePresence>
+
+      {
+        !showAvatarPicker && (isDecided || isNotEating) && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isNotEating) {
+                onUpdate(order.id, { subItems: [{ id: uuidv4(), itemName: '미정', type: 'DRINK', temperature: 'HOT', quantity: 1, size: 'Tall' }] });
+              } else {
+                handleUndoOrder();
+              }
+            }}
+            className={`absolute bottom-0 left-0 right-0 h-9 rounded-b-[18px] flex items-center justify-center gap-1.5 font-black text-[11px] transition-all border-t border-toss-grey-200 bg-white hover:bg-toss-grey-50 text-toss-grey-500 active:scale-95`}
+          >
+            <RotateCcw size={12} strokeWidth={2.5} /> 다시 선택하기
+          </button>
+        )
+      }
     </div >
   );
 };
