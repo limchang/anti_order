@@ -28,8 +28,8 @@ export const CoupangAd: React.FC<CoupangAdProps> = ({ id = 968153, template = 'b
                         "id": ${id},
                         "template": "${template}",
                         "trackingCode": "AF9552419",
-                        "width": "400",
-                        "height": "300",
+                        "width": "600",
+                        "height": "140",
                         "tsource": ""
                     });
                 </script>
@@ -38,8 +38,8 @@ export const CoupangAd: React.FC<CoupangAdProps> = ({ id = 968153, template = 'b
           </html>
         `}
         width="100%"
-        height="300"
-        style={{ border: 'none', maxWidth: id === 968136 ? '400px' : '320px', display: 'block' }}
+        height="140"
+        style={{ border: 'none', maxWidth: id === 968136 ? '100%' : '320px', display: 'block' }}
         title="Coupang Partners Ad"
         scrolling="no"
       />

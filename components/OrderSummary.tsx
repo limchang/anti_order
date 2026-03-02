@@ -480,7 +480,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                             <div className="flex-1 bg-white p-5 min-h-[180px] flex flex-col items-center justify-center relative">
                               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-toss-blue via-toss-blueLight to-toss-blue animate-pulse opacity-30" />
 
-                              <div className="w-full max-w-[280px] pointer-events-auto transform transition-transform hover:scale-[1.02]">
+                              <div className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01]">
                                 <CoupangAd id={968136} template="carousel" />
                               </div>
 
