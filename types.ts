@@ -16,6 +16,7 @@ export interface AppSettings {
   isQuantitySyncActive?: boolean;
   onToggleQuantitySync?: () => void;
   showAds: boolean;
+  showBottomAd?: boolean;
 }
 
 export interface OrderSubItem {

@@ -535,7 +535,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                             {/* 광고 본체 - 클릭 영역 정밀화 */}
                             <div className="flex-1 bg-white px-5 py-4 min-h-[110px] flex flex-col items-center justify-center relative">
-                              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-toss-blue/20 via-toss-blue/40 to-toss-blue/20" />
+
 
                               <div
                                 className="w-full pointer-events-auto transform transition-transform hover:scale-[1.01] flex justify-center"
@@ -580,7 +580,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                 <div className="flex items-center gap-2 z-10 pointer-events-none">
                                   {hasClickedAd ? (
                                     <>
-                                      닫기 (1시간 혜택 적용)
+                                      1시간 광고 제거
                                       <ChevronRight size={18} strokeWidth={3} className="text-white/70" />
                                     </>
                                   ) : (

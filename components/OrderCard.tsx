@@ -647,6 +647,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                     ))}
                   </div>
 
+                  <div className="w-full mt-2 pt-2 border-t border-toss-grey-100 flex justify-center pb-1">
+                    <button onClick={(e) => { e.stopPropagation(); handleUndoOrder(); }} className="w-[85%] h-9 bg-white hover:bg-toss-grey-50 border border-toss-grey-200 text-toss-grey-700 rounded-lg font-black text-[11px] shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all mx-auto">
+                      <RotateCcw size={13} strokeWidth={2.5} /> 다시 선택하기
+                    </button>
+                  </div>
+
                 </div>
               )}
             </div>

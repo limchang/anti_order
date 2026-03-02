@@ -60,6 +60,7 @@ function App() {
     checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"],
     highlightOrderCard: true,
     showAds: true,
+    showBottomAd: true,
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
@@ -74,7 +75,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.9';
+  const APP_VERSION = '1.0.10';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -414,7 +415,7 @@ function App() {
             const hasUndecided = group.items.some(p => p.avatar && p.avatar !== '😋' && (p.subItems.length === 0 || p.subItems.every(si => si.itemName === '미정')));
             return (
               <div key={group.id} className="relative shrink-0 py-1">
-                <motion.button id={`nav-btn-${group.id}`} whileTap={{ scale: 0.9 }} onClick={() => { if (activeGroupId === group.id) openManageSheet(group.id); else { setActiveGroupId(group.id); scrollToTable(group.id); } }} className={`min-w-[40px] h-10 px-3.5 rounded-2xl flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}>{firstChar}{hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-2xl shadow-sm animate-pulse" />}</motion.button>
+                <motion.button id={`nav-btn-${group.id}`} whileTap={{ scale: 0.9 }} onClick={() => { if (activeGroupId === group.id) openManageSheet(group.id); else { setActiveGroupId(group.id); scrollToTable(group.id); } }} className={`min-w-[40px] h-10 px-3.5 flex items-center justify-center font-black text-[13px] transition-all relative whitespace-nowrap shadow-sm snap-center rounded-[14px] ${isActive ? 'bg-toss-blue text-white shadow-md' : 'bg-white border border-toss-grey-200 text-toss-grey-500 hover:bg-toss-grey-50'}`}>{firstChar}{hasUndecided && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-white rounded-2xl shadow-sm animate-pulse" />}</motion.button>
               </div>
             );
           })}
@@ -569,6 +570,16 @@ function App() {
       <AnimatePresence>
         {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
           <OrderSummary collapsedBottomBarNode={collapsedBottomBarNode} groups={groups} onSaveHistory={handleSaveOrder} onJumpToOrder={(gid, pid) => { scrollToTable(gid); setHighlightedItemId(pid); setSummaryState('collapsed'); setTimeout(() => setHighlightedItemId(null), 2000); }} onUpdateGroupName={updateGroupName} onSetNotEating={handleSetNotEating} onRemoveUndecided={handleRemoveUndecided} onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState} />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && appSettings.showBottomAd !== false && summaryState === 'collapsed' && (
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ type: 'spring', damping: 25, stiffness: 220 }} className="fixed left-0 right-0 bottom-[84px] z-[2000] flex justify-center pointer-events-none px-3">
+            <div className="w-full max-w-sm bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200 p-0.5 pointer-events-auto flex items-center justify-center overflow-hidden h-[54px] transform-gpu">
+              <iframe src="https://ads-partners.coupang.com/widgets.html?id=968136&template=carousel&trackingCode=AF9552419&subId=&width=320&height=50&tsource=" width="100%" height="50" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
