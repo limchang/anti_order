@@ -306,7 +306,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   // 개인 주문 카드: 통합 컨테이너 사용
   return (
-    <div className={`relative rounded-[20px] flex flex-col p-2 ${(!showAvatarPicker && (isNotEating || isDecided)) ? 'pb-9' : 'pb-4'} transition-all duration-500 overflow-visible z-10
+    <div className={`relative rounded-[20px] flex flex-col p-2 pb-3 transition-all duration-500 overflow-visible z-10
       ${highlighted ? 'border-toss-blue ring-4 ring-toss-blueLight animate-highlight-ping z-20 shadow-xl' : 'shadow-toss-card border-2 border-toss-grey-100'}
       ${appSettings.highlightOrderCard
         ? (isUndecided ? 'bg-amber-50/50' :
@@ -664,7 +664,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                 handleUndoOrder();
               }
             }}
-            className={`absolute bottom-0 left-0 right-0 h-9 rounded-b-[18px] flex items-center justify-center gap-1.5 font-black text-[11px] transition-all border-t border-toss-grey-200 bg-white hover:bg-toss-grey-50 text-toss-grey-500 active:scale-95`}
+            className={`w-full mt-2.5 h-[34px] rounded-xl flex items-center justify-center gap-1.5 font-black text-[11px] transition-all bg-white hover:bg-white text-toss-grey-600 active:scale-95 shadow-sm border border-toss-grey-200/50 shrink-0`}
           >
             <RotateCcw size={12} strokeWidth={2.5} /> 다시 선택하기
           </button>
