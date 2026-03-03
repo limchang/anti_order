@@ -55,7 +55,7 @@ function App() {
     adminTapCounter.current += 1;
     if (adminTapTimeout.current) clearTimeout(adminTapTimeout.current);
 
-    if (adminTapCounter.current >= 5) {
+    if (adminTapCounter.current >= 3) {
       setSummaryState('admin');
       adminTapCounter.current = 0;
     } else {
@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.1.0';
+  const APP_VERSION = '1.1.1';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);

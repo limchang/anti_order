@@ -63,9 +63,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [isUndecidedExpanded, setIsUndecidedExpanded] = useState(false);
-  const [showSharedGuide, setShowSharedGuide] = useState(false);
-  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.4';
   const [showTopShadow, setShowTopShadow] = useState(false);
   const [showBottomShadow, setShowBottomShadow] = useState(false);
   const [collapsedItems, setCollapsedItems] = useState<Set<string>>(new Set());
@@ -585,11 +582,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     ></iframe>
                                   </div>
 
-                                  <div className="mt-2.5 text-center pointer-events-none">
-                                    <p className="text-[12px] font-black text-toss-grey-900 leading-tight">
-                                      <span className="text-toss-blue">{hasClickedAd ? '광고 확인 완료!' : '위 광고를 클릭하면 1시간 동안 광고가 제거됩니다!'}</span>
-                                    </p>
-                                  </div>
+
                                 </div>
 
                                 {/* 사용자 요구: 클릭 전 회색, 클릭 후 파란색 활성화 */}
@@ -614,9 +607,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                         <span className="opacity-70 italic">광고 클릭 시 1시간 동안 광고 제거</span>
                                       )}
                                     </div>
-                                    {hasClickedAd && (
-                                      <div className="absolute inset-0 bg-white/10 translate-x-[-100%] animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(110deg, transparent, 45%, rgba(255,255,255,0.4), 55%, transparent)' }} />
-                                    )}
+
                                   </button>
                                 </div>
                               </motion.div>

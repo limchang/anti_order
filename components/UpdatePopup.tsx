@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "첫 메뉴 선택 시 사이즈 안내", desc: "퀵메뉴와 메뉴판 어디서든 첫 번째 인원의 메뉴가 결정되면 Tall/Grande/Venti 사이즈 옵션을 켤지 물어봅니다!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "인원이 다 차면 공용 메뉴 안내", desc: "테이블 4명 인원이 모두 메뉴를 확정(안 먹음 포함)하면 '함께 먹는 메뉴도 있나요?' 안내가 자동으로 떠요!", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "어시스턴트 가이드 반영", desc: "안내 창이 뜨는 조건이 퀵메뉴·메뉴판 모두에 일관되게 적용되도록 업그레이드되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "광고 팝업 문구 정리", desc: "아래 버튼에 이미 안내가 있어서 위의 중복 문구를 제거했습니다. 더 깔끔해졌어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "관리자 모드 진입 3번 터치로 변경", desc: "버전 텍스트를 3번 탭하면 숨겨진 관리자 설정에 진입할 수 있습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "코드 안정성 개선", desc: "OrderSummary 내 미사용 상태값 정리 및 그라데이션 잔여 요소를 제거했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
     ];
 
     return (
