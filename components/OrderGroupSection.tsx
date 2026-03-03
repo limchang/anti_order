@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Plus, Settings, LayoutGrid } from 'lucide-react';
+import { Plus, Settings, LayoutGrid, UtensilsCrossed } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, OrderItem, ItemType, AppSettings } from '../types.ts';
 import { OrderCard } from './OrderCard.tsx';
@@ -27,6 +27,7 @@ interface OrderGroupSectionProps {
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
   onMenuFirstSelected?: () => void;
+  onOpenMenuMgmt: () => void;
   appVersion?: string;
   onVersionTap?: () => void;
 }
@@ -52,6 +53,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   onInputModeChange,
   onUpdateCheckedItems,
   onMenuFirstSelected,
+  onOpenMenuMgmt,
   appVersion,
   onVersionTap
 }) => {
@@ -100,10 +102,10 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       textColor: 'text-violet-700',
     },
     {
-      label: '자리 이모지',
-      icon: <LayoutGrid size={16} strokeWidth={2.5} />,
-      onClick: handleTablePositionEmojis,
-      title: '자리 위치 이모지로 지정 (◰◱◳◲)',
+      label: '메뉴판',
+      icon: <UtensilsCrossed size={16} strokeWidth={2.5} />,
+      onClick: onOpenMenuMgmt,
+      title: '메뉴판 관리 (추가/삭제)',
       textColor: 'text-sky-700',
     },
     {
@@ -231,7 +233,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       {appVersion && (
         <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 15:38</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 15:43</span>
         </div>
       )}
     </section>
