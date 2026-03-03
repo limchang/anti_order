@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2, UserMinus } from 'lucide-react';
+import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2, UserMinus, Camera, Image as ImageIcon, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { createWorker } from 'tesseract.js';
 import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 import {
   DndContext,
@@ -203,6 +204,87 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
     setTimeout(() => setRegSuccess(false), 1500);
   };
 
+  const [isOcrProcessing, setIsOcrProcessing] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
+  const [ocrResults, setOcrResults] = useState<string[]>([]);
+  const [showOcrResults, setShowOcrResults] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsOcrProcessing(true);
+    setOcrProgress(0);
+    setOcrResults([]);
+    setShowOcrResults(true);
+
+    try {
+      const downscaledImage = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1200;
+            let width = img.width;
+            let height = img.height;
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx?.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = event.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const worker = await createWorker('kor+eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setOcrProgress(Math.floor(m.progress * 100));
+          }
+        }
+      });
+
+      const { data: { text } } = await worker.recognize(downscaledImage);
+      await worker.terminate();
+
+      const lines = text.split('\n')
+        .map(line => line.trim())
+        .filter(line =>
+          line.length >= 2 &&
+          /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(line) &&
+          !/^[0-9,.\s/W]+$/.test(line) &&
+          !line.includes('http')
+        );
+
+      const uniqueLines = Array.from(new Set(lines)).filter(line => !currentRawList.includes(line));
+      setOcrResults(uniqueLines);
+    } catch (err) {
+      console.error('OCR Error:', err);
+      setOcrResults([]);
+    } finally {
+      setIsOcrProcessing(false);
+    }
+  };
+
+  const addOcrItem = (item: string) => {
+    onAdd(item, activeTab);
+    setOcrResults(prev => prev.filter(i => i !== item));
+  };
+
+  const addAllOcrItems = () => {
+    ocrResults.forEach(item => onAdd(item, activeTab));
+    setOcrResults([]);
+    setShowOcrResults(false);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       if (filteredList.length === 1) {
@@ -355,6 +437,56 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
 
                 {/* 하단 검색 + 버튼 */}
                 <div className="px-4 pt-3 pb-5 bg-white border-t border-toss-grey-100 shrink-0 space-y-2.5 rounded-b-[32px]">
+                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
+
+                  {showOcrResults && (
+                    <div className="absolute bottom-full left-0 right-0 mb-4 px-1 pointer-events-auto">
+                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-toss-grey-100 overflow-hidden flex flex-col ring-1 ring-black/5">
+                        <div className="px-5 py-4 bg-toss-grey-50/50 border-b border-toss-grey-100 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Sparkles size={16} className="text-toss-blue animate-pulse" />
+                            <span className="text-[14px] font-black text-toss-grey-900">AI 인식 결과</span>
+                          </div>
+                          <button onClick={() => setShowOcrResults(false)} className="p-1.5 hover:bg-toss-grey-200 rounded-lg transition-colors"><X size={16} /></button>
+                        </div>
+
+                        <div className="max-h-[220px] overflow-y-auto p-4 custom-scrollbar">
+                          {isOcrProcessing ? (
+                            <div className="flex flex-col items-center justify-center py-8 gap-4">
+                              <Loader2 size={32} className="text-toss-blue animate-spin" strokeWidth={3} />
+                              <div className="space-y-1.5 text-center">
+                                <p className="text-[15px] font-black text-toss-grey-800">사진에서 메뉴를 읽는 중...</p>
+                                <div className="w-48 h-2 bg-toss-grey-100 rounded-full overflow-hidden">
+                                  <motion.div initial={{ width: 0 }} animate={{ width: `${ocrProgress}%` }} className="h-full bg-toss-blue" />
+                                </div>
+                                <p className="text-[11px] font-bold text-toss-grey-400">{ocrProgress}% 완료</p>
+                              </div>
+                            </div>
+                          ) : ocrResults.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {ocrResults.map((item, idx) => (
+                                <button key={idx} onClick={() => addOcrItem(item)} className="px-3.5 py-2 bg-toss-blueLight text-toss-blue rounded-xl text-[12px] font-black border border-toss-blue/10 active:scale-95 transition-all flex items-center gap-1.5 shadow-sm">
+                                  <Plus size={12} strokeWidth={3} /> {item}
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-10 text-toss-grey-400 gap-3">
+                              <AlertCircle size={28} opacity={0.5} />
+                              <p className="text-[13px] font-bold">인식된 메뉴가 없습니다.<br />글씨가 잘 보이게 다시 찍어주세요.</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {!isOcrProcessing && ocrResults.length > 0 && (
+                          <div className="p-4 bg-white border-t border-toss-grey-50">
+                            <button onClick={addAllOcrItems} className="w-full py-3.5 bg-toss-blue text-white rounded-2xl font-black text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-toss-blue/20 active:scale-[0.98] transition-all"><Check size={16} strokeWidth={3} /> 인식된 메뉴 {ocrResults.length}개 모두 추가</button>
+                          </div>
+                        )}
+                      </motion.div>
+                    </div>
+                  )}
+
                   <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-toss-grey-400" size={15} />
                     <input
@@ -363,16 +495,21 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
                       lang="ko"
                       enterKeyHint="search"
                       placeholder={`${activeTab === 'DRINK' ? '음료' : '디저트'} 검색 / 신규 등록`}
-                      className="w-full pl-10 pr-10 py-3.5 bg-toss-grey-50 border border-toss-grey-100 rounded-2xl text-[14px] font-black focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all"
+                      className="w-full pl-10 pr-24 py-3.5 bg-toss-grey-50 border border-toss-grey-100 rounded-2xl text-[14px] font-black focus:outline-none focus:ring-2 focus:ring-toss-blue/20 transition-all"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyDown={handleKeyDown}
                     />
-                    {searchQuery && (
-                      <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-toss-grey-400 hover:text-toss-grey-600">
-                        <X size={15} />
-                      </button>
-                    )}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                      {searchQuery ? (
+                        <button onClick={() => setSearchQuery("")} className="p-1.5 text-toss-grey-400 hover:text-toss-grey-600"><X size={15} /></button>
+                      ) : (
+                        <>
+                          <button onClick={() => fileInputRef.current?.click()} className="p-2 text-toss-grey-400 hover:text-toss-blue transition-colors active:scale-90"><ImageIcon size={18} /></button>
+                          <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.capture = 'environment'; fileInputRef.current.click(); } }} className="p-2 text-toss-grey-400 hover:text-toss-blue transition-colors active:scale-90"><Camera size={18} /></button>
+                        </>
+                      )}
+                    </div>
                   </div>
                   <button onClick={() => { onSelect([{ itemName: '안 먹음', type: 'DRINK' }]); onClose(); }} className="w-full h-12 rounded-2xl font-black bg-toss-grey-100 text-toss-grey-700 active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 border border-toss-grey-200 shadow-sm mb-2.5">
                     <UserMinus size={16} /> 먹지 않겠대요

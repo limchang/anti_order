@@ -190,6 +190,7 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
         .map(line => line.trim())
         .filter(line =>
           line.length >= 2 &&
+          /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(line) && // 한글이 포함된 줄만 추출 (사용자 요청)
           !/^[0-9,.\s/W]+$/.test(line) && // 숫자/기호만 있는 줄 제외
           !line.includes('http')
         );
