@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "하단 배너 광고 모달 뒤로 숨김", desc: "메뉴판·히스토리·이모지 설정 등 모달이 열리면 하단 배너가 자동으로 사라집니다. 더 이상 광고가 모달 위에 뚫고 올라오지 않아요!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "광고 온오프 통합", desc: "메인 광고(showAds) 스위치를 끄면 하단 배너 광고도 함께 꺼집니다. 두 광고가 하나의 토글로 연동!", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "배너 크기 정규화", desc: "하단 배너 iframe이 짤리지 않도록 width=320 고정값으로 통일, maxWidth로 작은 화면 대응.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "모달 내부 광고 완전 제거", desc: "메뉴판·히스토리·이모지 설정·요청사항·메뉴 선택 모달에서 개별 광고를 제거했습니다. 테이블 네비게이션 광고만 단일하게 동작합니다!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "광고 온오프 완전 통합", desc: "메인 광고 스위치 하나로 앱 내 모든 광고가 함께 켜지고 꺼집니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "UI 정리", desc: "불필요한 광고 컴포넌트 중복 사용 코드를 제거하여 앱이 더 깔끔해졌습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (

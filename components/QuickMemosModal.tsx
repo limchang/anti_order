@@ -22,7 +22,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
-import { CoupangAd } from './CoupangAd.tsx';
+
 
 interface QuickMemosModalProps {
   isOpen: boolean;
@@ -174,7 +174,7 @@ export const QuickMemosModal: React.FC<QuickMemosModalProps> = ({ isOpen, onClos
         className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3"
         style={{ transform: `translateY(-${kbOffset}px)`, transition: 'transform 0.15s ease-out' }}
       >
-        {isOpen && <CoupangAd />}
+
         <motion.div
           initial={false}
           animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}

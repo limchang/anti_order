@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dices, ChevronLeft } from 'lucide-react';
 import { AppSettings, EmojiCategory } from '../types';
 import { DEFAULT_EMOJIS } from '../App';
-import { CoupangAd } from './CoupangAd.tsx';
+
 
 interface EmojiSettingsModalProps {
   isOpen: boolean;
@@ -55,7 +55,7 @@ export const EmojiSettingsModal: React.FC<EmojiSettingsModalProps> = ({ isOpen, 
 
       {/* 네비게이션 바에서 확장되는 카드 */}
       <div className="fixed left-0 right-0 bottom-0 z-[10000] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
-        {isOpen && <CoupangAd />}
+
         <motion.div
           initial={false}
           animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
