@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2 } from 'lucide-react';
+import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2, UserMinus } from 'lucide-react';
 import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 import {
   DndContext,
@@ -374,6 +374,9 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
                       </button>
                     )}
                   </div>
+                  <button onClick={() => { onSelect([{ itemName: '안 먹음', type: 'DRINK' }]); onClose(); }} className="w-full h-12 rounded-2xl font-black bg-toss-grey-100 text-toss-grey-700 active:scale-[0.98] transition-all text-[14px] flex items-center justify-center gap-2 border border-toss-grey-200 shadow-sm mb-2.5">
+                    <UserMinus size={16} /> 먹지 않겠대요
+                  </button>
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
                       onClick={() => {

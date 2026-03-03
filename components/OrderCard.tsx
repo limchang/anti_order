@@ -474,9 +474,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                             </div>
                           ))}
                         </div>
-                        <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group">
+                        <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group mb-1">
                           <span className="relative z-10 flex items-center gap-1.5">더보기</span>
                         </button>
+                        <button onClick={() => handleInitialOrderFinalize('안 먹음')} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm"><UserMinus size={12} /> 먹지 않겠대요</button>
                       </motion.div>
                     ) : (
                       <motion.div key="expanded" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="flex flex-col gap-0.5 overflow-visible">
