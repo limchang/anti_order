@@ -100,9 +100,19 @@
 *   **테스트 주의**: 웹 환경이므로 항상 `npm run dev` 상황에서의 렌더링, `npm run build` 상황에서의 정적 체크 린트오류(`totalPeople` is not defined 등)가 없는지 스스로 교차 검증(`multi_replace_file_content` 사용)을 철저히 해야 합니다.
 *   **⚠️ 배포 및 버전 관리 (절대 잊지 말 것!)**:
     *   새로운 기능을 퍼블리싱(배포)하거나 코드를 수정했다면, **반드시 `App.tsx` 내의 `APP_VERSION` 상수를 상향하고 Last Updated 시간을 현 시점으로 갱신**하십시오.
+    *   **🚨 `APP_VERSION`을 올릴 때는 반드시 `public/version.json`의 `version` 값도 동일하게 맞춰 업데이트**하십시오. 이 두 값이 다르면 앱 로드 시 `window.location.reload()`가 무한 반복되어 앱이 완전히 사용 불가 상태가 됩니다.
     *   동시에 **`UpdatePopup.tsx`를 열어 사용자에게 퍼블리싱된 최신 변경 사항들을 알리는 내용(`updates` 배열)을 추가/수정**하십시오. 모바일 PWA 환경에서 사용자가 즉시 새 기능과 수정을 인지하도록 강제하는 수단입니다.
     *   **마무리 할 때는 무조건 배포를 수행하며, 버그 픽스 및 변경된 안내 사항을 공지사항으로 제공하는 것을 절대 엄격히 지침으로 준수**하십시오.
     *   **사용자가 "작동 확인" 이라고 말하면, 버전을 0.1 단위로 올림하여 배포하십시오. (예: 1.0.x -> 1.1.0)**
 
 ---
-*Created by Antigravity AI on 2026-03-02.*
+
+## 📜 5. 오답 노트 추가 (2026-03-03)
+
+5.  **앱 첫 로딩 시 무한 반짝임(리로드 루프) 현상**:
+    *   원인: `App.tsx`의 `APP_VERSION`을 올리면서 `public/version.json`의 `version` 값은 구버전 그대로 방치. 앱 로드 → `/version.json` fetch → 버전 불일치 → `window.location.reload()` → 무한 반복.
+    *   해결: `public/version.json`의 버전을 `APP_VERSION`과 동일하게 업데이트.
+    *   **예방 수칙**: 배포 전 반드시 `App.tsx`의 `APP_VERSION`과 `public/version.json`의 `version`이 같은지 확인할 것.
+
+---
+*Created by Antigravity AI on 2026-03-02. Updated 2026-03-03.*
