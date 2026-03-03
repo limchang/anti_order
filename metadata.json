@@ -1,6 +1,6 @@
 {
-  "name": "카페싱크 - 단체 주문 매니저",
-  "short_name": "카페싱크",
+  "name": "오더모아 - 카페 단체 주문 매니저",
+  "short_name": "오더모아",
   "description": "카페에서 여러 명의 주문을 한눈에 모아보고 관리하는 스마트 주문 도우미",
   "start_url": "./index.html",
   "display": "standalone",

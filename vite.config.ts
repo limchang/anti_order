@@ -30,9 +30,9 @@ export default defineConfig(({ mode }) => {
           ]
         },
         manifest: {
-          name: '카페싱크 (CafeSync)',
-          short_name: '카페싱크',
-          description: '모두의 메뉴를 한눈에 정리하는 다가치 주문앱',
+          name: '오더모아',
+          short_name: '오더모아',
+          description: '카페에서 여러 테이블 주문을 모아서 한번에 카운터로!',
           theme_color: '#3182F6',
           background_color: '#F2F4F6',
           display: 'standalone',

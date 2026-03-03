@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "전체 메뉴에서 업데이트 다시 확인", desc: "전체 메뉴 > 이용 가이드 섹션에 '최근 업데이트 다시 보기' 버튼이 추가됐습니다. 이 팝업을 언제든지 다시 열 수 있어요!", icon: <RefreshCw size={16} className="text-toss-blue" /> },
-        { title: "모달 내부 광고 제거", desc: "각 세부 메뉴 모달에서 중복으로 표시되던 광고를 제거했습니다. 테이블 네비게이션 하단 배너만 남아 더 깔끔해졌어요.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "전체 초기화 버튼 하단 고정·광고 자동 숨김 등", desc: "이전 버전들의 UX 개선 사항이 모두 포함되어 있습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "앱 이름 변경: 오더모아 🎉", desc: "카페싱크에서 '오더모아'로 새 이름을 갖게 됐습니다! 카페에서 여러 테이블 주문을 모아서 한 번에 카운터로!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "전체 메뉴 업데이트 다시 보기", desc: "전체 메뉴 > 이용 가이드 섹션에서 이 팝업을 언제든 다시 열 수 있어요.", icon: <RefreshCw size={16} className="text-toss-blue" /> },
+        { title: "모달 내부 광고 제거 · 초기화 버튼 고정", desc: "이전 버전들의 UX 개선사항이 모두 포함되어 있습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
     ];
 
     return (
