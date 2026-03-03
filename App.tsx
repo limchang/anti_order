@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.1.4';
+  const APP_VERSION = '1.1.5';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -672,13 +672,22 @@ function App() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {!isAnyInputActive && !managingGroupId && appSettings.showBottomAd !== false && summaryState === 'collapsed' && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ type: 'spring', damping: 25, stiffness: 220 }} className="fixed left-0 right-0 bottom-[104px] z-[2000] flex justify-center pointer-events-none px-3">
-            <div className="w-full max-w-sm bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200 p-0.5 pointer-events-auto flex items-center justify-center overflow-hidden h-[54px] transform-gpu">
-              <iframe src="https://ads-partners.coupang.com/widgets.html?id=968136&template=carousel&trackingCode=AF9552419&subId=&width=320&height=50&tsource=" width="100%" height="50" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
-            </div>
-          </motion.div>
-        )}
+        {!isAnyInputActive && !managingGroupId
+          && appSettings.showAds !== false
+          && appSettings.showBottomAd !== false
+          && summaryState === 'collapsed'
+          && !isHistoryModalOpen
+          && !isMenuMgmtModalOpen
+          && !isEmojiModalOpen
+          && !isMemoModalOpen
+          && menuModalState.isOpen === false
+          && (
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ type: 'spring', damping: 25, stiffness: 220 }} className="fixed left-0 right-0 bottom-[104px] z-[2000] flex justify-center pointer-events-none px-3">
+              <div className="w-full max-w-sm bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200 p-0.5 pointer-events-auto flex items-center justify-center overflow-hidden h-[54px] transform-gpu">
+                <iframe src="https://ads-partners.coupang.com/widgets.html?id=968136&template=carousel&trackingCode=AF9552419&subId=&width=320&height=50&tsource=" width="320" height="50" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" style={{ maxWidth: '100%' }} />
+              </div>
+            </motion.div>
+          )}
       </AnimatePresence>
 
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setSummaryState('menu'); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />

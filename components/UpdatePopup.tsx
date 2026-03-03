@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "전체 초기화 버튼 하단 고정", desc: "전체 메뉴에서 스크롤해도 '모든 데이터 앱 전체 초기화' 버튼이 화면 하단에 항상 고정됩니다. 주문 내역 저장하기와 동일한 레이아웃!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "레이아웃 안정화", desc: "전체 메뉴 패널의 스크롤 영역과 고정 버튼 영역이 명확히 분리되었습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "누적 버그 수정", desc: "이전 버전의 무한 깜빡임 및 광고 자동 닫힘 기능을 포함한 전체 안정성이 강화되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "하단 배너 광고 모달 뒤로 숨김", desc: "메뉴판·히스토리·이모지 설정 등 모달이 열리면 하단 배너가 자동으로 사라집니다. 더 이상 광고가 모달 위에 뚫고 올라오지 않아요!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "광고 온오프 통합", desc: "메인 광고(showAds) 스위치를 끄면 하단 배너 광고도 함께 꺼집니다. 두 광고가 하나의 토글로 연동!", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "배너 크기 정규화", desc: "하단 배너 iframe이 짤리지 않도록 width=320 고정값으로 통일, maxWidth로 작은 화면 대응.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (
