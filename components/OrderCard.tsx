@@ -456,99 +456,39 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               {isUndecided ? (
                 <motion.div layout transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="w-full space-y-0.5 animate-in slide-in-from-bottom-2 pb-1 overflow-visible">
                   <AnimatePresence mode="wait">
-                    {!isMoreExpanded ? (
-                      <motion.div key="collapsed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-0.5">
-                        <div className="flex flex-col gap-0.5">
-                          {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
-                            <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
-                              <button
-                                onClick={() => handleInitialOrderFinalize(menu)}
-                                className="flex-1 h-full text-left px-3 font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight pr-[54px]"
-                              >
-                                {menu}
+                    <motion.div key="quick-menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-0.5">
+                      <div className="flex flex-col gap-0.5">
+                        {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
+                          <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
+                            <button
+                              onClick={() => handleInitialOrderFinalize(menu)}
+                              className="flex-1 h-full text-left px-3 font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight pr-[54px]"
+                            >
+                              {menu}
+                            </button>
+                            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
+                              <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT">
+                                <Flame size={11} strokeWidth={2.5} />
                               </button>
-                              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT">
-                                  <Flame size={11} strokeWidth={2.5} />
-                                </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE">
-                                  <Snowflake size={11} strokeWidth={2.5} />
-                                </button>
-                              </div>
+                              <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE">
+                                <Snowflake size={11} strokeWidth={2.5} />
+                              </button>
                             </div>
-                          ))}
-                        </div>
-                        <div className="w-full h-9 bg-white border border-toss-grey-200/80 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-1.5">
-                          <button
-                            onClick={() => handleInitialOrderFinalize('안 먹음')}
-                            className="flex-1 h-full text-left px-3 font-black text-[10px] text-toss-grey-500 active:bg-toss-grey-50 w-full leading-tight"
-                          >
-                            먹지 않겠대요
-                          </button>
-                        </div>
-                        <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group mb-1">
-                          <span className="relative z-10 flex items-center gap-1.5">메뉴판 보기</span>
-                        </button>
-                      </motion.div>
-                    ) : (
-                      <motion.div key="expanded" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="flex flex-col gap-0.5 overflow-visible">
-                        {[...drinkItems].filter(i => i !== '미정' && i !== '안 먹음').sort((a, b) => {
-                          const aIsQuick = quickMenuOptions.includes(a);
-                          const bIsQuick = quickMenuOptions.includes(b);
-                          if (aIsQuick && !bIsQuick) return -1;
-                          if (!aIsQuick && bIsQuick) return 1;
-                          return 0;
-                        }).map((menu, idx) => {
-                          const isQuickMenu = quickMenuOptions.includes(menu);
-                          return (
-                            <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden mb-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onUpdateCheckedItems?.(menu, !isQuickMenu);
-                                }}
-                                className={`absolute left-0 pl-2.5 pr-2 h-full flex items-center justify-center transition-all z-10 ${isQuickMenu ? 'text-amber-400 hover:text-amber-500 scale-110 active:scale-95' : 'text-toss-grey-300 hover:text-amber-400 active:scale-95'}`}
-                              >
-                                <Star size={13} fill={isQuickMenu ? 'currentColor' : 'none'} strokeWidth={isQuickMenu ? 0 : 2} />
-                              </button>
-                              <button
-                                onClick={() => handleInitialOrderFinalize(menu)}
-                                className="flex-1 h-full text-left pl-[30px] pr-[60px] font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight"
-                              >
-                                {menu}
-                              </button>
-                              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-10">
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'HOT'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-red-50 text-toss-red active:scale-95 transition-all" title="HOT">
-                                  <Flame size={11} strokeWidth={2.5} />
-                                </button>
-                                <button onClick={(e) => { e.stopPropagation(); handleInitialOrderFinalize(menu, 'ICE'); }} className="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 text-toss-blue active:scale-95 transition-all" title="ICE">
-                                  <Snowflake size={11} strokeWidth={2.5} />
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        {isDirectInputMode ? (
-                          <div className="relative h-8 w-full animate-in zoom-in-95 duration-200 mb-1">
-                            <input type="text" lang="ko" enterKeyHint="done" placeholder="입력..." className="w-full h-full bg-white border border-toss-blue rounded-lg pl-2 pr-7 text-[10px] font-black text-toss-grey-900 focus:outline-none placeholder:text-toss-grey-300 text-center" value={customMenuName} onChange={(e) => setCustomMenuName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleInitialOrderFinalize(customMenuName)} onBlur={() => !customMenuName && setIsDirectInputMode(false)} autoFocus />
-                            <button onClick={() => handleInitialOrderFinalize(customMenuName)} className="absolute right-1 top-1/2 -translate-y-1/2 text-toss-blue hover:text-toss-blue/70 transition-colors p-1"><Send size={12} strokeWidth={3} /></button>
                           </div>
-                        ) : (
-                          <>
-                            <div className="w-full h-9 bg-white border border-toss-grey-200/80 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-1.5 mt-0.5">
-                              <button
-                                onClick={() => handleInitialOrderFinalize('안 먹음')}
-                                className="flex-1 h-full text-left px-3 font-black text-[10px] text-toss-grey-500 active:bg-toss-grey-50 w-full leading-tight"
-                              >
-                                먹지 않겠대요
-                              </button>
-                            </div>
-                            <button onClick={() => { setCustomMenuName(""); setIsDirectInputMode(true); }} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm mb-1"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
-                            <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm mb-1"><UtensilsCrossed size={12} strokeWidth={3} /> 메뉴판 보기</button>
-                          </>
-                        )}
-                      </motion.div>
-                    )}
+                        ))}
+                      </div>
+                      <div className="w-full h-9 bg-white border border-toss-grey-200/80 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-1.5">
+                        <button
+                          onClick={() => handleInitialOrderFinalize('안 먹음')}
+                          className="flex-1 h-full text-left px-3 font-black text-[10px] text-toss-grey-500 active:bg-toss-grey-50 w-full leading-tight"
+                        >
+                          먹지 않겠대요
+                        </button>
+                      </div>
+                      <button data-tutorial="menu-badge" onClick={() => onOpenMenuModal(order.id, '미정')} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group mb-1">
+                        <span className="relative z-10 flex items-center gap-1.5">메뉴판 보기</span>
+                      </button>
+                    </motion.div>
                   </AnimatePresence>
                 </motion.div>
               ) : isNotEating ? (
