@@ -487,7 +487,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           </button>
                         </div>
                         <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group mb-1">
-                          <span className="relative z-10 flex items-center gap-1.5">더보기</span>
+                          <span className="relative z-10 flex items-center gap-1.5">메뉴판 보기</span>
                         </button>
                       </motion.div>
                     ) : (

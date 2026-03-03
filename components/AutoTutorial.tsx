@@ -12,11 +12,11 @@ interface TutorialStep {
 }
 
 const steps: TutorialStep[] = [
-    { selector: '[data-tutorial="emoji-picker-btn"]', text: '테이블마다 4명의 일행이 미리 준비되어 있어요.\n주사위 아이콘을 눌러 무작위로 아바타를 고를 수 있습니다!' },
-    { selector: '[data-tutorial="menu-badge"]', text: '이젠 주문할 차례네요!\n[더보기] 메뉴를 열고 바로 터치하여 메뉴를 등록하세요.' },
-    { selector: '[data-tutorial="quick-all"]', text: '공통 메뉴는 한 번에 일괄 적용할 수 있어요.\n상단 "모두 아메리카노" 클릭!' },
-    { selector: '[data-tutorial="settings-btn"]', text: '테이블의 이름 변경이나 초기화는\n우측 상단의 톱니바퀴를 눌러 설정할 수 있어요.' },
-    { selector: '[data-tutorial="summary-btn"]', text: '수집이 아주 빠르고 쉽게 끝났습니다!\n아래 [주문 확인] 탭을 올려 취합된 표를 확인하세요.' },
+    { selector: '[data-tutorial="emoji-picker-btn"]', text: '아바타 고를 수 있다.' },
+    { selector: '[data-tutorial="menu-badge"]', text: '퀵메뉴에서 바로 메뉴 등록한다.\n더 많은 메뉴는 [메뉴판 보기] 클릭!' },
+    { selector: '[data-tutorial="quick-all"]', text: '모두 아메리카노 누르면 이모지 까지 한번에 설정 가능!' },
+    { selector: '[data-tutorial="summary-btn"]', text: '주문 확인하면 된다!' },
+    { selector: '[data-tutorial="ad-banner"]', text: '메인 광고 한번만 눌러주면 1시간동안 광고 없어요 ~' },
 ];
 
 export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
