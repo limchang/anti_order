@@ -556,7 +556,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               <motion.div
                                 animate={!hasClickedAd ? { scale: [1, 1.02, 1] } : {}}
                                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5"
+                                className="w-[340px] max-w-full mx-auto bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5"
                               >
                                 {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
