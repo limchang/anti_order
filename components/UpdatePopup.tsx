@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, CheckCircle2, Rocket, Zap } from 'lucide-react';
+import { X, Sparkles, CheckCircle2, Rocket, Zap, RefreshCw } from 'lucide-react';
 
 interface UpdatePopupProps {
     isOpen: boolean;
@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "모달 내부 광고 완전 제거", desc: "메뉴판·히스토리·이모지 설정·요청사항·메뉴 선택 모달에서 개별 광고를 제거했습니다. 테이블 네비게이션 광고만 단일하게 동작합니다!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "광고 온오프 완전 통합", desc: "메인 광고 스위치 하나로 앱 내 모든 광고가 함께 켜지고 꺼집니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "UI 정리", desc: "불필요한 광고 컴포넌트 중복 사용 코드를 제거하여 앱이 더 깔끔해졌습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "전체 메뉴에서 업데이트 다시 확인", desc: "전체 메뉴 > 이용 가이드 섹션에 '최근 업데이트 다시 보기' 버튼이 추가됐습니다. 이 팝업을 언제든지 다시 열 수 있어요!", icon: <RefreshCw size={16} className="text-toss-blue" /> },
+        { title: "모달 내부 광고 제거", desc: "각 세부 메뉴 모달에서 중복으로 표시되던 광고를 제거했습니다. 테이블 네비게이션 하단 배너만 남아 더 깔끔해졌어요.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "전체 초기화 버튼 하단 고정·광고 자동 숨김 등", desc: "이전 버전들의 UX 개선 사항이 모두 포함되어 있습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
     ];
 
     return (

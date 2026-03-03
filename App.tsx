@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.1.6';
+  const APP_VERSION = '1.1.7';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -511,6 +511,7 @@ function App() {
           <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
             <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
             <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
+            <button onClick={() => setShowUpdatePopup(true)} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-700 hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95 border-t border-toss-blue/10"><RefreshCw size={18} className="text-toss-grey-400" /> 최근 업데이트 다시 보기</button>
           </div>
         </div>
         <div>
