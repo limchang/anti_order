@@ -536,7 +536,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               exit={{ opacity: 0, scale: 0.95 }}
                               className="absolute inset-0 z-[100] flex flex-col p-4 pointer-events-auto bg-[#f8f9fb]"
                             >
-                              <div className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5">
+                              <motion.div
+                                animate={!hasClickedAd ? { scale: [1, 1.02, 1] } : {}}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                className="w-full bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5"
+                              >
                                 {/* 상단 헤더 및 SKIP 제거 (디자인 최적화) */}
 
                                 {/* 광고 본체 - 클릭 영역 정밀화 */}
@@ -566,7 +570,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                                   <div className="mt-2.5 text-center pointer-events-none">
                                     <p className="text-[12px] font-black text-toss-grey-900 leading-tight">
-                                      <span className="text-toss-blue">{hasClickedAd ? '광고 확인 완료!' : '위 광고를 클릭하면 닫기가 활성화됩니다'}</span>
+                                      <span className="text-toss-blue">{hasClickedAd ? '광고 확인 완료!' : '위 광고를 클릭하면 1시간 동안 광고가 제거됩니다!'}</span>
                                     </p>
                                   </div>
                                 </div>
@@ -590,7 +594,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                           <ChevronRight size={18} strokeWidth={3} className="text-white/70" />
                                         </>
                                       ) : (
-                                        <span className="opacity-70 italic">광고 클릭 시 활성화</span>
+                                        <span className="opacity-70 italic">광고 클릭 시 1시간 동안 광고 제거</span>
                                       )}
                                     </div>
                                     {hasClickedAd && (
@@ -598,7 +602,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                                     )}
                                   </button>
                                 </div>
-                              </div>
+                              </motion.div>
                             </motion.div>
                           )}
                         </AnimatePresence>
