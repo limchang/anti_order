@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.18';
+  const APP_VERSION = '1.1.0';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -103,9 +103,12 @@ function App() {
     if (hasEmpty) {
       setGroups(prev => prev.filter(g => g.items.length > 0));
     }
+    // 테이블 4명 인원이 다 채워지고 모두 메뉴가 확정(안 먹음 포함)됐을 때 공용 메뉴 안내
     const hasFullTable = groups.some(g =>
-      g.items.length >= 4 &&
-      g.items.every(p => p.avatar && p.avatar !== '😋' && p.subItems.length > 0 && p.subItems.every(si => si.itemName !== '미정' && si.itemName !== '안 먹음'))
+      g.items.filter(p => p.avatar && p.avatar !== '😋').length >= 4 &&
+      g.items.filter(p => p.avatar && p.avatar !== '😋').every(p =>
+        p.subItems.length > 0 && p.subItems.every(si => si.itemName !== '미정')
+      )
     );
     if (hasFullTable && !localStorage.getItem('cafesync_shared_guide_shown')) {
       setShowSharedGuide(true);
@@ -158,6 +161,20 @@ function App() {
     setTimeout(() => {
       setToast(prev => prev?.id === id ? null : prev);
     }, 3000);
+  };
+
+  // 퀵메뉴 또는 메뉴판에서 처음으로 인원의 메뉴가 결정될 때 사이즈 안내 팝업 여부 결정
+  const handleMenuFirstSelected = () => {
+    if (localStorage.getItem('cafesync_size_guide_shown')) return;
+    // 현재 groups에서 메뉴가 확정된 인원이 있는지 확인
+    const anyoneOrdered = groups.some(g =>
+      g.items.some(p => p.avatar && p.avatar !== '😋' && p.subItems.length > 0 && p.subItems.every(si => si.itemName !== '미정'))
+    );
+    // 아직 아무도 메뉴를 확정하지 않은 상태 → 처음 선택이므로 사이즈 안내 표시
+    if (!anyoneOrdered) {
+      setShowSizeGuide(true);
+      localStorage.setItem('cafesync_size_guide_shown', 'true');
+    }
   };
 
   const showUndoToast = (message: string) => {
@@ -560,7 +577,7 @@ function App() {
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
             {reversedGroups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
-                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} appVersion={APP_VERSION} onVersionTap={handleVersionTap} />
+                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} onMenuFirstSelected={handleMenuFirstSelected} appVersion={APP_VERSION} onVersionTap={handleVersionTap} />
               </div>
             ))}
           </div>
@@ -657,7 +674,7 @@ function App() {
       {isTutorialRunning && <AutoTutorial onComplete={() => setIsTutorialRunning(false)} />}
       <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
-      <MenuSelectionModal isOpen={menuModalState.isOpen} onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))} title="메뉴 선택" drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} initialSelections={menuModalState.initialSelections} selectedItem={menuModalState.selectedItem} initialType={menuModalState.initialType} onAdd={addMenuItemToState} onFirstSelect={() => { if (!localStorage.getItem('cafesync_size_guide_shown')) { setShowSizeGuide(true); localStorage.setItem('cafesync_size_guide_shown', 'true'); } }} onSelect={(s) => { const { orderId, subItemId } = menuModalState; if (!orderId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) }; const newItems: OrderSubItem[] = s.map(sel => { const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스'); return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 }; }); return { ...p, subItems: [...p.subItems, ...newItems] }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onDeleteSelection={() => { const { orderId, subItemId } = menuModalState; if (!orderId || !subItemId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} appSettings={appSettings} />
+      <MenuSelectionModal isOpen={menuModalState.isOpen} onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))} title="메뉴 선택" drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} initialSelections={menuModalState.initialSelections} selectedItem={menuModalState.selectedItem} initialType={menuModalState.initialType} onAdd={addMenuItemToState} onFirstSelect={handleMenuFirstSelected} onSelect={(s) => { const { orderId, subItemId } = menuModalState; if (!orderId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) }; const newItems: OrderSubItem[] = s.map(sel => { const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스'); return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 }; }); return { ...p, subItems: [...p.subItems, ...newItems] }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onDeleteSelection={() => { const { orderId, subItemId } = menuModalState; if (!orderId || !subItemId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} appSettings={appSettings} />
 
       <AnimatePresence>
         {undoToast && (<div className="fixed bottom-28 w-full flex justify-center z-[10000] pointer-events-none px-4"><motion.button initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} onClick={handleUndoAction} className="bg-toss-grey-900 text-white px-5 py-2.5 rounded-full shadow-toss-elevated flex items-center justify-center gap-2 text-[13px] font-black pointer-events-auto active:scale-95 border border-white/10"><RotateCcw size={14} strokeWidth={3} /> 되돌리기</motion.button></div>)}

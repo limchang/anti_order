@@ -26,6 +26,7 @@ interface OrderGroupSectionProps {
   onOpenSettings: () => void;
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
+  onMenuFirstSelected?: () => void;
   appVersion?: string;
   onVersionTap?: () => void;
 }
@@ -50,6 +51,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   onOpenSettings,
   onInputModeChange,
   onUpdateCheckedItems,
+  onMenuFirstSelected,
   appVersion,
   onVersionTap
 }) => {
@@ -177,6 +179,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
                     appSettings={appSettings}
                     onInputModeChange={onInputModeChange}
                     onUpdateCheckedItems={onUpdateCheckedItems}
+                    onMenuFirstSelected={onMenuFirstSelected}
                   />
                 </div>
               </motion.div>
@@ -228,7 +231,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       {appVersion && (
         <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 09:38</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 10:57</span>
         </div>
       )}
     </section>

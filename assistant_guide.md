@@ -62,6 +62,16 @@
     *   `public/manifest.json` 내 `display: "standalone"`.
     *   (가장 흔한 원인) `public/.well-known/assetlinks.json` 파일의 `sha256_cert_fingerprints` 값이 실제 빌드된 APK의 인증서 지문과 완벽하게 일치하는지.
 
+### 2.5 어시스턴트 가이드 팝업 트리거 로직
+*   **사이즈 옵션 안내 창 (`showSizeGuide`)**:
+    *   **트리거 조건**: 전체 groups에서 아직 아무도 메뉴를 확정하지 않은 상태에서, 처음으로 어떤 인원의 메뉴가 결정될 때.
+    *   **감지 경로**: `OrderCard.handleInitialOrderFinalize` (퀵메뉴/더보기 선택) → `onMenuFirstSelected` prop 콜백 → `App.handleMenuFirstSelected` 또는 `MenuSelectionModal.onFirstSelect` → `App.handleMenuFirstSelected`
+    *   **핵심**: `handleMenuFirstSelected`는 `groups` state(업데이트 이전 클로저)를 보므로 "이전에 아무도 주문하지 않았는지"를 정확히 판단함. stale closure가 오히려 정확한 타이밍 보장.
+    *   **중복 방지**: `localStorage.cafesync_size_guide_shown` 키 존재 여부로 최초 1회만 표시.
+*   **공용 메뉴 안내 창 (`showSharedGuide`)**:
+    *   **트리거 조건**: `groups` 중 하나라도 아바타가 있는 개인 인원이 4명 이상이고, 그 모두의 메뉴가 '미정'이 아닌 상태(안 먹음 포함 OK)로 확정될 때.
+    *   **중복 방지**: `localStorage.cafesync_shared_guide_shown` 키 존재 여부로 최초 1회만 표시.
+
 ---
 
 ## 📜 3. 이전 이슈 및 수정 히스토리 (오답 노트)

@@ -25,6 +25,7 @@ interface OrderCardProps {
   appSettings: AppSettings & { isSharedSyncActive?: boolean };
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
+  onMenuFirstSelected?: () => void;
 }
 
 export const CATEGORY_EMOJIS: Record<EmojiCategory, string[]> = {
@@ -46,7 +47,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   onOpenMenuModal,
   appSettings,
   onInputModeChange,
-  onUpdateCheckedItems
+  onUpdateCheckedItems,
+  onMenuFirstSelected
 }) => {
   const [showAvatarPicker, setShowAvatarPicker] = useState(!order.avatar && order.avatar !== '😋');
   const allRandomEmojis = useMemo(() => Object.values(CATEGORY_EMOJIS).flat(), []);
@@ -161,6 +163,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         quantity: 1
       }]
     });
+    // 퀵메뉴/더보기에서 메뉴 선택 시 상위에 알림 (사이즈 가이드 팝업 트리거용)
+    onMenuFirstSelected?.();
     setIsMoreExpanded(false);
     setIsDirectInputMode(false);
     setCustomMenuName("");

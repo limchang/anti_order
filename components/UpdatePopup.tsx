@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "숨겨진 관리자 메뉴", desc: "버전명을 타다닥! 5번 누르면 숨겨져 있던 관리자 설정 메뉴가 나타납니다. 광고 설정은 이 안으로 이사했어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "자동 업데이트 기능 탑재", desc: "새로운 버전이 배포되면 앱을 켜거나 다시 돌아올 때 최신 버전을 자동으로 인식하고 바로 적용합니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "UI 동기화 및 최적화", desc: "기능들의 안정성을 높이고 일부 메뉴의 표시 방식을 더 깔끔하게 다듬었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "첫 메뉴 선택 시 사이즈 안내", desc: "퀵메뉴와 메뉴판 어디서든 첫 번째 인원의 메뉴가 결정되면 Tall/Grande/Venti 사이즈 옵션을 켤지 물어봅니다!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "인원이 다 차면 공용 메뉴 안내", desc: "테이블 4명 인원이 모두 메뉴를 확정(안 먹음 포함)하면 '함께 먹는 메뉴도 있나요?' 안내가 자동으로 떠요!", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "어시스턴트 가이드 반영", desc: "안내 창이 뜨는 조건이 퀵메뉴·메뉴판 모두에 일관되게 적용되도록 업그레이드되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (
