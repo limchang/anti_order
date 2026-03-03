@@ -12,11 +12,12 @@ interface TutorialStep {
 }
 
 const steps: TutorialStep[] = [
-    { selector: '[data-tutorial="emoji-picker-btn"]', text: '아바타 고를 수 있다.' },
-    { selector: '[data-tutorial="menu-badge"]', text: '퀵메뉴에서 바로 메뉴 등록한다.\n더 많은 메뉴는 [메뉴판 보기] 클릭!' },
-    { selector: '[data-tutorial="quick-all"]', text: '모두 아메리카노 누르면 이모지 까지 한번에 설정 가능!' },
-    { selector: '[data-tutorial="summary-btn"]', text: '주문 확인하면 된다!' },
-    { selector: '[data-tutorial="ad-banner"]', text: '메인 광고 한번만 눌러주면 1시간동안 광고 없어요 ~' },
+    { selector: '[data-tutorial="emoji-picker-btn"]', text: '캐릭터 꾸미기 🎭\n이모티콘을 클릭해서 나만의 귀여운 캐릭터를 고를 수 있어요.' },
+    { selector: '[data-tutorial="quick-menu-button"]', text: '퀵메뉴 바로 등록 ⚡\n자주 마시는 메뉴는 메뉴판을 열지 않아도 한 번에 쏙 등록돼요!' },
+    { selector: '[data-tutorial="quick-random"]', text: '랜덤 이모지! 🎲\n모든 테이블 인원에게 랜덤으로 재미있는 캐릭터를 선물하세요!' },
+    { selector: '[data-tutorial="quick-all"]', text: '모두 아메리카노! ☕\n가장 바쁜 순간, 이모지와 아메리카노 설정을 단 한 번의 클릭으로!' },
+    { selector: '[data-tutorial="summary-btn"]', text: '주문 확인 📋\n모인 주문을 최종 확인하고 카운터로 가기만 하면 끝!' },
+    { selector: '[data-tutorial="ad-banner"]', text: '쾌적한 사용을 위한 팁 🔥\n메인 광고를 한 번만 클릭해주시면 1시간 동안 광고가 사라져요!' },
 ];
 
 export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {

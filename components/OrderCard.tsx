@@ -461,6 +461,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                         {quickMenuOptions.filter(menu => drinkItems.includes(menu)).map((menu, idx) => (
                           <div key={idx} className="w-full h-9 bg-white border border-yellow-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5">
                             <button
+                              data-tutorial={idx === 0 ? "quick-menu-button" : undefined}
                               onClick={() => handleInitialOrderFinalize(menu)}
                               className="flex-1 h-full text-left px-3 font-black text-[10px] text-yellow-800 active:bg-yellow-50 w-full leading-tight pr-[54px]"
                             >

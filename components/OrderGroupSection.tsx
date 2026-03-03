@@ -132,7 +132,10 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         {quickActions.map((action, index) => (
           <button
             key={action.label}
-            data-tutorial={action.label === '모두 아메리카노' ? 'quick-all' : undefined}
+            data-tutorial={
+              action.label === '모두 아메리카노' ? 'quick-all' :
+                action.label === '랜덤 이모지' ? 'quick-random' : undefined
+            }
             onClick={(e) => {
               if (navigator.vibrate) navigator.vibrate(50);
               action.onClick();
@@ -233,7 +236,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       {appVersion && (
         <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 15:58</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 16:11</span>
         </div>
       )}
     </section>
