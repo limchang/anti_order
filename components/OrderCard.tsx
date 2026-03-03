@@ -477,7 +477,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                         <button data-tutorial="menu-badge" onClick={() => setIsMoreExpanded(true)} className="w-full h-9 bg-toss-grey-800 text-white rounded-lg font-black text-[10px] shadow-sm active:scale-95 transition-all flex items-center justify-center relative overflow-hidden group mb-1">
                           <span className="relative z-10 flex items-center gap-1.5">더보기</span>
                         </button>
-                        <button onClick={() => handleInitialOrderFinalize('안 먹음')} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm"><UserMinus size={12} /> 먹지 않겠대요</button>
+                        <div className="w-full h-9 bg-white border border-toss-grey-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mb-0.5 mt-1">
+                          <button
+                            onClick={() => handleInitialOrderFinalize('안 먹음')}
+                            className="flex-1 h-full text-left px-3 flex items-center gap-1.5 font-black text-[10px] text-toss-grey-700 active:bg-toss-grey-50 w-full leading-tight"
+                          >
+                            <UserMinus size={12} strokeWidth={2.5} className="text-toss-grey-400" /> 먹지 않겠대요
+                          </button>
+                        </div>
                       </motion.div>
                     ) : (
                       <motion.div key="expanded" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ type: 'spring', damping: 25, stiffness: 180 }} className="flex flex-col gap-0.5 overflow-visible">
@@ -526,7 +533,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
                           <>
                             <button onClick={() => { setCustomMenuName(""); setIsDirectInputMode(true); }} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm mb-1"><Pencil size={10} strokeWidth={3} /> 직접 입력</button>
                             <button onClick={() => onOpenMenuModal(order.id, '미정', null, 'DESSERT')} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm mb-1"><UtensilsCrossed size={12} strokeWidth={3} /> 메뉴판 보기</button>
-                            <button onClick={() => handleInitialOrderFinalize('안 먹음')} className="w-full h-8 bg-toss-grey-100 text-toss-grey-700 rounded-lg font-black text-[10px] shrink-0 flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all border border-toss-grey-200 shadow-sm"><UserMinus size={12} /> 먹지 않겠대요</button>
+                            <div className="w-full h-9 bg-white border border-toss-grey-200 rounded-lg shadow-sm flex items-center relative overflow-hidden transition-all mt-1">
+                              <button
+                                onClick={() => handleInitialOrderFinalize('안 먹음')}
+                                className="flex-1 h-full text-left px-3 flex items-center gap-1.5 font-black text-[10px] text-toss-grey-700 active:bg-toss-grey-50 w-full leading-tight"
+                              >
+                                <UserMinus size={12} strokeWidth={2.5} className="text-toss-grey-400" /> 먹지 않겠대요
+                              </button>
+                            </div>
                           </>
                         )}
                       </motion.div>

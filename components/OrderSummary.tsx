@@ -158,6 +158,23 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   const isAdManuallyClosedRef = useRef(false);
   useEffect(() => { showAdPopupRef.current = showAdPopup; }, [showAdPopup]);
 
+  const titleTapCounter = useRef(0);
+  const titleTapTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleTitleTap = () => {
+    titleTapCounter.current += 1;
+    if (titleTapTimeout.current) clearTimeout(titleTapTimeout.current);
+
+    if (titleTapCounter.current >= 3) {
+      setHasClickedAd(true);
+      titleTapCounter.current = 0;
+    } else {
+      titleTapTimeout.current = setTimeout(() => {
+        titleTapCounter.current = 0;
+      }, 500);
+    }
+  };
+
   const handleCloseAd = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) {
       e.preventDefault();
@@ -369,7 +386,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           {isExpanded ? (
             <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 w-full gap-2 relative z-[3010]">
               <div className="w-8 shrink-0" />
-              <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">{expandedHeaderTitle || "주문 확인"}</h2>
+              <h2 onClick={handleTitleTap} className="flex-1 text-center text-[20px] font-black text-toss-grey-900 select-none cursor-pointer">{expandedHeaderTitle || "주문 확인"}</h2>
               <button
                 onClick={(e) => { e.stopPropagation(); onSetExpandState('collapsed'); }}
                 className="w-8 h-8 bg-toss-grey-100 hover:bg-toss-grey-200 text-toss-grey-600 rounded-full flex items-center justify-center transition-colors shadow-sm shrink-0 active:scale-95"
@@ -534,7 +551,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               initial={{ opacity: 0, scale: 0.95 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.95 }}
-                              className="absolute inset-0 z-[100] flex flex-col p-4 pointer-events-auto bg-[#f8f9fb]"
+                              className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-[100] flex flex-col pointer-events-auto"
                             >
                               <motion.div
                                 animate={!hasClickedAd ? { scale: [1, 1.02, 1] } : {}}
