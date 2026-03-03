@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "무한 깜빡임 완전 차단", desc: "PWA 서비스 워커가 version.json을 캐시하지 않도록 설정하고, 같은 세션에서는 reload를 한 번만 시도하도록 안전장치를 추가했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "안정성 대폭 강화", desc: "앱 최초 로딩 시 무한 반짝임 현상이 재발하지 않도록 근본적인 원인을 제거했습니다.", icon: <Zap size={16} className="text-purple-500" /> },
-        { title: "자동 업데이트 정확도 향상", desc: "새 배포가 이루어진 경우에만 정확하게 reload되고, 그 외 상황에서는 reload가 일어나지 않습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "광고 클릭하면 바로 닫힘", desc: "광고를 클릭하고 앱으로 돌아오면 광고창이 즉시 자동으로 닫히고, 1시간 광고 제거 혜택이 바로 적용됩니다. 버튼을 따로 누를 필요 없어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "UX 개선", desc: "광고 클릭 → 앱 복귀 → 자동 닫기의 흐름으로 더 자연스럽게 작동합니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "안정성 유지", desc: "이전 버전의 무한 깜빡임 수정 포함, 전체 안정성이 강화되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (

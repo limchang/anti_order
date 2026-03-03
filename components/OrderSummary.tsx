@@ -135,6 +135,14 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
     }
   }, [expandState]);
 
+  // 광고 클릭이 감지되는 순간 자동으로 광고창 닫기 (1시간 혜택 자동 적용)
+  useEffect(() => {
+    if (hasClickedAd && showAdPopup) {
+      // 광고 앱에서 돌아오는 순간 바로 닫힘 (딜레이 없음)
+      handleCloseAd();
+    }
+  }, [hasClickedAd]);
+
   const checkShadows = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
