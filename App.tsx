@@ -48,6 +48,24 @@ function App() {
   const [tempName, setTempName] = useState("");
   const renameInputRef = useRef<HTMLInputElement>(null);
 
+  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
+  const adminTapCounter = useRef(0);
+  const adminTapTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleVersionTap = () => {
+    adminTapCounter.current += 1;
+    if (adminTapTimeout.current) clearTimeout(adminTapTimeout.current);
+
+    if (adminTapCounter.current >= 5) {
+      setIsAdminSettingsOpen(true);
+      adminTapCounter.current = 0;
+    } else {
+      adminTapTimeout.current = setTimeout(() => {
+        adminTapCounter.current = 0;
+      }, 500);
+    }
+  };
+
   const [activeInputCount, setActiveInputCount] = useState(0);
   const isAnyInputActive = activeInputCount > 0;
 
@@ -75,7 +93,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.0.17';
+  const APP_VERSION = '1.0.18';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -102,6 +120,33 @@ function App() {
     if (lastSeenVersion !== APP_VERSION) {
       setShowUpdatePopup(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const checkVersion = async () => {
+      try {
+        const res = await fetch('/version.json?t=' + Date.now());
+        const data = await res.json();
+        if (data.version && data.version !== APP_VERSION) {
+          window.location.reload();
+        }
+      } catch (e) {
+        console.error('버전 확인 실패:', e);
+      }
+    };
+
+    // 최초 로드 시 한 번 확인
+    checkVersion();
+
+    // 화면(탭)으로 다시 포커스가 올 때도 버전 체크 (사용자가 앱을 켜둔 채로 방치했다가 다시 돌아왔을 때 대비)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        checkVersion();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   const handleCloseUpdatePopup = () => {
@@ -496,8 +541,31 @@ function App() {
                       </div>
                     </div>
                   </div>
+
+                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      <AnimatePresence>
+        {isAdminSettingsOpen && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsAdminSettingsOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />)}
+      </AnimatePresence>
+      <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
+        <motion.div initial={false} animate={{ height: isAdminSettingsOpen ? 'auto' : 0, opacity: isAdminSettingsOpen ? 1 : 0 }} style={{ maxHeight: isAdminSettingsOpen ? 'calc(100dvh - 130px)' : 0 }} transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }} className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto">
+          <AnimatePresence>
+            {isAdminSettingsOpen && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
+                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
+                  <div className="w-8 shrink-0" />
+                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">관리자 설정</h2>
+                  <button onClick={() => setIsAdminSettingsOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all"><X size={18} /></button>
+                </div>
+                <div className="overflow-y-auto no-scrollbar px-5 py-5 space-y-4 custom-scrollbar">
                   <div>
-                    <div className="p-1 mt-4 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
+                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
                     <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
                       <div className="flex items-center justify-between px-4 py-3.5">
                         <span className="text-[14px] font-black text-toss-grey-800">메인 광고 활성화</span>
@@ -513,7 +581,6 @@ function App() {
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
                 </div>
               </motion.div>
             )}
@@ -526,7 +593,7 @@ function App() {
           <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
             {reversedGroups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
-                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} appVersion={APP_VERSION} />
+                <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} appVersion={APP_VERSION} onVersionTap={handleVersionTap} />
               </div>
             ))}
           </div>

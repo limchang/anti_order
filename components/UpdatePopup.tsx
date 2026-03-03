@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "테이블 관리 메뉴 디자인", desc: "각 테이블 관리 버튼들의 디자인을 앱 전체의 기조와 통일감 있게 세련된 리스트 형태로 변경했습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "자동 튜토리얼 개편", desc: "새로운 기능과 시나리오에 맞추어 처음부터 끝까지 물 흐르듯 체험할 수 있도록 튜토리얼을 개편했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "조작감 안정화", desc: "주문카드 세부항목 팝업의 가로폭을 넓혀 터치 실수 없이 쾌적하게 조작할 수 있도록 개선했습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "숨겨진 관리자 메뉴", desc: "버전명을 타다닥! 5번 누르면 숨겨져 있던 관리자 설정 메뉴가 나타납니다. 광고 설정은 이 안으로 이사했어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "자동 업데이트 기능 탑재", desc: "새로운 버전이 배포되면 앱을 켜거나 다시 돌아올 때 최신 버전을 자동으로 인식하고 바로 적용합니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "UI 동기화 및 최적화", desc: "기능들의 안정성을 높이고 일부 메뉴의 표시 방식을 더 깔끔하게 다듬었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (

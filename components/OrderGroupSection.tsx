@@ -27,6 +27,7 @@ interface OrderGroupSectionProps {
   onInputModeChange?: (isActive: boolean) => void;
   onUpdateCheckedItems?: (name: string, checked: boolean) => void;
   appVersion?: string;
+  onVersionTap?: () => void;
 }
 
 const TABLE_EMOJIS = ['◰', '◱', '◳', '◲'];
@@ -49,7 +50,8 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   onOpenSettings,
   onInputModeChange,
   onUpdateCheckedItems,
-  appVersion
+  appVersion,
+  onVersionTap
 }) => {
   const individualItems = useMemo(() => group.items.filter(item => item.avatar !== '😋'), [group.items]);
   const sharedItem = useMemo(() => group.items.find(item => item.avatar === '😋'), [group.items]);
@@ -224,9 +226,9 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       </div>
 
       {appVersion && (
-        <div className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1">
+        <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-02 20:15</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 09:38</span>
         </div>
       )}
     </section>
