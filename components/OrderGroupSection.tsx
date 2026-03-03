@@ -236,7 +236,7 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
       {appVersion && (
         <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 16:16</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-03 16:21</span>
         </div>
       )}
     </section>

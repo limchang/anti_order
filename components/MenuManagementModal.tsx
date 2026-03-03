@@ -149,6 +149,31 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
     setShowOcrResults(true);
 
     try {
+      // 1. 이미지 리사이징 (속도 향상을 위한 핵심 단계)
+      const downscaledImage = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1200;
+            let width = img.width;
+            let height = img.height;
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx?.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = event.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+
       const worker = await createWorker('kor+eng', 1, {
         logger: m => {
           if (m.status === 'recognizing text') {
@@ -157,7 +182,7 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
         }
       });
 
-      const { data: { text } } = await worker.recognize(file);
+      const { data: { text } } = await worker.recognize(downscaledImage);
       await worker.terminate();
 
       // 추출된 텍스트 정제
@@ -165,8 +190,8 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
         .map(line => line.trim())
         .filter(line =>
           line.length >= 2 &&
-          !/^[0-9,.\s/]+$/.test(line) && // 숫자만 있는 줄 제외
-          !/^[!@#$%^&*()_+={}\[\]:;"'<>,.?/\\|`~-]+$/.test(line) // 특수문자만 있는 줄 제외
+          !/^[0-9,.\s/W]+$/.test(line) && // 숫자/기호만 있는 줄 제외
+          !line.includes('http')
         );
 
       // 중복 제거 및 기존 리스트에 없는 것만 필터링
