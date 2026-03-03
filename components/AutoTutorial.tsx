@@ -16,6 +16,8 @@ const steps: TutorialStep[] = [
     { selector: '[data-tutorial="quick-menu-button"]', text: '퀵메뉴 바로 등록 ⚡\n자주 마시는 메뉴는 메뉴판을 열지 않아도 한 번에 쏙 등록돼요!' },
     { selector: '[data-tutorial="quick-random"]', text: '랜덤 이모지! 🎲\n모든 테이블 인원에게 랜덤으로 재미있는 캐릭터를 선물하세요!' },
     { selector: '[data-tutorial="quick-all"]', text: '모두 아메리카노! ☕\n가장 바쁜 순간, 이모지와 아메리카노 설정을 단 한 번의 클릭으로!' },
+    { selector: '[data-tutorial="add-group"]', text: '테이블 추가 ➕\n인원이 더 많아지면 걱정 마세요! 언제든 새 테이블을 만들 수 있어요.' },
+    { selector: '[data-tutorial="quick-all"]', text: '한 번 더 아메리카노! ☕\n새로 만든 테이블도 클릭 한 번으로 주문 준비 완료!' },
     { selector: '[data-tutorial="summary-btn"]', text: '주문 확인 📋\n모인 주문을 최종 확인하고 카운터로 가기만 하면 끝!' },
     { selector: '[data-tutorial="ad-banner"]', text: '쾌적한 사용을 위한 팁 🔥\n메인 광고를 한 번만 클릭해주시면 1시간 동안 광고가 사라져요!' },
 ];
@@ -96,10 +98,26 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
 
     if (targetRect) {
         const targetCenterY = targetRect.top + targetRect.height / 2;
-        if (targetCenterY < window.innerHeight / 2) {
-            captionYPos = targetRect.bottom + 24;
+
+        // 광고 배너의 경우 자막이 가리지 않도록 위치 강제 조정 (사용자 요청: 아래로)
+        if (currentStep.selector.includes('ad-banner')) {
+            const spaceBelow = window.innerHeight - targetRect.bottom;
+            const spaceAbove = targetRect.top;
+
+            if (spaceBelow > captionHeight + 40) {
+                captionYPos = targetRect.bottom + 24;
+            } else if (spaceAbove > captionHeight + 40) {
+                captionYPos = targetRect.top - captionHeight - 24;
+            } else {
+                // 공간이 부족하면 중앙 근처로 배치하되 가급적 가리지 않게
+                captionYPos = targetRect.bottom + 10;
+            }
         } else {
-            captionYPos = targetRect.top - captionHeight - 24;
+            if (targetCenterY < window.innerHeight / 2) {
+                captionYPos = targetRect.bottom + 24;
+            } else {
+                captionYPos = targetRect.top - captionHeight - 24;
+            }
         }
 
         // 화면 밖으로 나가지 않도록 최소/최대값 보정

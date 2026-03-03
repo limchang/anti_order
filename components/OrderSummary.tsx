@@ -559,6 +559,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                               className="absolute inset-x-4 top-1/2 -translate-y-1/2 z-[100] flex flex-col pointer-events-auto"
                             >
                               <motion.div
+                                data-tutorial="ad-banner"
                                 animate={!hasClickedAd ? { scale: [1, 1.02, 1] } : {}}
                                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                                 className="w-[340px] max-w-full mx-auto bg-white rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-toss-grey-100 flex flex-col ring-1 ring-black/5"
