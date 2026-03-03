@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "광고 클릭하면 바로 닫힘", desc: "광고를 클릭하고 앱으로 돌아오면 광고창이 즉시 자동으로 닫히고, 1시간 광고 제거 혜택이 바로 적용됩니다. 버튼을 따로 누를 필요 없어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "UX 개선", desc: "광고 클릭 → 앱 복귀 → 자동 닫기의 흐름으로 더 자연스럽게 작동합니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "안정성 유지", desc: "이전 버전의 무한 깜빡임 수정 포함, 전체 안정성이 강화되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "전체 초기화 버튼 하단 고정", desc: "전체 메뉴에서 스크롤해도 '모든 데이터 앱 전체 초기화' 버튼이 화면 하단에 항상 고정됩니다. 주문 내역 저장하기와 동일한 레이아웃!", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "레이아웃 안정화", desc: "전체 메뉴 패널의 스크롤 영역과 고정 버튼 영역이 명확히 분리되었습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "누적 버그 수정", desc: "이전 버전의 무한 깜빡임 및 광고 자동 닫힘 기능을 포함한 전체 안정성이 강화되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
     ];
 
     return (

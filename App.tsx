@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.1.3';
+  const APP_VERSION = '1.1.4';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -504,49 +504,55 @@ function App() {
   );
 
   const mainMenuNode = (
-    <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 pt-2 w-full space-y-4 custom-scrollbar">
-      <div>
-        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
-        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
-          <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
-        </div>
-      </div>
-      <div>
-        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
-        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-          <button onClick={() => { setIsHistoryModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
-          <button onClick={() => { setIsMenuMgmtModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
-        </div>
-      </div>
-      <div>
-        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
-        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-          <button onClick={() => { setIsEmojiModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
-          <button onClick={() => { setIsMemoModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
-        </div>
-      </div>
-      <div>
-        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
-        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-          <div className="flex items-center justify-between px-4 py-3.5">
-            <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
-            <button onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-5 pt-2 w-full space-y-4 custom-scrollbar pb-2">
+        <div>
+          <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
+          <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
+            <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
           </div>
-          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-            <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
-            <button onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+        </div>
+        <div>
+          <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
+          <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+            <button onClick={() => { setIsHistoryModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
+            <button onClick={() => { setIsMenuMgmtModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
           </div>
-          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-            <div><span className="text-[14px] font-black text-toss-grey-800">주문 상태 셀 강조 표시</span><p className="text-[11px] text-toss-grey-400 mt-0.5">고민중·주문완료·안먹음 배경색 변경</p></div>
-            <button onClick={() => handleUpdateSettings({ ...appSettings, highlightOrderCard: !appSettings.highlightOrderCard })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.highlightOrderCard ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.highlightOrderCard ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+        </div>
+        <div>
+          <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
+          <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+            <button onClick={() => { setIsEmojiModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
+            <button onClick={() => { setIsMemoModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
+          </div>
+        </div>
+        <div>
+          <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
+          <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3.5">
+              <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
+              <button onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+            </div>
+            <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+              <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
+              <button onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+            </div>
+            <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+              <div><span className="text-[14px] font-black text-toss-grey-800">주문 상태 셀 강조 표시</span><p className="text-[11px] text-toss-grey-400 mt-0.5">고민중·주문완료·안먹음 배경색 변경</p></div>
+              <button onClick={() => handleUpdateSettings({ ...appSettings, highlightOrderCard: !appSettings.highlightOrderCard })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.highlightOrderCard ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.highlightOrderCard ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+            </div>
           </div>
         </div>
       </div>
 
-      <button onClick={() => { handleResetAllTables(); setSummaryState('collapsed'); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black mt-2 mb-4"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
+      {/* 하단 고정 버튼 영역 — 스크롤과 무관하게 항상 바닥에 */}
+      <div className="px-7 py-6 bg-white border-t border-toss-grey-100 shrink-0 shadow-[0_-12px_40px_rgba(0,0,0,0.06)]">
+        <button onClick={() => { handleResetAllTables(); setSummaryState('collapsed'); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
+      </div>
     </div>
   );
+
 
   const adminSettingsNode = (
     <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 pt-2 w-full space-y-4 custom-scrollbar">
