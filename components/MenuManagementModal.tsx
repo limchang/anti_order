@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Coffee, CakeSlice, Trash2, GripVertical, Search, PencilLine, Star, ChevronLeft } from 'lucide-react';
+import { X, Coffee, CakeSlice, Trash2, GripVertical, Search, PencilLine, Star, ChevronLeft, Camera, Image as ImageIcon, Loader2, Sparkles, Check, Plus, AlertCircle } from 'lucide-react';
+import { createWorker } from 'tesseract.js';
 import {
   DndContext,
   closestCenter,
@@ -85,6 +86,12 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
   const [activeTab, setActiveTab] = useState<ItemType>('DRINK');
   const [newItemName, setNewItemName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isOcrProcessing, setIsOcrProcessing] = useState(false);
+  const [ocrResults, setOcrResults] = useState<string[]>([]);
+  const [showOcrResults, setShowOcrResults] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const kbOffset = useKeyboardOffset(isOpen);
 
@@ -130,6 +137,58 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
       const finalUpdate = activeTab === 'DRINK' ? ["미정", ...newList] : newList;
       onUpdateMenuList(activeTab === 'DRINK' ? finalUpdate : newList, activeTab);
     }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsOcrProcessing(true);
+    setOcrProgress(0);
+    setOcrResults([]);
+    setShowOcrResults(true);
+
+    try {
+      const worker = await createWorker('kor+eng', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setOcrProgress(Math.floor(m.progress * 100));
+          }
+        }
+      });
+
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+
+      // 추출된 텍스트 정제
+      const lines = text.split('\n')
+        .map(line => line.trim())
+        .filter(line =>
+          line.length >= 2 &&
+          !/^[0-9,.\s/]+$/.test(line) && // 숫자만 있는 줄 제외
+          !/^[!@#$%^&*()_+={}\[\]:;"'<>,.?/\\|`~-]+$/.test(line) // 특수문자만 있는 줄 제외
+        );
+
+      // 중복 제거 및 기존 리스트에 없는 것만 필터링
+      const uniqueLines = Array.from(new Set(lines)).filter(line => !currentList.includes(line));
+      setOcrResults(uniqueLines);
+    } catch (err) {
+      console.error(err);
+      setOcrResults([]);
+    } finally {
+      setIsOcrProcessing(false);
+    }
+  };
+
+  const addOcrItem = (item: string) => {
+    onAdd(item, activeTab);
+    setOcrResults(prev => prev.filter(i => i !== item));
+  };
+
+  const addAllOcrItems = () => {
+    ocrResults.forEach(item => onAdd(item, activeTab));
+    setOcrResults([]);
+    setShowOcrResults(false);
   };
 
   return (
@@ -211,6 +270,69 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                   </div>
                 </div>
 
+                {/* OCR 결과 표시 영역 */}
+                <AnimatePresence>
+                  {showOcrResults && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="px-5 pb-2 overflow-hidden shrink-0"
+                    >
+                      <div className="bg-toss-blue/5 border border-toss-blue/20 rounded-2xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Sparkles size={16} className="text-toss-blue" />
+                            <span className="text-[14px] font-black text-toss-grey-800">사진 인식 결과</span>
+                          </div>
+                          <button onClick={() => setShowOcrResults(false)} className="text-toss-grey-400 hover:text-toss-grey-600"><X size={16} /></button>
+                        </div>
+
+                        {isOcrProcessing ? (
+                          <div className="py-6 flex flex-col items-center justify-center gap-3">
+                            <Loader2 size={24} className="text-toss-blue animate-spin" />
+                            <div className="w-full max-w-[200px] h-1.5 bg-toss-grey-200 rounded-full overflow-hidden">
+                              <motion.div
+                                className="h-full bg-toss-blue"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${ocrProgress}%` }}
+                              />
+                            </div>
+                            <p className="text-[12px] font-black text-toss-grey-500">메뉴판 읽는 중... {ocrProgress}%</p>
+                          </div>
+                        ) : ocrResults.length > 0 ? (
+                          <>
+                            <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto no-scrollbar py-1">
+                              {ocrResults.map((item, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => addOcrItem(item)}
+                                  className="px-3 py-1.5 bg-white border border-toss-blue/20 rounded-full text-[12px] font-black text-toss-blue shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
+                                >
+                                  {item} <Plus size={12} strokeWidth={3} />
+                                </button>
+                              ))}
+                            </div>
+                            <div className="pt-2">
+                              <button
+                                onClick={addAllOcrItems}
+                                className="w-full py-2.5 bg-toss-blue text-white rounded-xl text-[12px] font-black shadow-lg shadow-toss-blue/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                              >
+                                <Check size={14} strokeWidth={3} /> {ocrResults.length}개 메뉴 한꺼번에 등록하기
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="py-6 flex flex-col items-center justify-center gap-2">
+                            <AlertCircle size={20} className="text-toss-grey-300" />
+                            <p className="text-[12px] font-black text-toss-grey-500">인식된 메뉴가 없거나 이미 모두 등록되었습니다.</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* 메뉴 리스트 */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-1.5 py-2">
                   {filteredList.length === 0 ? (
@@ -254,11 +376,30 @@ export const MenuManagementModal: React.FC<MenuManagementModalProps> = ({
                       onKeyDown={e => e.key === 'Enter' && handleAdd()}
                       onFocus={e => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
                     />
-                    {searchQuery.trim() && (
-                      <button onClick={handleAdd} className="absolute right-2.5 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-toss-blue text-white rounded-xl shadow-sm active:scale-95 transition-all text-[12px] font-black">
-                        등록
-                      </button>
-                    )}
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                      {!searchQuery.trim() && (
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-2.5 bg-white border border-toss-grey-200 text-toss-grey-600 rounded-xl shadow-sm active:scale-95 transition-all"
+                          title="사진으로 메뉴 추가"
+                        >
+                          <Camera size={18} />
+                        </button>
+                      )}
+                      {searchQuery.trim() && (
+                        <button onClick={handleAdd} className="px-3 py-2 bg-toss-blue text-white rounded-xl shadow-sm active:scale-95 transition-all text-[12px] font-black">
+                          등록
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
                   </div>
                   <button onClick={onClose} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black">
                     관리 완료
