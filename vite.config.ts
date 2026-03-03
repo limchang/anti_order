@@ -18,6 +18,17 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+        workbox: {
+          // version.json을 프리캐시에서 제외 → 항상 네트워크에서 신선하게 가져오도록
+          navigateFallbackDenylist: [/\/version\.json/],
+          globIgnores: ['**/version.json'],
+          runtimeCaching: [
+            {
+              urlPattern: /\/version\.json/,
+              handler: 'NetworkOnly',  // 캐시 절대 무시, 항상 네트워크에서만
+            }
+          ]
+        },
         manifest: {
           name: '카페싱크 (CafeSync)',
           short_name: '카페싱크',

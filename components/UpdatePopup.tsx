@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "광고 팝업 문구 정리", desc: "아래 버튼에 이미 안내가 있어서 위의 중복 문구를 제거했습니다. 더 깔끔해졌어요!", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "관리자 모드 진입 3번 터치로 변경", desc: "버전 텍스트를 3번 탭하면 숨겨진 관리자 설정에 진입할 수 있습니다.", icon: <Zap size={16} className="text-purple-500" /> },
-        { title: "코드 안정성 개선", desc: "OrderSummary 내 미사용 상태값 정리 및 그라데이션 잔여 요소를 제거했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "무한 깜빡임 완전 차단", desc: "PWA 서비스 워커가 version.json을 캐시하지 않도록 설정하고, 같은 세션에서는 reload를 한 번만 시도하도록 안전장치를 추가했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "안정성 대폭 강화", desc: "앱 최초 로딩 시 무한 반짝임 현상이 재발하지 않도록 근본적인 원인을 제거했습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "자동 업데이트 정확도 향상", desc: "새 배포가 이루어진 경우에만 정확하게 reload되고, 그 외 상황에서는 reload가 일어나지 않습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
     ];
 
     return (

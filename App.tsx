@@ -91,7 +91,7 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.1.1';
+  const APP_VERSION = '1.1.2';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -126,9 +126,13 @@ function App() {
   useEffect(() => {
     const checkVersion = async () => {
       try {
+        // 같은 세션에서 이미 reload를 시도했으면 다시 하지 않음 (무한 루프 방지)
+        if (sessionStorage.getItem('cafesync_reload_attempted')) return;
+
         const res = await fetch('/version.json?t=' + Date.now());
         const data = await res.json();
         if (data.version && data.version !== APP_VERSION) {
+          sessionStorage.setItem('cafesync_reload_attempted', 'true');
           window.location.reload();
         }
       } catch (e) {
@@ -142,6 +146,8 @@ function App() {
     // 화면(탭)으로 다시 포커스가 올 때도 버전 체크 (사용자가 앱을 켜둔 채로 방치했다가 다시 돌아왔을 때 대비)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
+        // 탭 전환 시에는 guard 초기화 후 체크 (새 배포 감지 위해)
+        sessionStorage.removeItem('cafesync_reload_attempted');
         checkVersion();
       }
     };
