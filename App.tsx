@@ -48,7 +48,6 @@ function App() {
   const [tempName, setTempName] = useState("");
   const renameInputRef = useRef<HTMLInputElement>(null);
 
-  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
   const adminTapCounter = useRef(0);
   const adminTapTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -57,7 +56,7 @@ function App() {
     if (adminTapTimeout.current) clearTimeout(adminTapTimeout.current);
 
     if (adminTapCounter.current >= 5) {
-      setIsAdminSettingsOpen(true);
+      setSummaryState('admin');
       adminTapCounter.current = 0;
     } else {
       adminTapTimeout.current = setTimeout(() => {
@@ -82,12 +81,11 @@ function App() {
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
-  const [summaryState, setSummaryState] = useState<'collapsed' | 'expanded' | 'fullscreen'>('collapsed');
+  const [summaryState, setSummaryState] = useState<string>('collapsed');
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
   const [isMemoModalOpen, setIsMemoModalOpen] = useState(false);
   const [isMenuMgmtModalOpen, setIsMenuMgmtModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [isTutorialRunning, setIsTutorialRunning] = useState(false);
 
   const [showSizeGuide, setShowSizeGuide] = useState(false);
@@ -287,7 +285,7 @@ function App() {
   };
 
   const handleResetAllTables = () => {
-    setIsMainMenuOpen(false);
+    setSummaryState('collapsed');
     setLastGroupsSnapshot([...groups]);
     const newGroupId = uuidv4();
     const initialItems = [...Array.from({ length: 4 }, createEmptyOrder), { id: uuidv4(), avatar: '😋', subItems: [] }];
@@ -461,7 +459,7 @@ function App() {
 
   const collapsedBottomBarNode = (
     <div className="flex items-center w-full gap-2">
-      <button onClick={() => setIsMainMenuOpen(true)} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-xl flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all"><Menu size={20} strokeWidth={2.5} /></button>
+      <button onClick={() => setSummaryState('menu')} className="w-[44px] h-[44px] shrink-0 bg-white border border-toss-grey-100/80 rounded-xl flex items-center justify-center shadow-sm text-toss-grey-700 active:scale-95 transition-all"><Menu size={20} strokeWidth={2.5} /></button>
       <button data-tutorial="add-group" onClick={addGroup} className="w-[44px] h-[44px] shrink-0 bg-toss-blue/10 text-toss-blue border border-toss-blue/20 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all"><Plus size={20} strokeWidth={2.5} /></button>
       <div className="flex-1 relative overflow-hidden h-[44px]">
         <div ref={navContainerRef} className="w-full h-full overflow-x-auto no-scrollbar flex items-center justify-start gap-2 scroll-smooth pointer-events-auto">
@@ -482,6 +480,73 @@ function App() {
     </div>
   );
 
+  const mainMenuNode = (
+    <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 pt-2 w-full space-y-4 custom-scrollbar">
+      <div>
+        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
+        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
+          <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
+        </div>
+      </div>
+      <div>
+        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
+        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+          <button onClick={() => { setIsHistoryModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
+          <button onClick={() => { setIsMenuMgmtModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
+        </div>
+      </div>
+      <div>
+        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
+        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+          <button onClick={() => { setIsEmojiModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
+          <button onClick={() => { setIsMemoModalOpen(true); setSummaryState('collapsed'); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
+        </div>
+      </div>
+      <div>
+        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
+        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+          <div className="flex items-center justify-between px-4 py-3.5">
+            <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
+            <button onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+            <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
+            <button onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+            <div><span className="text-[14px] font-black text-toss-grey-800">주문 상태 셀 강조 표시</span><p className="text-[11px] text-toss-grey-400 mt-0.5">고민중·주문완료·안먹음 배경색 변경</p></div>
+            <button onClick={() => handleUpdateSettings({ ...appSettings, highlightOrderCard: !appSettings.highlightOrderCard })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.highlightOrderCard ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.highlightOrderCard ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+          </div>
+        </div>
+      </div>
+
+      <button onClick={() => { handleResetAllTables(); setSummaryState('collapsed'); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black mt-2 mb-4"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
+    </div>
+  );
+
+  const adminSettingsNode = (
+    <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 pt-2 w-full space-y-4 custom-scrollbar">
+      <div>
+        <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
+        <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
+          <div className="flex items-center justify-between px-4 py-3.5">
+            <span className="text-[14px] font-black text-toss-grey-800">메인 광고 활성화</span>
+            <button onClick={() => handleUpdateSettings({ ...appSettings, showAds: !appSettings.showAds })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showAds ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showAds ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+            <span className="text-[14px] font-black text-toss-grey-800">하단 배너 광고 (광고2) 활성화</span>
+            <button onClick={() => handleUpdateSettings({ ...appSettings, showBottomAd: appSettings.showBottomAd === false ? true : false })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showBottomAd !== false ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showBottomAd !== false ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
+          </div>
+          <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
+            <div><span className="text-[14px] font-black text-toss-grey-800">광고 클릭 보너스 초기화</span><p className="text-[11px] text-toss-grey-400 mt-0.5">1시간 혜택을 삭제하고 다시 메인 광고 띄우기</p></div>
+            <button onClick={() => { localStorage.removeItem('cafesync_ad_skip_until'); window.location.reload(); }} className="px-3.5 py-1.5 bg-toss-grey-100 text-toss-grey-600 rounded-lg text-[13px] font-black active:scale-95 transition-all outline-none flex items-center gap-1.5 shadow-sm border border-toss-grey-200 hover:bg-white"><RotateCcw size={14} strokeWidth={2.5} /> 초기화</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`min-h-screen pb-24 bg-toss-bg text-toss-grey-900 flex flex-col relative overflow-x-hidden ${appSettings.showAds ? 'pt-8' : 'pt-0'}`}>
       {appSettings.showAds && (
@@ -489,104 +554,6 @@ function App() {
           <div className="w-full whitespace-nowrap animate-marquee flex items-center text-[13px] font-bold">쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수료를 제공받습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
         </div>
       )}
-      <AnimatePresence>
-        {isMainMenuOpen && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMainMenuOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />)}
-      </AnimatePresence>
-      <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
-        <motion.div initial={false} animate={{ height: isMainMenuOpen ? 'auto' : 0, opacity: isMainMenuOpen ? 1 : 0 }} style={{ maxHeight: isMainMenuOpen ? 'calc(100dvh - 130px)' : 0 }} transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }} className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto">
-          <AnimatePresence>
-            {isMainMenuOpen && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
-                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
-                  <div className="w-8 shrink-0" />
-                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">전체 메뉴</h2>
-                  <button onClick={() => setIsMainMenuOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all"><X size={18} /></button>
-                </div>
-                <div className="overflow-y-auto no-scrollbar px-5 py-5 space-y-4 custom-scrollbar">
-                  <div>
-                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
-                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
-                      <button onClick={() => { setIsTutorialRunning(true); setIsMainMenuOpen(false); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">주문 관리</span></div>
-                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-                      <button onClick={() => { setIsHistoryModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><History size={18} className="text-toss-grey-500" /> 저장된 주문 내역</button>
-                      <button onClick={() => { setIsMenuMgmtModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><UtensilsCrossed size={18} className="text-toss-grey-500" /> 메뉴판</button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">기능 설정</span></div>
-                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-                      <button onClick={() => { setIsEmojiModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><Smile size={18} className="text-toss-grey-500" /> 이모지 설정</button>
-                      <button onClick={() => { setIsMemoModalOpen(true); setIsMainMenuOpen(false); }} className="w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-800 hover:bg-toss-grey-50 rounded-2xl transition-colors active:scale-95"><StickyNote size={18} className="text-toss-grey-500" /> 요청사항 관리</button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">시스템</span></div>
-                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-                      <div className="flex items-center justify-between px-4 py-3.5">
-                        <span className="text-[14px] font-black text-toss-grey-800">사이즈 (S/T/G/V) 입력 표시</span>
-                        <button onClick={() => handleUpdateSettings({ ...appSettings, showDrinkSize: !appSettings.showDrinkSize })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showDrinkSize ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showDrinkSize ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
-                      </div>
-                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-                        <span className="text-[14px] font-black text-toss-grey-800">공용 메뉴 (다같이 쉐어) 추가</span>
-                        <button onClick={() => handleUpdateSettings({ ...appSettings, showSharedMenu: !appSettings.showSharedMenu })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showSharedMenu ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showSharedMenu ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
-                      </div>
-                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-                        <div><span className="text-[14px] font-black text-toss-grey-800">주문 상태 셀 강조 표시</span><p className="text-[11px] text-toss-grey-400 mt-0.5">고민중·주문완료·안먹음 배경색 변경</p></div>
-                        <button onClick={() => handleUpdateSettings({ ...appSettings, highlightOrderCard: !appSettings.highlightOrderCard })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner shrink-0 ml-3 ${appSettings.highlightOrderCard ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.highlightOrderCard ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button onClick={() => { handleResetAllTables(); setIsMainMenuOpen(false); }} className="w-full h-16 bg-toss-grey-900 text-white rounded-2xl font-black text-[15px] flex items-center justify-center gap-2.5 shadow-xl shadow-toss-grey-900/20 active:scale-[0.98] transition-all hover:bg-black"><RotateCcw size={18} strokeWidth={2.5} /> 모든 데이터 앱 전체 초기화</button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-
-      <AnimatePresence>
-        {isAdminSettingsOpen && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsAdminSettingsOpen(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[2000]" />)}
-      </AnimatePresence>
-      <div className="fixed left-0 right-0 bottom-0 z-[2001] flex flex-col items-center justify-end pointer-events-none pb-5 px-3">
-        <motion.div initial={false} animate={{ height: isAdminSettingsOpen ? 'auto' : 0, opacity: isAdminSettingsOpen ? 1 : 0 }} style={{ maxHeight: isAdminSettingsOpen ? 'calc(100dvh - 130px)' : 0 }} transition={{ type: "spring", damping: 28, stiffness: 260, mass: 0.9 }} className="w-full max-w-lg bg-[#f8f9fb] rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.18)] border border-toss-grey-200/60 ring-1 ring-black/5 flex flex-col overflow-hidden pointer-events-auto mx-auto">
-          <AnimatePresence>
-            {isAdminSettingsOpen && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex flex-col overflow-hidden">
-                <div className="flex items-center px-4 pt-5 pb-3 bg-white rounded-t-[32px] border-b border-toss-grey-100 shrink-0 gap-2">
-                  <div className="w-8 shrink-0" />
-                  <h2 className="flex-1 text-center text-[20px] font-black text-toss-grey-900">관리자 설정</h2>
-                  <button onClick={() => setIsAdminSettingsOpen(false)} className="w-8 h-8 rounded-full bg-toss-grey-100 flex items-center justify-center text-toss-grey-600 active:scale-95 transition-all"><X size={18} /></button>
-                </div>
-                <div className="overflow-y-auto no-scrollbar px-5 py-5 space-y-4 custom-scrollbar">
-                  <div>
-                    <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">광고 설정</span></div>
-                    <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-grey-100 shadow-sm">
-                      <div className="flex items-center justify-between px-4 py-3.5">
-                        <span className="text-[14px] font-black text-toss-grey-800">메인 광고 활성화</span>
-                        <button onClick={() => handleUpdateSettings({ ...appSettings, showAds: !appSettings.showAds })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showAds ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showAds ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
-                      </div>
-                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-                        <span className="text-[14px] font-black text-toss-grey-800">하단 배너 광고 (광고2) 활성화</span>
-                        <button onClick={() => handleUpdateSettings({ ...appSettings, showBottomAd: appSettings.showBottomAd === false ? true : false })} className={`w-11 h-6 rounded-full transition-all relative shadow-inner ${appSettings.showBottomAd !== false ? 'bg-toss-blue' : 'bg-toss-grey-300'}`}><div className={`absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition-all duration-300 transform shadow-sm ${appSettings.showBottomAd !== false ? 'translate-x-[20px]' : 'translate-x-0'}`} /></button>
-                      </div>
-                      <div className="flex items-center justify-between px-4 py-3.5 border-t border-toss-grey-100">
-                        <div><span className="text-[14px] font-black text-toss-grey-800">광고 클릭 보너스 초기화</span><p className="text-[11px] text-toss-grey-400 mt-0.5">1시간 혜택을 삭제하고 다시 메인 광고 띄우기</p></div>
-                        <button onClick={() => { localStorage.removeItem('cafesync_ad_skip_until'); window.location.reload(); }} className="px-3.5 py-1.5 bg-toss-grey-100 text-toss-grey-600 rounded-lg text-[13px] font-black active:scale-95 transition-all outline-none flex items-center gap-1.5 shadow-sm border border-toss-grey-200 hover:bg-white"><RotateCcw size={14} strokeWidth={2.5} /> 초기화</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
 
       <main className="flex-1 pt-4 pb-1 relative w-full overflow-hidden flex flex-col z-0">
         {groups.length > 0 ? (
@@ -670,13 +637,13 @@ function App() {
       </div>
 
       <AnimatePresence>
-        {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && (
-          <OrderSummary collapsedBottomBarNode={collapsedBottomBarNode} groups={groups} onSaveHistory={handleSaveOrder} onJumpToOrder={(gid, pid) => { scrollToTable(gid); setHighlightedItemId(pid); setSummaryState('collapsed'); setTimeout(() => setHighlightedItemId(null), 2000); }} onUpdateGroupName={updateGroupName} onSetNotEating={handleSetNotEating} onRemoveUndecided={handleRemoveUndecided} onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState} />
+        {!isAnyInputActive && !managingGroupId && (
+          <OrderSummary collapsedBottomBarNode={collapsedBottomBarNode} groups={groups} onSaveHistory={handleSaveOrder} onJumpToOrder={(gid, pid) => { scrollToTable(gid); setHighlightedItemId(pid); setSummaryState('collapsed'); setTimeout(() => setHighlightedItemId(null), 2000); }} onUpdateGroupName={updateGroupName} onSetNotEating={handleSetNotEating} onRemoveUndecided={handleRemoveUndecided} onRemoveOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} appSettings={appSettings} expandState={summaryState} onSetExpandState={setSummaryState} expandedContentNode={summaryState === 'admin' ? adminSettingsNode : summaryState === 'menu' ? mainMenuNode : undefined} expandedHeaderTitle={summaryState === 'admin' ? "관리자 설정" : summaryState === 'menu' ? "전체 메뉴" : undefined} />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {!isAnyInputActive && !isMainMenuOpen && !managingGroupId && appSettings.showBottomAd !== false && summaryState === 'collapsed' && (
+        {!isAnyInputActive && !managingGroupId && appSettings.showBottomAd !== false && summaryState === 'collapsed' && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ type: 'spring', damping: 25, stiffness: 220 }} className="fixed left-0 right-0 bottom-[104px] z-[2000] flex justify-center pointer-events-none px-3">
             <div className="w-full max-w-sm bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-toss-grey-200 p-0.5 pointer-events-auto flex items-center justify-center overflow-hidden h-[54px] transform-gpu">
               <iframe src="https://ads-partners.coupang.com/widgets.html?id=968136&template=carousel&trackingCode=AF9552419&subId=&width=320&height=50&tsource=" width="100%" height="50" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
@@ -685,11 +652,11 @@ function App() {
         )}
       </AnimatePresence>
 
-      <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setIsMainMenuOpen(true); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
-      <MenuManagementModal isOpen={isMenuMgmtModalOpen} onClose={() => setIsMenuMgmtModalOpen(false)} onBack={() => { setIsMenuMgmtModalOpen(false); setIsMainMenuOpen(true); }} drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} onAdd={addMenuItemToState} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} />
+      <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setSummaryState('menu'); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
+      <MenuManagementModal isOpen={isMenuMgmtModalOpen} onClose={() => setIsMenuMgmtModalOpen(false)} onBack={() => { setIsMenuMgmtModalOpen(false); setSummaryState('menu'); }} drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} onAdd={addMenuItemToState} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} />
       {isTutorialRunning && <AutoTutorial onComplete={() => setIsTutorialRunning(false)} />}
-      <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
-      <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setIsMainMenuOpen(true); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
+      <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
+      <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <MenuSelectionModal isOpen={menuModalState.isOpen} onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))} title="메뉴 선택" drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} initialSelections={menuModalState.initialSelections} selectedItem={menuModalState.selectedItem} initialType={menuModalState.initialType} onAdd={addMenuItemToState} onFirstSelect={() => { if (!localStorage.getItem('cafesync_size_guide_shown')) { setShowSizeGuide(true); localStorage.setItem('cafesync_size_guide_shown', 'true'); } }} onSelect={(s) => { const { orderId, subItemId } = menuModalState; if (!orderId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) }; const newItems: OrderSubItem[] = s.map(sel => { const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스'); return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 }; }); return { ...p, subItems: [...p.subItems, ...newItems] }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onDeleteSelection={() => { const { orderId, subItemId } = menuModalState; if (!orderId || !subItemId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} appSettings={appSettings} />
 
       <AnimatePresence>
