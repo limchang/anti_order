@@ -138,8 +138,9 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete, showAds 
         <div className="fixed inset-0 pointer-events-none z-[9999]">
             {/* 상단/하단 유동적 안내 메시지 */}
             <motion.div
-                animate={{ top: captionYPos }}
-                transition={{ type: 'spring', damping: 25, stiffness: 180 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ top: captionYPos, opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
                 className="absolute left-4 right-4 z-[10000] bg-white/95 backdrop-blur-md border border-toss-blue/20 rounded-2xl p-5 shadow-2xl flex flex-col items-center justify-center text-center pointer-events-auto"
             >
                 <h3 className="text-[16px] font-black text-toss-blue mb-2">오더모아 사용 가이드 🧭</h3>

@@ -92,7 +92,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.3.9';
+  const APP_VERSION = '1.0.0.1';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
