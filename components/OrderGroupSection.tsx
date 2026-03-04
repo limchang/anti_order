@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Plus, Settings, LayoutGrid, UtensilsCrossed } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderGroup, OrderItem, ItemType, AppSettings } from '../types.ts';
@@ -57,21 +57,6 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
   appVersion,
   onVersionTap
 }) => {
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
-
-  const tips = [
-    { title: "실전 시뮬레이터! 🎲", text: "실전 시뮬레이터로 사용법 배워봅시다." },
-    { title: "주문 팁! 💡", text: "주문완료 누르면 개인별 메뉴 추가 가능!" },
-    { title: "테이블 팁! ⚙️", text: "테이블 설정에 보면 공유 메뉴 추가하기 있다는 것도!" }
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTipIndex((prev) => (prev + 1) % tips.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [tips.length]);
-
   const individualItems = useMemo(() => group.items.filter(item => item.avatar !== '😋'), [group.items]);
   const sharedItem = useMemo(() => group.items.find(item => item.avatar === '😋'), [group.items]);
   const isOdd = individualItems.length % 2 !== 0;
@@ -248,34 +233,10 @@ export const OrderGroupSection: React.FC<OrderGroupSectionProps> = ({
         )}
       </div>
 
-      {/* 하단 팁 슬라이더 */}
-      <div className="mt-2 bg-toss-grey-50/50 rounded-xl border border-dashed border-toss-grey-100 px-4 py-3 overflow-hidden relative min-h-[58px]">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentTipIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col items-center justify-center text-center gap-0.5"
-          >
-            <span className="text-[10px] font-black text-toss-blue tracking-tighter opacity-70 uppercase">{tips[currentTipIndex].title}</span>
-            <span className="text-[12px] font-bold text-toss-grey-600 tracking-tight leading-tight">{tips[currentTipIndex].text}</span>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* 인디케이터 */}
-        <div className="flex justify-center gap-1 mt-1.5 opacity-20">
-          {tips.map((_, i) => (
-            <div key={i} className={`w-1 h-1 rounded-full transition-all ${i === currentTipIndex ? 'bg-toss-blue w-2' : 'bg-toss-grey-400'}`} />
-          ))}
-        </div>
-      </div>
-
       {appVersion && (
         <div onClick={onVersionTap} className="pt-2 pb-1 flex flex-col items-center gap-0.5 opacity-30 mt-1 cursor-pointer">
           <span className="text-[9px] font-bold text-toss-grey-400">Version {appVersion}</span>
-          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-04 14:38</span>
+          <span className="text-[9px] font-bold text-toss-grey-400">Last Updated: 2026-03-04 14:50</span>
         </div>
       )}
     </section>

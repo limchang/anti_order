@@ -587,7 +587,7 @@ function App() {
 
       <main className="flex-1 pt-4 pb-1 relative w-full overflow-hidden flex flex-col z-0">
         {groups.length > 0 ? (
-          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-[120px] no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
+          <div ref={scrollContainerRef} className="flex overflow-x-auto snap-x snap-mandatory gap-2 pb-4 no-scrollbar px-4 scroll-smooth flex-1 items-start content-start py-2 justify-start md:justify-center">
             {reversedGroups.map((group) => (
               <div key={group.id} id={`group-${group.id}`} className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px]">
                 <OrderGroupSection group={group} drinkMenuItems={drinkMenuItems} dessertMenuItems={dessertMenuItems} highlightedItemId={highlightedItemId} updateOrder={updateOrder} removeOrder={(id) => setGroups(prev => prev.map(g => ({ ...g, items: g.items.filter(item => item.id !== id) })).filter(g => g.items.length > 0))} addOrderItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, createEmptyOrder()] } : g))} addSharedMenuItem={(gid) => setGroups(prev => prev.map(g => g.id === gid ? { ...g, items: [...g.items, { id: uuidv4(), avatar: '😋', subItems: [] }] } : g))} onAddMenuItem={addMenuItemToState} onRemoveMenuItem={() => { }} onOpenMenuModal={(oid, ci, sid, it) => setMenuModalState({ isOpen: true, orderId: oid, subItemId: sid || null, initialSelections: groups.flatMap(g => g.items).find(i => i.id === oid)?.subItems || [], selectedItem: ci, initialType: it })} onCopyGroupItemToAll={handleCopySharedMenuToAll} onDeleteGroupItemFromAll={() => { }} appSettings={{ ...appSettings, isSharedSyncActive, isQuantitySyncActive, onToggleQuantitySync: () => setIsQuantitySyncActive(p => !p) }} onRemoveGroup={() => openManageSheet(group.id)} onOpenSettings={() => openManageSheet(group.id)} onInputModeChange={handleInputModeChange} onUpdateCheckedItems={handleUpdateCheckedItems} onMenuFirstSelected={handleMenuFirstSelected} onOpenMenuMgmt={() => { setIsMenuMgmtModalOpen(true); setSummaryState('collapsed'); }} appVersion={APP_VERSION} onVersionTap={handleVersionTap} />
@@ -600,7 +600,33 @@ function App() {
             <h2 className="text-xl font-black text-toss-grey-800 mb-3">간단하고 빠른 주문 수집!</h2>
           </div>
         )}
-        <GuidePopup isOpen={showSizeGuide} onClose={() => setShowSizeGuide(false)} onConfirm={() => { handleUpdateSettings({ ...appSettings, showDrinkSize: true }); setShowSizeGuide(false); showToast('사이즈 설정 옵션이 켜졌습니다.'); }} title="사이즈 설정이 필요하신가요?" message="메뉴마다 'Tall, Grande, Venti' 같은 사이즈를 입력할 수 있는 옵션을 켤까요?" />
+
+        {/* 별도 팁 섹션 */}
+        {groups.length > 0 && (
+          <div className="px-4 pb-20 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
+            <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x">
+              {[
+                { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: () => setIsTutorialRunning(true) },
+                { id: 'indiv', icon: '💡', title: '개별 메뉴 추가!', sub: '주문완료 후에도 메뉴 추가가 가능해요', action: () => showToast('주문자 카드의 하단 아이콘으로 메뉴를 계속 추가해보세요!') },
+                { id: 'shared', icon: '⚙️', title: '공유 메뉴 팁!', sub: '테이블 설정에서 공유 메뉴를 켜보세요', action: () => { if (groups.length > 0) openManageSheet(groups[0].id); } }
+              ].map((tip) => (
+                <button
+                  key={tip.id}
+                  onClick={tip.action}
+                  className="snap-start shrink-0 w-[240px] bg-white p-4 rounded-2xl border border-toss-grey-100 shadow-sm flex items-start gap-4 active:scale-95 transition-all text-left group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-toss-grey-50 flex items-center justify-center text-[20px] group-hover:bg-toss-blueLight transition-colors">{tip.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-black text-toss-grey-900 truncate">{tip.title}</p>
+                    <p className="text-[11px] font-bold text-toss-grey-400 leading-tight">{tip.sub}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <GuidePopup isOpen={showSizeGuide} onClose={() => setShowSizeGuide(false)} onConfirm={() => { handleUpdateSettings({ ...appSettings, showDrinkSize: true }); setShowSizeGuide(false); showToast('사이즈 설정 옵션이켜졌습니다.'); }} title="사이즈 설정이 필요하신가요?" message="메뉴마다 'Tall, Grande, Venti' 같은 사이즈를 입력할 수 있는 옵션을 켤까요?" />
         <GuidePopup isOpen={showSharedGuide} onClose={() => setShowSharedGuide(false)} onConfirm={() => { handleUpdateSettings({ ...appSettings, showSharedMenu: true }); setShowSharedGuide(false); showToast('공용 메뉴 추가가 켜졌습니다.'); }} title="함께 먹는 메뉴도 있나요?" message="테이블 인원이 가득 찼네요! 다함께 쉐어하는 공용 메뉴를 추가할 수 있는 옵션을 켤까요?" />
       </main>
 
