@@ -5,7 +5,7 @@
         ],
         "target": {
             "namespace": "android_app",
-            "package_name": "app.vercel.anti_order.twa",
+            "package_name": "kr.co.ordermoa.app",
             "sha256_cert_fingerprints": [
                 "AF:AF:CB:64:8F:B3:B0:4D:3C:E1:4C:BA:FB:B4:6F:AB:B0:9D:A4:18:A5:D9:CE:36:85:31:64:EB:3E:D6:ED:DC"
             ]
