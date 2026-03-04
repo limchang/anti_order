@@ -92,7 +92,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.3.7';
+  const APP_VERSION = '1.3.8';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
@@ -544,7 +544,7 @@ function App() {
           <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
             <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
             <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
-            <button onClick={() => setShowUpdatePopup(true)} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-700 hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95 border-t border-toss-blue/10"><RefreshCw size={18} className="text-toss-grey-400" /> 최근 업데이트 다시 보기</button>
+            <button onClick={() => { setShowUpdatePopup(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-700 hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95 border-t border-toss-blue/10"><RefreshCw size={18} className="text-toss-grey-400" /> 최근 업데이트 다시 보기</button>
           </div>
         </div>
         <div>
@@ -765,7 +765,7 @@ function App() {
 
       <HistoryModal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onBack={() => { setIsHistoryModalOpen(false); setSummaryState('menu'); }} history={history} onLoad={(item) => { setGroups(item.groups); setActiveGroupId(item.groups[0]?.id); }} onLoadPeopleOnly={handleLoadPeopleOnly} onDelete={(id) => setHistory(prev => prev.filter(h => h.id !== id))} onUpdate={(id, updates) => setHistory(prev => prev.map(h => h.id === id ? { ...h, ...updates } : h))} />
       <MenuManagementModal isOpen={isMenuMgmtModalOpen} onClose={() => setIsMenuMgmtModalOpen(false)} onBack={() => { setIsMenuMgmtModalOpen(false); setSummaryState('menu'); }} drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} onAdd={addMenuItemToState} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} />
-      {isTutorialRunning && <AutoTutorial onComplete={() => setIsTutorialRunning(false)} />}
+      {isTutorialRunning && <AutoTutorial onComplete={() => setIsTutorialRunning(false)} showAds={appSettings.showAds} />}
       <EmojiSettingsModal isOpen={isEmojiModalOpen} onClose={() => setIsEmojiModalOpen(false)} onBack={() => { setIsEmojiModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <QuickMemosModal isOpen={isMemoModalOpen} onClose={() => setIsMemoModalOpen(false)} onBack={() => { setIsMemoModalOpen(false); setSummaryState('menu'); }} settings={appSettings} onUpdateSettings={handleUpdateSettings} />
       <MenuSelectionModal isOpen={menuModalState.isOpen} onClose={() => setMenuModalState(prev => ({ ...prev, isOpen: false }))} title="메뉴 선택" drinkItems={drinkMenuItems} dessertItems={dessertMenuItems} checkedDrinkItems={appSettings.checkedDrinkItems} initialSelections={menuModalState.initialSelections} selectedItem={menuModalState.selectedItem} initialType={menuModalState.initialType} onAdd={addMenuItemToState} onFirstSelect={handleMenuFirstSelected} onSelect={(s) => { const { orderId, subItemId } = menuModalState; if (!orderId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; if (subItemId) return { ...p, subItems: p.subItems.map(si => si.id === subItemId ? { ...si, itemName: s[0].itemName, type: s[0].type, size: s[0].size || si.size || 'Tall' } : si) }; const newItems: OrderSubItem[] = s.map(sel => { const isIceDefault = sel.itemName.includes('스무디') || sel.itemName.includes('아이스'); return { id: uuidv4(), itemName: sel.itemName, type: sel.type, temperature: isIceDefault ? 'ICE' : 'HOT', size: sel.size || 'Tall', quantity: 1 }; }); return { ...p, subItems: [...p.subItems, ...newItems] }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onDeleteSelection={() => { const { orderId, subItemId } = menuModalState; if (!orderId || !subItemId) return; setGroups(prev => prev.map(g => ({ ...g, items: g.items.map(p => { if (p.id !== orderId) return p; return { ...p, subItems: p.subItems.filter(si => si.id !== subItemId) }; }) }))); setMenuModalState(prev => ({ ...prev, isOpen: false })); }} onRemove={handleRemoveMenuItem} onUpdateChecked={handleUpdateCheckedItems} onUpdateMenuList={(l, t) => t === 'DRINK' ? setDrinkMenuItems(l) : setDessertMenuItems(l)} appSettings={appSettings} />

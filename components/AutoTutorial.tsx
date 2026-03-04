@@ -4,6 +4,7 @@ import { Pointer, X } from 'lucide-react';
 
 interface AutoTutorialProps {
     onComplete: () => void;
+    showAds?: boolean;
 }
 
 interface TutorialStep {
@@ -22,17 +23,23 @@ const steps: TutorialStep[] = [
     { selector: '[data-tutorial="ad-banner"]', text: '쾌적한 사용을 위한 팁 🔥\n메인 광고를 한 번만 클릭해주시면 1시간 동안 광고가 사라져요!' },
 ];
 
-export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
+export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete, showAds }) => {
     const [stepIndex, setStepIndex] = useState(0);
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
+    // 광고가 꺼져있으면 광고 클릭 안내 단계를 제외함
+    const filteredSteps = steps.filter(step => {
+        if (step.selector === '[data-tutorial="ad-banner"]' && showAds === false) return false;
+        return true;
+    });
+
     useEffect(() => {
-        if (stepIndex >= steps.length) {
+        if (stepIndex >= filteredSteps.length) {
             onComplete();
             return;
         }
 
-        const step = steps[stepIndex];
+        const step = filteredSteps[stepIndex];
         let frameId: number;
 
         const updateRect = () => {
@@ -58,7 +65,7 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
         updateRect();
 
         return () => cancelAnimationFrame(frameId);
-    }, [stepIndex, onComplete]);
+    }, [stepIndex, onComplete, filteredSteps]);
 
     useEffect(() => {
         const handleGlobalClick = (e: MouseEvent) => {
@@ -68,7 +75,7 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
                 return;
             }
 
-            const step = steps[stepIndex];
+            const step = filteredSteps[stepIndex];
             if (!step || !step.selector) return;
 
             const elements = Array.from(document.querySelectorAll(step.selector));
@@ -87,9 +94,9 @@ export const AutoTutorial: React.FC<AutoTutorialProps> = ({ onComplete }) => {
         // DOM 트리의 최상단에서 이벤트를 가로채기 위해 캡처링 단계 사용
         document.addEventListener('click', handleGlobalClick, true);
         return () => document.removeEventListener('click', handleGlobalClick, true);
-    }, [stepIndex]);
+    }, [stepIndex, filteredSteps]);
 
-    const currentStep = steps[stepIndex];
+    const currentStep = filteredSteps[stepIndex];
     if (!currentStep) return null;
 
     // 안내창의 대략적인 높이와 하단 기본 위치
