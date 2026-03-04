@@ -91,12 +91,36 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.3.5';
+  const APP_VERSION = '1.3.6';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const tipScrollRef = useRef<HTMLDivElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
   const isInternalScrolling = useRef(false);
+
+  // 팁 자동 스크롤
+  useEffect(() => {
+    if (groups.length === 0) return;
+
+    const interval = setInterval(() => {
+      if (tipScrollRef.current) {
+        const container = tipScrollRef.current;
+        const scrollWidth = container.scrollWidth;
+        const width = container.offsetWidth;
+        const currentScroll = container.scrollLeft;
+
+        let nextScroll = currentScroll + width;
+        if (nextScroll >= scrollWidth) {
+          nextScroll = 0;
+        }
+
+        container.scrollTo({ left: nextScroll, behavior: 'smooth' });
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [groups.length]);
 
   useEffect(() => {
     const hasEmpty = groups.some(g => g.items.length === 0);
@@ -603,8 +627,11 @@ function App() {
 
         {/* 별도 팁 섹션 */}
         {groups.length > 0 && (
-          <div className="px-4 pb-20 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
-            <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x">
+          <div className="px-4 pb-24 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
+            <div
+              ref={tipScrollRef}
+              className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x snap-mandatory"
+            >
               {[
                 { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: () => setIsTutorialRunning(true) },
                 { id: 'indiv', icon: '💡', title: '개별 메뉴 추가!', sub: '주문완료 후에도 메뉴 추가가 가능해요', action: () => showToast('주문자 카드의 하단 아이콘으로 메뉴를 계속 추가해보세요!') },
@@ -613,12 +640,12 @@ function App() {
                 <button
                   key={tip.id}
                   onClick={tip.action}
-                  className="snap-start shrink-0 w-[240px] bg-white p-4 rounded-2xl border border-toss-grey-100 shadow-sm flex items-start gap-4 active:scale-95 transition-all text-left group"
+                  className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px] bg-white p-4 rounded-2xl border border-toss-grey-100 shadow-sm flex items-start gap-4 active:scale-95 transition-all text-left group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-toss-grey-50 flex items-center justify-center text-[20px] group-hover:bg-toss-blueLight transition-colors">{tip.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-black text-toss-grey-900 truncate">{tip.title}</p>
-                    <p className="text-[11px] font-bold text-toss-grey-400 leading-tight">{tip.sub}</p>
+                  <div className="w-12 h-12 rounded-xl bg-toss-grey-50 flex items-center justify-center text-[24px] group-hover:bg-toss-blueLight transition-colors shadow-inner">{tip.icon}</div>
+                  <div className="flex-1 min-w-0 py-0.5">
+                    <p className="text-[14px] font-black text-toss-grey-900 truncate mb-0.5">{tip.title}</p>
+                    <p className="text-[11px] font-bold text-toss-grey-450 leading-tight">{tip.sub}</p>
                   </div>
                 </button>
               ))}
