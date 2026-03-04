@@ -91,7 +91,8 @@ function App() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const APP_VERSION = '1.3.6';
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+  const APP_VERSION = '1.3.7';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
@@ -110,17 +111,25 @@ function App() {
         const width = container.offsetWidth;
         const currentScroll = container.scrollLeft;
 
-        let nextScroll = currentScroll + width;
-        if (nextScroll >= scrollWidth) {
-          nextScroll = 0;
-        }
-
-        container.scrollTo({ left: nextScroll, behavior: 'smooth' });
+        let nextIdx = (currentTipIndex + 1) % 3; // 팁이 3개임
+        setCurrentTipIndex(nextIdx);
+        container.scrollTo({ left: nextIdx * width, behavior: 'smooth' });
       }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [groups.length]);
+  }, [groups.length, currentTipIndex]);
+
+  useEffect(() => {
+    const container = tipScrollRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      const index = Math.round(container.scrollLeft / container.offsetWidth);
+      if (index !== currentTipIndex) setCurrentTipIndex(index);
+    };
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [currentTipIndex]);
 
   useEffect(() => {
     const hasEmpty = groups.some(g => g.items.length === 0);
@@ -648,6 +657,16 @@ function App() {
                     <p className="text-[11px] font-bold text-toss-grey-450 leading-tight">{tip.sub}</p>
                   </div>
                 </button>
+              ))}
+            </div>
+
+            {/* 팁 인디케이터 */}
+            <div className="flex justify-center gap-1.5 mt-2 opacity-30">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className={`h-1 rounded-full transition-all duration-300 ${i === currentTipIndex ? 'bg-toss-blue w-4' : 'bg-toss-grey-300 w-1'}`}
+                />
               ))}
             </div>
           </div>

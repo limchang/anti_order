@@ -301,9 +301,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   }
 
   const getStatusStyle = () => {
-    if (isUndecided) return { bg: 'bg-amber-400 border-amber-500/30', text: 'text-amber-900', icon: <Clock size={12} strokeWidth={3} />, label: '고민 중', moreBtn: 'text-amber-800/60 hover:text-amber-900 active:scale-90' };
-    if (isNotEating) return { bg: 'bg-toss-grey-300 border-toss-grey-400/20', text: 'text-toss-grey-700', icon: <X size={12} strokeWidth={3} />, label: '안 먹음', moreBtn: 'text-toss-grey-600/60 hover:text-toss-grey-800 active:scale-90' };
-    if (isDecided) return { bg: 'bg-toss-blue border-toss-blue/20', text: 'text-white', icon: <Check size={12} strokeWidth={3} />, label: '주문 완료', moreBtn: 'text-white/60 hover:text-white active:scale-90' };
+    if (isUndecided) return { bg: 'bg-amber-400 border-amber-500/30', text: 'text-amber-900', icon: null, label: '고민 중', moreBtn: 'text-amber-800/60 hover:text-amber-900 active:scale-90' };
+    if (isNotEating) return { bg: 'bg-toss-grey-300 border-toss-grey-400/20', text: 'text-toss-grey-700', icon: null, label: '안 먹음', moreBtn: 'text-toss-grey-600/60 hover:text-toss-grey-800 active:scale-90' };
+    if (isDecided) return { bg: 'bg-toss-blue border-toss-blue/20', text: 'text-white', icon: null, label: '주문 완료', moreBtn: 'text-white/60 hover:text-white active:scale-90' };
     return { bg: 'bg-toss-grey-50 border-toss-grey-100', text: 'text-transparent', icon: null, label: '', moreBtn: 'hidden' };
   };
   const statusStyle = getStatusStyle();
