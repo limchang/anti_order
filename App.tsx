@@ -92,7 +92,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.3.8';
+  const APP_VERSION = '1.3.9';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
@@ -107,12 +107,11 @@ function App() {
     const interval = setInterval(() => {
       if (tipScrollRef.current) {
         const container = tipScrollRef.current;
-        const scrollWidth = container.scrollWidth;
         const width = container.offsetWidth;
-        const currentScroll = container.scrollLeft;
 
-        let nextIdx = (currentTipIndex + 1) % 3; // 팁이 3개임
+        let nextIdx = (currentTipIndex + 1) % 3;
         setCurrentTipIndex(nextIdx);
+        // gap(12px)을 고려한 이동: 각 슬라이드의 시작 위치로 이동
         container.scrollTo({ left: nextIdx * width, behavior: 'smooth' });
       }
     }, 5000);
@@ -124,12 +123,36 @@ function App() {
     const container = tipScrollRef.current;
     if (!container) return;
     const handleScroll = () => {
-      const index = Math.round(container.scrollLeft / container.offsetWidth);
-      if (index !== currentTipIndex) setCurrentTipIndex(index);
+      // 현재 컨테이너 너비를 기준으로 몇 번째 슬라이드인지 계산
+      const width = container.offsetWidth;
+      if (width === 0) return;
+      const index = Math.round(container.scrollLeft / width);
+      if (index !== currentTipIndex && index >= 0 && index < 3) {
+        setCurrentTipIndex(index);
+      }
     };
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
   }, [currentTipIndex]);
+
+  const handleStartTutorial = () => {
+    // 기존 입력 데이터가 있는지 확인 (아바타가 설정된 인원이 있는지)
+    const hasData = groups.some(g => g.items.some(p => p.avatar && p.avatar !== '😋'));
+
+    if (hasData) {
+      // 튜토리얼을 위해 깔끔하게 상태 초기화
+      const newGroupId = uuidv4();
+      const initialItems = [...Array.from({ length: 4 }, createEmptyOrder), { id: uuidv4(), avatar: '😋', subItems: [] }];
+      setGroups([{ id: newGroupId, name: '1번 테이블', items: initialItems }]);
+      setActiveGroupId(newGroupId);
+      setIsSharedSyncActive(false);
+      // undo 기능을 위해 스냅샷 저장
+      setLastGroupsSnapshot([...groups]);
+    }
+
+    setIsTutorialRunning(true);
+    setSummaryState('collapsed');
+  };
 
   useEffect(() => {
     const hasEmpty = groups.some(g => g.items.length === 0);
@@ -543,7 +566,7 @@ function App() {
           <div className="p-1 mb-2"><span className="text-[11px] font-black text-toss-grey-400 uppercase tracking-widest">이용 가이드</span></div>
           <div className="bg-white p-2 rounded-2xl space-y-1 border border-toss-blue/30 shadow-sm ring-2 ring-toss-blueLight overflow-hidden relative">
             <div className="absolute top-0 right-0 w-24 h-24 bg-toss-blueLight rounded-bl-full -z-0 opacity-50" />
-            <button onClick={() => { setIsTutorialRunning(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
+            <button onClick={handleStartTutorial} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-blue hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95"><Pointer size={18} className="text-toss-blue" /> 실전 시뮬레이션 둘러보기</button>
             <button onClick={() => { setShowUpdatePopup(true); setSummaryState('collapsed'); }} className="relative z-10 w-full flex items-center gap-4 px-4 py-3.5 text-[14px] font-black text-toss-grey-700 hover:bg-toss-blueLight/50 rounded-2xl transition-colors active:scale-95 border-t border-toss-blue/10"><RefreshCw size={18} className="text-toss-grey-400" /> 최근 업데이트 다시 보기</button>
           </div>
         </div>
@@ -642,7 +665,7 @@ function App() {
               className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x snap-mandatory"
             >
               {[
-                { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: () => setIsTutorialRunning(true) },
+                { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: handleStartTutorial },
                 { id: 'indiv', icon: '💡', title: '개별 메뉴 추가!', sub: '주문완료 후에도 메뉴 추가가 가능해요', action: () => showToast('주문자 카드의 하단 아이콘으로 메뉴를 계속 추가해보세요!') },
                 { id: 'shared', icon: '⚙️', title: '공유 메뉴 팁!', sub: '테이블 설정에서 공유 메뉴를 켜보세요', action: () => { if (groups.length > 0) openManageSheet(groups[0].id); } }
               ].map((tip) => (
