@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "기본 광고 설정 OFF", desc: "사용자 편의를 위해 초기 설치 시 모든 광고 설정을 기본적으로 '꺼짐' 상태로 변경했습니다.", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "팁 인디케이터 개선", desc: "현재 위치 점(dot) UI가 항상 제자리에 고속되도록 카드 레이아웃과 오버레이 구조를 최적화했습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
-        { title: "전반적인 UI 안정화", desc: "OCR 성능 최적화 및 불필요한 소스 코드 정리를 통해 앱의 전반적인 안정성을 높였습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "모든 광고 강제 OFF", desc: "이전 버튼 설정이 남아있던 경우를 포함하여, 메인 광고와 하단 배너를 모두 '꺼짐' 상태로 강제 초기화했습니다.", icon: <Zap size={16} className="text-amber-500" /> },
+        { title: "기본값 정책 변경", desc: "사용자 편의를 최우선으로 하여, 초기 설치 시 광고 기능이 기본적으로 비활성화되도록 정책을 변경했습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
+        { title: "전반적인 UI 안정화", desc: "팁 인디케이터 고정 및 OCR 성능 최적화 등 전반적인 사용성을 개선했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
     ];
 
     return (

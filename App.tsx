@@ -91,7 +91,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.0.0.5';
+  const APP_VERSION = '1.0.0.6';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
@@ -316,6 +316,11 @@ function App() {
           if (JSON.stringify(parsed.defaultEmojis) !== JSON.stringify(DEFAULT_EMOJIS)) {
             parsed.defaultEmojis = [...DEFAULT_EMOJIS];
           }
+
+          // v1.0.0.6 업데이트 시 광고 설정을 강제로 OFF로 초기화 (기존 저장 데이터 무시)
+          parsed.showAds = false;
+          parsed.showBottomAd = false;
+
           setAppSettings(prev => ({ ...prev, ...parsed }));
         } catch (e) { console.error(e); }
       }
