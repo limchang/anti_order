@@ -75,8 +75,8 @@ function App() {
     randomCategory: 'ANIMALS',
     checkedDrinkItems: ["아메리카노", "카페라떼", "카라멜마끼아또"],
     highlightOrderCard: true,
-    showAds: true,
-    showBottomAd: true,
+    showAds: false,
+    showBottomAd: false,
   });
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
@@ -91,7 +91,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.0.0.4';
+  const APP_VERSION = '1.0.0.5';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
