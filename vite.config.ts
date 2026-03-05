@@ -33,6 +33,7 @@ export default defineConfig(({ mode }) => {
           name: '오더모아',
           short_name: '오더모아',
           description: '카페에서 여러 테이블 주문을 모아서 한번에 카운터로!',
+          id: 'kr.co.ordermoa.app',
           theme_color: '#3182F6',
           background_color: '#F2F4F6',
           display: 'standalone',
