@@ -91,7 +91,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.0.0.3';
+  const APP_VERSION = '1.0.0.4';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
@@ -659,38 +659,40 @@ function App() {
         {/* 별도 팁 섹션 */}
         {groups.length > 0 && (
           <div className="px-4 pb-24 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
-            <div
-              ref={tipScrollRef}
-              className="flex overflow-x-auto gap-3 pb-2 no-scrollbar snap-x snap-mandatory"
-            >
-              {[
-                { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: handleStartTutorial },
-                { id: 'indiv', icon: '💡', title: '개별 메뉴 추가!', sub: '주문완료 후에도 메뉴 추가가 가능해요', action: () => showToast('주문자 카드의 하단 아이콘으로 메뉴를 계속 추가해보세요!') },
-                { id: 'shared', icon: '⚙️', title: '공유 메뉴 팁!', sub: '테이블 설정에서 공유 메뉴를 켜보세요', action: () => { if (groups.length > 0) openManageSheet(groups[0].id); } }
-              ].map((tip, idx) => (
-                <button
-                  key={tip.id}
-                  onClick={tip.action}
-                  className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px] bg-white p-4 rounded-2xl border border-toss-grey-100 shadow-sm flex flex-col gap-3 active:scale-95 transition-all text-left group"
-                >
-                  <div className="flex items-start gap-4">
+            {/* 카드 + 고정 인디케이터를 함께 감싸는 relative 컨테이너 */}
+            <div className="relative">
+              <div
+                ref={tipScrollRef}
+                className="flex overflow-x-auto gap-3 no-scrollbar snap-x snap-mandatory"
+              >
+                {[
+                  { id: 'sim', icon: '🎲', title: '실전 시뮬레이터!', sub: '사용법을 처음부터 배워보기', action: handleStartTutorial },
+                  { id: 'indiv', icon: '💡', title: '개별 메뉴 추가!', sub: '주문완료 후에도 메뉴 추가가 가능해요', action: () => showToast('주문자 카드의 하단 아이콘으로 메뉴를 계속 추가해보세요!') },
+                  { id: 'shared', icon: '⚙️', title: '공유 메뉴 팁!', sub: '테이블 설정에서 공유 메뉴를 켜보세요', action: () => { if (groups.length > 0) openManageSheet(groups[0].id); } }
+                ].map((tip) => (
+                  <button
+                    key={tip.id}
+                    onClick={tip.action}
+                    className="snap-center shrink-0 w-[calc(100vw-32px)] sm:w-[340px] bg-white px-4 pt-4 pb-7 rounded-2xl border border-toss-grey-100 shadow-sm flex items-start gap-4 active:scale-95 transition-all text-left group"
+                  >
                     <div className="w-12 h-12 rounded-xl bg-toss-grey-50 flex items-center justify-center text-[24px] group-hover:bg-toss-blueLight transition-colors shadow-inner shrink-0">{tip.icon}</div>
                     <div className="flex-1 min-w-0 py-0.5">
                       <p className="text-[14px] font-black text-toss-grey-900 truncate mb-0.5">{tip.title}</p>
                       <p className="text-[11px] font-bold text-toss-grey-450 leading-tight">{tip.sub}</p>
                     </div>
-                  </div>
-                  {/* 팁 인디케이터 — 카드 내부 하단 */}
-                  <div className="flex justify-center gap-1.5 opacity-30">
-                    {[0, 1, 2].map((i) => (
-                      <div
-                        key={i}
-                        className={`h-1 rounded-full transition-all duration-300 ${i === idx ? 'bg-toss-blue w-4' : 'bg-toss-grey-300 w-1'}`}
-                      />
-                    ))}
-                  </div>
-                </button>
-              ))}
+                  </button>
+                ))}
+              </div>
+
+              {/* 도트 인디케이터 — 스크롤 컨테이너 밖, 카드 위에 absolute 고정 */}
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 pointer-events-none">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className={`h-1 rounded-full transition-all duration-300 ${i === currentTipIndex ? 'bg-toss-blue/50 w-4' : 'bg-toss-grey-300/60 w-1'}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}
