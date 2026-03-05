@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
+        { title: "테이블 요약 정보 간소화", desc: "주문 내역의 '테이블별 보기' 모드에서 불필요한 업데이트 시간 표시를 제거하여 더 깔끔한 화면을 구성했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
         { title: "모든 광고 강제 OFF", desc: "이전 버튼 설정이 남아있던 경우를 포함하여, 메인 광고와 하단 배너를 모두 '꺼짐' 상태로 강제 초기화했습니다.", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "기본값 정책 변경", desc: "사용자 편의를 최우선으로 하여, 초기 설치 시 광고 기능이 기본적으로 비활성화되도록 정책을 변경했습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
-        { title: "전반적인 UI 안정화", desc: "팁 인디케이터 고정 및 OCR 성능 최적화 등 전반적인 사용성을 개선했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "전반적인 UI 안정화", desc: "팁 인디케이터 고정 및 OCR 성능 최적화 등 전반적인 사용성을 개선했습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
     ];
 
     return (
