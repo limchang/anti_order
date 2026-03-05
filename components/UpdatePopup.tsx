@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "OCR 성능 최적화", desc: "텍스트 인식 기능을 필요할 때만 불러오도록 개선하여 초기 실행 속도를 훨씬 더 빠르게 만들었습니다.", icon: <Zap size={16} className="text-amber-500" /> },
-        { title: "코드 및 파일 정돈", desc: "불필요한 설정 파일과 사용하지 않는 소스 코드를 정리하여 앱의 안정성을 높였습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "AI 가이드 체계 구축", desc: "개발 효율을 위한 AI 전용 가이드(gemini.md)를 연동하여 더 정확한 기능 개선이 가능해졌습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
+        { title: "팁 인디케이터 카드 내부 이동", desc: "현재 위치를 알려주는 점(dot) UI를 팁 카드 내부 하단으로 옮겨 더 깔끔하게 확인할 수 있습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
+        { title: "OCR 성능 최적화", desc: "텍스트 인식 기능을 필요할 때만 불러오도록 개선하여 초기 실행 속도를 더 빠르게 만들었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "코드 및 파일 정돈", desc: "불필요한 파일과 소스 코드를 정리하여 앱의 안정성을 높였습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
     ];
 
     return (
