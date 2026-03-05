@@ -1,7 +1,7 @@
 {
   "name": "cafesync-배포중",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

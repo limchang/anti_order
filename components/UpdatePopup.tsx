@@ -11,9 +11,9 @@ interface UpdatePopupProps {
 
 export const UpdatePopup: React.FC<UpdatePopupProps> = ({ isOpen, onClose, version }) => {
     const updates = [
-        { title: "가이드 문구 슬림화", desc: "사용자님의 요청에 맞춰 핵심 기능 5단계로 가이드를 더 명확하게 수정했습니다.", icon: <Sparkles size={16} className="text-amber-500" /> },
-        { title: "버튼 이름 변경: 메뉴판 보기", desc: "주문 카드의 '더보기' 버튼 이름을 '메뉴판 보기'로 변경하여 더 직관적으로 메뉴를 찾을 수 있게 했습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
-        { title: "안정성 강화", desc: "가이드 중복 표시 방지 및 내부 로직 최적화가 포함되었습니다.", icon: <Zap size={16} className="text-purple-500" /> },
+        { title: "OCR 성능 최적화", desc: "텍스트 인식 기능을 필요할 때만 불러오도록 개선하여 초기 실행 속도를 훨씬 더 빠르게 만들었습니다.", icon: <Zap size={16} className="text-amber-500" /> },
+        { title: "코드 및 파일 정돈", desc: "불필요한 설정 파일과 사용하지 않는 소스 코드를 정리하여 앱의 안정성을 높였습니다.", icon: <CheckCircle2 size={16} className="text-toss-blue" /> },
+        { title: "AI 가이드 체계 구축", desc: "개발 효율을 위한 AI 전용 가이드(gemini.md)를 연동하여 더 정확한 기능 개선이 가능해졌습니다.", icon: <Sparkles size={16} className="text-purple-500" /> },
     ];
 
     return (

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"d:/Download/anti_order\" log --oneline --all -- \"[full_path_of_file_1]\" \"[full_path_of_file_2]\")",
+      "Bash(git -C \"d:/Download/anti_order\" status -- \"[full_path_of_file_1]\" \"[full_path_of_file_2]\")"
+    ]
+  }
+}

@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Plus, Coffee, CakeSlice, GripVertical, Search, Star, Trash2, UserMinus, Camera, Image as ImageIcon, Loader2, Sparkles, AlertCircle } from 'lucide-react';
-import { createWorker } from 'tesseract.js';
 import { useKeyboardOffset } from '../hooks/useKeyboardOffset';
 import {
   DndContext,
@@ -244,6 +243,7 @@ export const MenuSelectionModal: React.FC<MenuSelectionModalProps> = ({
         reader.readAsDataURL(file);
       });
 
+      const { createWorker } = await import('tesseract.js');
       const worker = await createWorker('kor+eng', 1, {
         logger: m => {
           if (m.status === 'recognizing text') {

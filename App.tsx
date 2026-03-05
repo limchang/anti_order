@@ -12,7 +12,6 @@ import { EmojiSettingsModal } from './components/EmojiSettingsModal.tsx';
 import { QuickMemosModal } from './components/QuickMemosModal.tsx';
 import { MenuManagementModal } from './components/MenuManagementModal.tsx';
 import { HistoryModal } from './components/HistoryModal.tsx';
-import { SettingsModal } from './components/SettingsModal';
 import { AutoTutorial } from './components/AutoTutorial';
 import { GuidePopup } from './components/GuidePopup.tsx';
 import { UpdatePopup } from './components/UpdatePopup.tsx';
@@ -92,7 +91,7 @@ function App() {
   const [showSharedGuide, setShowSharedGuide] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const APP_VERSION = '1.0.0.1';
+  const APP_VERSION = '1.0.0.2';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tipScrollRef = useRef<HTMLDivElement>(null);
